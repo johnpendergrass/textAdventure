@@ -1,0 +1,51 @@
+body {
+    background-color: black;
+    color: white;
+    margin: 0;
+    padding: 10px;
+    font-family: monospace;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+        "header header"
+        "text status"
+        "prompt status";
+    height: 100%;
+    gap: 10px;
+}
+
+.header {
+    grid-area: header;
+    height: calc(4 * 1.2em);
+    border: 2px solid white;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.text {
+    grid-area: text;
+    border: 2px solid white;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.prompt {
+    grid-area: prompt;
+    height: calc(1.2em + 20px);
+    border: 2px solid white;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.status {
+    grid-area: status;
+    border: 2px solid white;
+    padding: 10px;
+    box-sizing: border-box;
+}
