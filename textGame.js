@@ -104,9 +104,77 @@ function echoCommand(command) {
   ]);
 }
 
+// ASCII Art Library
+const asciiArt = {
+  pumpkin: `   ___
+  /o o\\
+ ( > < )
+  \\___/
+    |`,
+  
+  door: ` _______
+|[]   []|
+|   __  |
+|  |  | |
+|__|__|_|
+ [_____]`,
+
+  bat: `  /\\_/\\
+ (  -.- )
+  o_/"\\`,
+
+  house: ` ___[]___
+|  ___  |
+| |   | |
+| |___| |
+|_______|`
+};
+
+// Status display functions
+function updateStatusArt(artType = 'pumpkin') {
+  const statusArtDiv = document.querySelector('.status-art');
+  const artClass = `art-${artType}`;
+  
+  statusArtDiv.innerHTML = `<div class="ascii-art ${artClass}">${asciiArt[artType]}</div>`;
+}
+
+function updateStatusInfo() {
+  const statusInfoDiv = document.querySelector('.status-info');
+  
+  statusInfoDiv.innerHTML = `
+    <div class="status-section">
+      <div class="status-title">COMMANDS:</div>
+      <div>(h)elp (l)ook (i)nventory</div>
+      <div>(n)orth (s)outh (e)ast (w)est</div>
+    </div>
+    
+    <div class="status-section">
+      <div class="status-title">INVENTORY:</div>
+      <div>Candy bag (3 treats)</div>
+      <div>Plastic sword</div>
+      <div>Flashlight (on)</div>
+      <div>Fake vampire teeth</div>
+    </div>
+    
+    <div class="status-section">
+      <div class="status-title">STATUS:</div>
+      <div>Treats: 3/20</div>
+      <div>Houses: 2/12</div>
+      <div>Score: 150</div>
+    </div>
+  `;
+}
+
+// Initialize status display
+function initializeStatus() {
+  updateStatusArt('pumpkin');
+  updateStatusInfo();
+}
+
 // Initialize when page loads
 document.addEventListener("DOMContentLoaded", async function () {
   await initializeBuffer();
+  initializeStatus();
 
   // Add keyboard event listener for PAGE UP/DOWN
   document.addEventListener("keydown", function (e) {

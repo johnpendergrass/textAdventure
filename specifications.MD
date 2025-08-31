@@ -20,6 +20,7 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
 - H1 text color: orange
 - All sections have white borders
 - Responsive grid using CSS Grid
+- PROMPT box uses yellow color (#ffcc00) to match prompt echoes
 
 ### Text Display System
 - **TEXT Box Features:**
@@ -28,14 +29,27 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
     - **Prompt Echo** (#ffcc00 yellow): User commands ("> look north")
     - **Command Output** (#1acdb2 teal): System responses (help, inventory)
     - **Flavor Text** (#00ff00 green): Story/narrative descriptions
-  - Buffer system stores all game history
+  - Buffer system stores all game history as objects: `{text: "...", type: "prompt|command|flavor"}`
   - PAGE UP/DOWN scrolling (4 lines at a time)
   - Auto-scroll to bottom for new content
+  - Dynamic content loading from JSON files
+  - HTML contains no hardcoded text content
+
+### Data Architecture
+- **JSON-based content system** for externalized game data
+- Text buffer objects structured as: `{text: "content", type: "prompt|command|flavor"}`
+- **Current Data Files:**
+  - `samplePlaythrough.json` - Demo content for testing and development
+- **Planned Future Files:**
+  - `gameData.json` - Common responses, intro text, help content
+  - `rooms.json` - Location descriptions and connections
+  - `items.json` - Object descriptions and properties
 
 ### Files Structure
-- `index.html` - Main HTML structure with header content
+- `index.html` - Main HTML structure (header only, no hardcoded content)
 - `textGame.css` - All styling, layout, and text colors
-- `textGame.js` - Text buffer system and display logic
+- `textGame.js` - Text buffer system, JSON loading, and display logic
+- `samplePlaythrough.json` - Sample game content for testing
 - `backup/` - Backup files folder
 
 ## Development Approach

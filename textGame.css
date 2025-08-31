@@ -97,4 +97,55 @@ body {
   border: 2px solid white;
   padding: 10px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.status-art {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid white;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
+.status-info {
+  flex: 1;
+  color: white;
+  font-size: 14px;
+  line-height: 1.2;
+  overflow-y: auto;
+}
+
+.ascii-art {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+  line-height: 1;
+  white-space: pre;
+  text-align: center;
+}
+
+.art-pumpkin {
+  color: #ff8800;
+}
+
+.art-door {
+  color: #8b4513;
+}
+
+.art-bat {
+  color: #800080;
+}
+
+.status-section {
+  margin-bottom: 8px;
+}
+
+.status-title {
+  color: #ffcc00;
+  font-weight: bold;
+  margin-bottom: 2px;
 }
