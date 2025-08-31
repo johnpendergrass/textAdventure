@@ -1,7 +1,3 @@
-/* ========================================
-   === BASE STYLES ===
-   ======================================== */
-
 body {
   background-color: black;
   color: white;
@@ -14,10 +10,6 @@ body {
   justify-content: center;
   align-items: center;
 }
-
-/* ========================================
-   === LAYOUT GRID ===
-   ======================================== */
 
 .container {
   display: grid;
@@ -34,10 +26,6 @@ body {
   padding: 10px;
   box-sizing: border-box;
 }
-
-/* ========================================
-   === SECTION STYLES ===
-   ======================================== */
 
 .header {
   grid-area: header;
@@ -63,10 +51,6 @@ body {
   overflow-y: auto;
 }
 
-/* ========================================
-   === SCROLLBAR STYLING ===
-   ======================================== */
-
 /* Custom scrollbar styling */
 .text::-webkit-scrollbar {
   width: 12px;
@@ -86,10 +70,6 @@ body {
 .text::-webkit-scrollbar-thumb:hover {
   background: #33ff33;
 }
-
-/* ========================================
-   === TEXT COLOR CLASSES ===
-   ======================================== */
 
 /* Text color classes */
 .prompt-echo {
@@ -163,6 +143,22 @@ body {
   line-height: 1.2;
   overflow-y: auto;
   font-family: "Courier New", Courier, monospace;
+}
+
+.art-pumpkin {
+  color: #ff8800;
+}
+
+.art-door {
+  color: #8b4513;
+}
+
+.art-bat {
+  color: #800080;
+}
+
+.art-hauntedHouse {
+  color: #8b4513;
 }
 
 .status-section {
