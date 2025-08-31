@@ -145,7 +145,7 @@ body {
 
 .ascii-art {
   font-family: "Courier New", Courier, monospace;
-  font-size: 14px;
+  font-size: 8px;
   line-height: 1;
   white-space: pre;
   text-align: center;
@@ -161,6 +161,10 @@ body {
 
 .art-bat {
   color: #800080;
+}
+
+.art-hauntedHouse {
+  color: #8b4513;
 }
 
 .status-section {

@@ -136,38 +136,15 @@ function echoCommand(command) {
   ]);
 }
 
-// ASCII Art Library
-const asciiArt = {
-  pumpkin: `   ___
-  /o o\\
- ( > < )
-  \\___/
-    |`,
-  
-  door: ` _______
-|[]   []|
-|   __  |
-|  |  | |
-|__|__|_|
- [_____]`,
-
-  bat: `  /\\_/\\
- (  -.- )
-  o_/"\\`,
-
-  house: ` ___[]___
-|  ___  |
-| |   | |
-| |___| |
-|_______|`
-};
+// ASCII Art will be loaded from JSON file
 
 // Status display functions
 function updateStatusArt(artType = 'pumpkin') {
   const asciiArtDiv = document.querySelector('.ascii-art');
   const artClass = `art-${artType}`;
   
-  asciiArtDiv.innerHTML = `<div class="ascii-art ${artClass}">${asciiArt[artType]}</div>`;
+  // TODO: Load ASCII art from JSON file
+  // asciiArtDiv.innerHTML = `<div class="ascii-art ${artClass}">${asciiArt[artType]}</div>`;
 }
 
 function updateStatusInfo() {
@@ -343,9 +320,13 @@ function handleInput(event) {
   }
 }
 
-// Initialize status display
-function initializeStatus() {
-  updateStatusArt('pumpkin');
+// Initialize ASCII art display
+function initializeAsciiArt() {
+  updateStatusArt('hauntedHouse');
+}
+
+// Initialize status information display
+function initializeStatusInfo() {
   updateStatusInfo();
 }
 
@@ -364,7 +345,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   commands = await loadCommands();
   
   await initializeBuffer();
-  initializeStatus();
+  initializeAsciiArt();
+  initializeStatusInfo();
   initializeInput();
 
   // Add keyboard event listener for PAGE UP/DOWN
