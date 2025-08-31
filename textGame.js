@@ -1,81 +1,25 @@
 // Text Buffer System
 let textBuffer = [];
 
-// Initialize the buffer with sample game text
-function initializeBuffer() {
-  textBuffer = [
-    {text: "SYSTEM INITIALIZATION COMPLETE", type: "command"},
-    {text: "HALLOWEEN ADVENTURE SYSTEM V2.1", type: "command"},
-    {text: "COPYRIGHT (C) 1982 MYSTERY SOFTWARE CORP.", type: "command"},
-    {text: "", type: "flavor"},
-    {text: "> LOADING ENVIRONMENT DATA...", type: "command"},
-    {text: "> STREET MAP LOADED", type: "command"},
-    {text: "> WEATHER: COLD AND WINDY", type: "command"},
-    {text: "> TIME: 6:30 PM, OCTOBER 31ST", type: "command"},
-    {text: "", type: "flavor"},
-    {text: "You are standing on Elm Street. The autumn wind rustles", type: "flavor"},
-    {text: "through bare tree branches overhead. Jack-o'-lanterns", type: "flavor"},
-    {text: "grin from darkened porches. The smell of wood smoke", type: "flavor"},
-    {text: "drifts from chimneys.", type: "flavor"},
-    {text: "", type: "flavor"},
-    {text: "A wrought iron gate creaks in the breeze to the NORTH.", type: "flavor"},
-    {text: "The street continues EAST and WEST.", type: "flavor"},
-    {text: "", type: "flavor"},
-    {text: "> look north", type: "prompt"},
-    {text: "", type: "flavor"},
-    {text: "Through the iron bars you see a Victorian mansion", type: "flavor"},
-    {text: "shrouded in shadows. A single light flickers in an", type: "flavor"},
-    {text: "upstairs window. The brass nameplate reads 'RAVENCROFT'.", type: "flavor"},
-    {text: "", type: "flavor"},
-    {text: "> go north", type: "prompt"},
-    {text: "", type: "flavor"},
-    {text: "The gate is locked. You need to find another way in.", type: "flavor"},
-    {text: "", type: "flavor"},
-    {text: "> help", type: "prompt"},
-    {text: "", type: "flavor"},
-    {text: "Available commands:", type: "command"},
-    {text: "  LOOK [direction] - Examine your surroundings", type: "command"},
-    {text: "  GO [direction] - Move in a direction", type: "command"},
-    {text: "  INVENTORY - Check what you're carrying", type: "command"},
-    {text: "  TAKE [item] - Pick up an object", type: "command"},
-    {text: "  USE [item] - Use an item from inventory", type: "command"},
-    {text: "", type: "flavor"},
-    {text: "> look east", type: "prompt"},
-    {text: "", type: "flavor"},
-    {text: "The street stretches into darkness. Streetlamps cast", type: "flavor"},
-    {text: "eerie pools of yellow light. You can make out more", type: "flavor"},
-    {text: "houses in the distance, their windows glowing warmly.", type: "flavor"},
-    {text: "", type: "flavor"},
-    {text: "> go east", type: "prompt"},
-    {text: "", type: "flavor"},
-    {text: "You walk down Elm Street. The houses here are smaller", type: "flavor"},
-    {text: "but well-decorated for Halloween. Children in costumes", type: "flavor"},
-    {text: "can be seen through lit windows.", type: "flavor"},
-    {text: "", type: "flavor"},
-    {text: "> knock on door", type: "prompt"},
-    {text: "", type: "flavor"},
-    {text: "You approach the nearest house. The porch light is on", type: "flavor"},
-    {text: "and carved pumpkins line the steps. You knock on the", type: "flavor"},
-    {text: "red wooden door.", type: "flavor"},
-    {text: "", type: "flavor"},
-    {text: "A friendly woman opens the door. 'Trick or treat!'", type: "flavor"},
-    {text: "she says with a smile. 'Though you seem a bit old...'", type: "flavor"},
-    {text: "She drops a candy bar into your bag anyway.", type: "flavor"},
-    {text: "", type: "flavor"},
-    {text: "> inventory", type: "prompt"},
-    {text: "", type: "flavor"},
-    {text: "You are carrying:", type: "command"},
-    {text: "- A canvas trick-or-treat bag", type: "command"},
-    {text: "- One chocolate candy bar", type: "command"},
-    {text: "", type: "flavor"},
-    {text: "> look west", type: "prompt"},
-    {text: "", type: "flavor"},
-    {text: "Back toward the mansion. You can still see that", type: "flavor"},
-    {text: "mysterious light in the upstairs window.", type: "flavor"},
-    {text: "", type: "flavor"},
-    {text: "> _", type: "prompt"}
-  ];
+// Load sample playthrough from JSON file
+async function loadSamplePlaythrough() {
+  try {
+    const response = await fetch('samplePlaythrough.json');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error loading sample playthrough:', error);
+    // Fallback to empty array if file can't be loaded
+    return [];
+  }
+}
 
+// Initialize the buffer with sample game text
+async function initializeBuffer() {
+  textBuffer = await loadSamplePlaythrough();
   updateDisplay();
 }
 
@@ -161,8 +105,8 @@ function echoCommand(command) {
 }
 
 // Initialize when page loads
-document.addEventListener("DOMContentLoaded", function () {
-  initializeBuffer();
+document.addEventListener("DOMContentLoaded", async function () {
+  await initializeBuffer();
 
   // Add keyboard event listener for PAGE UP/DOWN
   document.addEventListener("keydown", function (e) {
