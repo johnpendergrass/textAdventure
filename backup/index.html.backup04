@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Text Adventure</title>
+    <link rel="stylesheet" href="textGame.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Text Adventure Game - Halloween Edition!</h1>
+        <h2>An exciting game of Trick or Treating and Suspense!</h2>
+      </div>
+      <div class="text"></div>
+      <div class="prompt">
+        <span class="prompt-symbol">></span>
+        <input type="text" id="commandInput" class="command-input" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="status">
+        <div class="status-art"></div>
+        <div class="status-info"></div>
+      </div>
+    </div>
+    <script src="textGame.js"></script>
+  </body>
+</html>
