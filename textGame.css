@@ -83,6 +83,10 @@ body {
   color: #00ff00;
 }
 
+.error-text {
+  color: #ff4444;
+}
+
 .prompt {
   grid-area: prompt;
   border: 2px solid white;
@@ -90,6 +94,29 @@ body {
   box-sizing: border-box;
   color: #ffcc00;
   font-family: "Courier New", Courier, monospace;
+  display: flex;
+  align-items: center;
+}
+
+.prompt-symbol {
+  color: #ffcc00;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 16px;
+  margin-right: 8px;
+}
+
+.command-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffcc00;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 16px;
+}
+
+.command-input:focus {
+  outline: none;
 }
 
 .status {
