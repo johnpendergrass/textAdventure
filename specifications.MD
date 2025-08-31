@@ -44,6 +44,11 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
   - Library of Halloween-themed art (pumpkin, door, bat, house)
   - Color-coded artwork (orange pumpkin, brown door, purple bat)
   - Dynamically switchable based on game context
+- **ASCII Art Dimensions:**
+  - Available space: 30 characters wide × 12-15 lines tall (safe dimensions)
+  - Technical specs: 14px "Courier New" monospace font, line-height: 1
+  - Total available: ~35 chars wide × ~17 lines (with margins for centering)
+  - Current art sizes: pumpkin (5×8), door (6×9), bat (3×9), house (5×9)
 - **Status Information:**
   - Available commands with shortcuts
   - Current inventory with item counts

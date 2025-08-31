@@ -164,16 +164,16 @@ const asciiArt = {
 
 // Status display functions
 function updateStatusArt(artType = 'pumpkin') {
-  const statusArtDiv = document.querySelector('.status-art');
+  const asciiArtDiv = document.querySelector('.ascii-art');
   const artClass = `art-${artType}`;
   
-  statusArtDiv.innerHTML = `<div class="ascii-art ${artClass}">${asciiArt[artType]}</div>`;
+  asciiArtDiv.innerHTML = `<div class="ascii-art ${artClass}">${asciiArt[artType]}</div>`;
 }
 
 function updateStatusInfo() {
-  const statusInfoDiv = document.querySelector('.status-info');
+  const statusDiv = document.querySelector('.status');
   
-  statusInfoDiv.innerHTML = `
+  statusDiv.innerHTML = `
     <div class="status-section">
       <div class="status-title">COMMANDS:</div>
       <div>(h)elp (l)ook (i)nventory</div>

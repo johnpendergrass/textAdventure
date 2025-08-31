@@ -14,9 +14,10 @@ body {
 .container {
   display: grid;
   grid-template-columns: 3fr 1fr;
-  grid-template-rows: 120px 1fr 40px;
+  grid-template-rows: 120px 1fr 1fr 40px;
   grid-template-areas:
     "header header"
+    "text asciiart"
     "text status"
     "prompt status";
   width: 1280px;
@@ -119,32 +120,27 @@ body {
   outline: none;
 }
 
+.ascii-art {
+  grid-area: asciiart;
+  border: 2px solid white;
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Courier New", Courier, monospace;
+}
+
 .status {
   grid-area: status;
   border: 2px solid white;
   padding: 10px;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  font-family: "Courier New", Courier, monospace;
-}
-
-.status-art {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 1px solid white;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
-}
-
-.status-info {
-  flex: 1;
   color: white;
   font-size: 14px;
   line-height: 1.2;
   overflow-y: auto;
+  font-family: "Courier New", Courier, monospace;
 }
 
 .ascii-art {
