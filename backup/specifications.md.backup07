@@ -43,51 +43,18 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
 
 ### ASCIIART Section
 
-- **Advanced ASCII Art Display System:**
+- **Dedicated ASCII Art Display:**
 
-  - **Grid Specifications:**
-    - Fixed grid: 60 characters wide × 32 rows tall (1,920 total characters)
-    - Technical specs: 8px "Courier New" monospace font, line-height: 1
-    - Fixed height: 280px (no scrolling required)
-    - Character-addressable grid system: each position accessible by (x, y) coordinates
-    - Grid indexing starts at position 0,0 (top-left corner)
-
-  - **Display Architecture:**
-    - **Source System**: ASCII art stored in asciiArt.json as arrays of 60-character strings
-    - **Memory Buffer**: 2D JavaScript array (32×60) for current display state
-    - **Conversion Pipeline**: JSON strings → 2D character array → DOM display
-    - **Update Method**: Character-by-character replacement with batch DOM updates
-
-  - **Animation System:**
-    - **Fade-in Effects**: Characters appear in batches for smooth animation
-    - **Batch Processing**: Updates 3 characters at a time for optimal performance
-    - **Customizable Timing**: Adjustable delays between character updates
-    - **Effect Types**: Currently supports instant copy and fade-in (more planned)
-
-  - **Interactive Features:**
-    - **Hotkey Testing**: 'B' key loads blank screen, 'C' key loads castle with fade-in
-    - **Dynamic Loading**: Can switch between different ASCII art images
-    - **Real-time Updates**: Individual characters can be modified without full redraws
-
-  - **Data Structure:**
-    ```javascript
-    // Display grid (current state)
-    let displayGrid = Array(32).fill().map(() => Array(60).fill(' '));
-    
-    // JSON format
-    {
-      "ART_NAME": {
-        "color": "#colorcode",
-        "textSize": 8,
-        "rows": ["60-character strings..."]
-      }
-    }
-    ```
-
-  - **Performance Optimizations:**
-    - Batched DOM updates (not 1,920 individual updates)
-    - String-to-grid conversion only when needed
-    - Efficient character-level manipulation
+  - Fixed grid: 60 characters wide × 32 rows tall
+  - Technical specs: 8px "Courier New" monospace font, line-height: 1
+  - Fixed height: 280px (no scrolling required)
+  - Character-addressable grid system: each position accessible by (x, y) coordinates
+  - Default state: entire grid filled with space characters (appears empty)
+  - Individual character replacement capability for dynamic content
+  - Grid indexing starts at position 0,0 (top-left corner)
+  - Designed to support future fade-in/fade-out and animation effects
+  - Independent initialization from STATUS section
+  - ASCII art will be loaded from 'asciiart.json' file at program start
 
 ### STATUS Section
 
@@ -122,7 +89,6 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
 - **Current Data Files:**
   - `samplePlaythrough.json` - Demo content for testing and development
   - `commands.json` - All game commands with type, shortcuts, and responses
-  - `asciiArt.json` - ASCII art library with DEFAULT, CASTLE, and SAMPLE art pieces
 - **Command Structure:**
   ```json
   {
@@ -137,6 +103,7 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
   - `gameData.json` - Common responses, intro text, help content
   - `rooms.json` - Location descriptions and connections
   - `items.json` - Object descriptions and properties
+  - 'asciiArt.json' - ASCII art used in the game
 
 ### Files Structure
 
@@ -145,7 +112,7 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
 - `textGame.js` - Complete game engine with text buffer, command processing, input handling
 - `samplePlaythrough.json` - Demo game content for testing
 - `commands.json` - All game commands with smart matching and responses
-- `asciiArt.json` - ASCII art data storage with DEFAULT, CASTLE, and SAMPLE images
+- `asciiArt.json` - ASCII art data storage (planned)
 - `backup/` - Incremental backup files folder
 
 ## Development Approach
