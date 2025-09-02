@@ -1,4 +1,4 @@
-name=DEFAULT
+name=BLANK
 color=white
 size=8
 rows=32

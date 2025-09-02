@@ -19,17 +19,17 @@ let asciiArtLibrary = {};
 // === DATA LOADING FUNCTIONS ===
 // ========================================
 
-// Load sample playthrough from JSON file
-async function loadSamplePlaythrough() {
+// Load game text from JSON file
+async function loadGameText() {
   try {
-    const response = await fetch("samplePlaythrough.json");
+    const response = await fetch("startGameText.json");
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error loading sample playthrough:", error);
+    console.error("Error loading game text:", error);
     // Fallback to empty array if file can't be loaded
     return [];
   }
@@ -162,9 +162,9 @@ async function loadAsciiArtLibrary(filename = "asciiArt.txt") {
 // === TEXT BUFFER MANAGEMENT ===
 // ========================================
 
-// Initialize the buffer with sample game text
+// Initialize the buffer with game text
 async function initializeBuffer() {
-  textBuffer = await loadSamplePlaythrough();
+  textBuffer = await loadGameText();
   updateDisplay();
 }
 
