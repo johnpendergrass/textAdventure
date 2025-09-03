@@ -1,0 +1,3 @@
+-- [ROOM-NAME commands, commands] {chatGPT API text to send}
+[STREET enter, look] {describe nice street, cleancut, bright halloween lights and porch lights all on}
+
