@@ -43,7 +43,7 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
 
 ### ASCIIART Section
 
-- **Advanced ASCII Art Display System (FULLY INTEGRATED):**
+- **Advanced ASCII Art Display System:**
 
   - **Grid Specifications:**
     - Fixed grid: 60 characters wide × 32 rows tall (1,920 total characters)
@@ -52,84 +52,49 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
     - Character-addressable grid system: each position accessible by (x, y) coordinates
     - Grid indexing starts at position 0,0 (top-left corner)
 
-  - **Data Loading Architecture:**
-    - **Source System**: ASCII art loaded from asciiArt.txt text file format
-    - **Text File Parser**: parseAsciiArtText() function handles metadata and art rows
-    - **Library Storage**: asciiArtLibrary object indexed by art name
+  - **Display Architecture:**
+    - **Source System**: ASCII art stored in asciiArt.json as arrays of 60-character strings
     - **Memory Buffer**: 2D JavaScript array (32×60) for current display state
-    - **Conversion Pipeline**: Text file → parsed library → 2D character array → DOM display
+    - **Conversion Pipeline**: JSON strings → 2D character array → DOM display
+    - **Update Method**: Character-by-character replacement with batch DOM updates
 
-  - **Animation System (8 Effects Available):**
-    - **Effect Types**: instant, fadeIn, typewriter, verticalSweep, randomScatter, spiralIn, spiralOut, diagonalWipe
-    - **Speed Settings**: slow/medium/fast with dynamic batch processing
-    - **Batch Processing**: Fast mode processes 30-40 characters per update
-    - **Hardware Independent**: Consistent timing across different computers
-    - **Performance Optimized**: Updates use ANIMATION_SPEEDS constant for precise timing
+  - **Animation System:**
+    - **Fade-in Effects**: Characters appear in batches for smooth animation
+    - **Batch Processing**: Updates 3 characters at a time for optimal performance
+    - **Customizable Timing**: Adjustable delays between character updates
+    - **Effect Types**: Currently supports instant copy and fade-in (more planned)
 
-  - **Integration Features:**
-    - **Main Trigger Function**: displayAsciiArt(artName, effectName, speed)
-    - **Test Hotkeys**: ALT-1,2,3,4 for testing different art pieces and effects
-    - **Legacy Hotkeys**: 'B' key loads blank screen, 'C' key loads castle (now uses new system)
-    - **Game Startup**: Automatically loads asciiArt.txt and displays CASTLE with fadeIn
-    - **Dynamic Loading**: Can switch between different ASCII art images using trigger function
-
-  - **Text File Format:**
-    ```
-    name=CASTLE
-    color=#8b4513
-    size=8
-    rows=32
-    charsPerLine=60
-    charsPermitted=ascii032-126
-    "                                                            "
-    "                                .-------.                   "
-    [... exactly 32 rows of exactly 60 characters each ...]
-    ```
+  - **Interactive Features:**
+    - **Hotkey Testing**: 'B' key loads blank screen, 'C' key loads castle with fade-in
+    - **Dynamic Loading**: Can switch between different ASCII art images
+    - **Real-time Updates**: Individual characters can be modified without full redraws
 
   - **Data Structure:**
     ```javascript
     // Display grid (current state)
     let displayGrid = Array(32).fill().map(() => Array(60).fill(' '));
     
-    // ASCII Art Library (loaded from text file)
-    let asciiArtLibrary = {
-      "CASTLE": {
-        "color": "#8b4513",
+    // JSON format
+    {
+      "ART_NAME": {
+        "color": "#colorcode",
         "textSize": 8,
         "rows": ["60-character strings..."]
       }
-    };
-    
-    // Main trigger function
-    await displayAsciiArt('CASTLE', 'randomScatter', 'fast');
+    }
     ```
 
   - **Performance Optimizations:**
     - Batched DOM updates (not 1,920 individual updates)
-    - Text file parsing only on startup
-    - Efficient character-level manipulation with speed-based batching
+    - String-to-grid conversion only when needed
+    - Efficient character-level manipulation
 
 ### STATUS Section
 
 - **Game Status Information Display:**
-  - **Scoring System (100 points total):**
-    - CANDY COLLECTED (30 pts): Common candy (1 pt), Good candy (2 pts), Rare candy (5 pts)
-    - SECRETS DISCOVERED (25 pts): 10 hidden areas/passages (2.5 pts each)
-    - SPOOKY ENCOUNTERS (20 pts): Befriend house inhabitants (2 pts each, max 10)
-    - ROOMS EXPLORED (15 pts): Visit all major rooms (1.5 pts per room, 10 rooms)
-    - HEALTH/ENERGY (10 pts): Final health percentage × 0.1 = points
-  - **Status Display Format:**
-    ```
-    ═══ HALLOWEEN STATS ═══
-    HEALTH:       78%
-    CANDY BAG:    12 pieces
-    SECRETS:      2/10
-    ROOMS:        5/10  
-    CREATURES:    3 befriended
-    SCORE: 42/100
-    ```
   - Available commands with shortcuts
   - Current inventory with item counts
+  - Game progress (treats collected, houses visited, score)
   - Scrollable content for longer lists
   - Independent initialization from ASCIIART section
 
@@ -155,10 +120,9 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
 - **JSON-based content system** for externalized game data
 - Text buffer objects structured as: `{text: "content", type: "prompt|command|flavor"}`
 - **Current Data Files:**
-  - `startGameText.json` - Game initialization content (renamed from samplePlaythrough.json)
+  - `samplePlaythrough.json` - Demo content for testing and development
   - `commands.json` - All game commands with type, shortcuts, and responses
-  - `asciiArt.txt` - Text format ASCII art library with metadata (DEFAULT, CASTLE, SAMPLE, QUESTION)
-  - `asciiArt.json` - Legacy JSON format ASCII art library
+  - `asciiArt.json` - ASCII art library with DEFAULT, CASTLE, and SAMPLE art pieces
 - **Command Structure:**
   ```json
   {
@@ -170,75 +134,19 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
   }
   ```
 - **Planned Future Files:**
-  - `rooms.json` - Location definitions with exits, items, creatures, ASCII art references
-  - `items.json` - Collectible objects (candy, keys, tools) with properties and effects
-  - `creatures.json` - House inhabitants with befriending mechanics
-  - `secrets.json` - Hidden discoveries and unlock conditions
-  - `gameState.json` - Runtime player progress (room, health, inventory, flags)
-
-- **Simplified Rules System (for 10-room game):**
-  - State flags approach instead of complex rules engine
-  - Basic if/then logic for limited actions
-  - JSON-embedded conditions (blocked exits, lighting requirements)
-  - Special case handling for 5-6 key puzzle elements
-  - Example game state structure:
-    ```javascript
-    gameState = {
-      current_room: "foyer",
-      health: 100,
-      inventory: ["flashlight"],
-      candy_count: 0,
-      score: 0,
-      flags: {
-        flashlight_on: false,
-        library_unlocked: false,
-        cat_befriended: false
-      }
-    }
-    ```
+  - `gameData.json` - Common responses, intro text, help content
+  - `rooms.json` - Location descriptions and connections
+  - `items.json` - Object descriptions and properties
 
 ### Files Structure
 
 - `index.html` - Main HTML structure with 5-section layout
 - `textGame.css` - All styling, layout, colors, and responsive design
-- `textGame.js` - Complete game engine with text buffer, command processing, input handling, ASCII art system
-- `startGameText.json` - Game initialization content (renamed from samplePlaythrough.json)
+- `textGame.js` - Complete game engine with text buffer, command processing, input handling
+- `samplePlaythrough.json` - Demo game content for testing
 - `commands.json` - All game commands with smart matching and responses
-- `asciiArt.txt` - Text format ASCII art library with metadata parsing
-- `asciiArt.json` - Legacy JSON format ASCII art library
+- `asciiArt.json` - ASCII art data storage with DEFAULT, CASTLE, and SAMPLE images
 - `backup/` - Incremental backup files folder
-
-## ASCII Art System Status: INTEGRATED ✅
-
-### Current Implementation (September 2, 2025)
-The ASCII art system has been fully integrated from the test environment into the main game. Key integration points:
-
-- **✅ Text File Loading**: Game loads asciiArt.txt on startup with full metadata parsing
-- **✅ Animation Effects**: All 8 effects (instant, fadeIn, typewriter, verticalSweep, randomScatter, spiralIn, spiralOut, diagonalWipe)
-- **✅ Speed Control**: Three speed settings (slow/medium/fast) with optimized batch processing  
-- **✅ Main Trigger**: displayAsciiArt(artName, effectName, speed) function available
-- **✅ Test Interface**: ALT-1,2,3,4 hotkeys for testing different art pieces and effects
-- **✅ Game Startup**: Displays CASTLE art automatically with fadeIn effect
-
-### Available Test Commands
-```javascript
-// Test different art pieces and effects
-ALT-1: displayAsciiArt('DEFAULT', 'fadeIn', 'fast')
-ALT-2: displayAsciiArt('CASTLE', 'randomScatter', 'fast')  
-ALT-3: displayAsciiArt('SAMPLE', 'typewriter', 'fast')
-ALT-4: displayAsciiArt('QUESTION', 'spiralIn', 'fast')
-
-// Legacy hotkeys (still functional)
-B: Blank screen
-C: CASTLE with fadeIn (now uses new system)
-```
-
-### Next Development Phase: Game Logic Integration
-The ASCII art system is ready for:
-1. **Location-based art display** - Show different art based on game location
-2. **Item/object visualization** - Display art for inventory items and game objects
-3. **Story event art** - Trigger specific art during key game moments
-4. **Metadata tagging** - Add location= and type= tags to asciiArt.txt for smart lookup
 
 ## Development Approach
 
