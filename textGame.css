@@ -21,14 +21,14 @@ body {
 
 .container {
   display: grid;
-  grid-template-columns: 3fr 1fr;
+  grid-template-columns: 607px 313px;
   grid-template-rows: 120px 280px 1fr 40px;
   grid-template-areas:
     "header header"
     "text asciiart"
     "text status"
     "prompt status";
-  width: 1280px;
+  width: 950px;
   height: 720px;
   gap: 10px;
   padding: 10px;

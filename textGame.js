@@ -31,7 +31,7 @@ async function loadGameText() {
   } catch (error) {
     console.error("Error loading game text:", error);
     // Fallback to empty array if file can't be loaded
-    return [];
+    return ["There is no game text to load. Just type commands for now"];
   }
 }
 
@@ -58,32 +58,32 @@ function parseAsciiArtText(textContent) {
   const artPieces = {};
   const loadValidationIssues = {};
   const fileMetadata = {};
-  
+
   let currentArt = null;
   let currentMetadata = {};
   let currentRows = [];
   let lineIndex = 0;
-  
+
   for (const rawLine of lines) {
     lineIndex++;
-    
+
     // Clean any trailing/leading whitespace and control characters
     const line = rawLine.trim();
-    
+
     // Skip empty lines
-    if (line === '') {
+    if (line === "") {
       // If we have current art, save it
       if (currentArt) {
         // Build art piece in same format as JSON
         artPieces[currentArt] = {
-          color: currentMetadata.color || 'white',
+          color: currentMetadata.color || "white",
           textSize: parseInt(currentMetadata.size) || 8,
-          rows: [...currentRows] // Copy the rows
+          rows: [...currentRows], // Copy the rows
         };
-        
+
         // Store metadata for display
         fileMetadata[currentArt] = { ...currentMetadata };
-        
+
         // Reset for next piece
         currentArt = null;
         currentMetadata = {};
@@ -91,18 +91,18 @@ function parseAsciiArtText(textContent) {
       }
       continue;
     }
-    
+
     // Parse metadata lines (must contain = and not start with quote)
-    if (line.includes('=') && !line.startsWith('"')) {
-      const [key, value] = line.split('=', 2);
-      if (key === 'name') {
+    if (line.includes("=") && !line.startsWith('"')) {
+      const [key, value] = line.split("=", 2);
+      if (key === "name") {
         currentArt = value;
       } else {
         currentMetadata[key] = value;
       }
       continue;
     }
-    
+
     // Parse quoted art rows - must start AND end with quotes
     if (line.startsWith('"') && line.endsWith('"') && line.length >= 2) {
       // Strip ONLY the first and last character (the quotes)
@@ -110,23 +110,25 @@ function parseAsciiArtText(textContent) {
       currentRows.push(rowContent);
       continue;
     }
-    
+
     // Unrecognized line format
-    console.warn(`Unrecognized line format at line ${lineIndex}: "${line}" (length: ${line.length})`);
+    console.warn(
+      `Unrecognized line format at line ${lineIndex}: "${line}" (length: ${line.length})`
+    );
   }
-  
+
   // Handle last art piece if file doesn't end with blank line
   if (currentArt) {
     artPieces[currentArt] = {
-      color: currentMetadata.color || 'white',
+      color: currentMetadata.color || "white",
       textSize: parseInt(currentMetadata.size) || 8,
-      rows: [...currentRows]
+      rows: [...currentRows],
     };
-    
+
     // Store metadata for display
     fileMetadata[currentArt] = { ...currentMetadata };
   }
-  
+
   return { artPieces, loadValidationIssues, fileMetadata };
 }
 
@@ -139,18 +141,29 @@ async function loadAsciiArtLibrary(filename = "asciiArt.txt") {
     }
     const textContent = await response.text();
     const parseResult = parseAsciiArtText(textContent);
-    
+
     asciiArtLibrary = parseResult.artPieces;
-    
+
     // Report load-time validation issues
     const issueCount = Object.keys(parseResult.loadValidationIssues).length;
     if (issueCount > 0) {
-      console.warn("Load-time validation issues:", parseResult.loadValidationIssues);
-      console.log(`Loaded ${Object.keys(asciiArtLibrary).length} art pieces from ${filename} (${issueCount} with issues)`);
+      console.warn(
+        "Load-time validation issues:",
+        parseResult.loadValidationIssues
+      );
+      console.log(
+        `Loaded ${
+          Object.keys(asciiArtLibrary).length
+        } art pieces from ${filename} (${issueCount} with issues)`
+      );
     } else {
-      console.log(`Loaded ${Object.keys(asciiArtLibrary).length} art pieces from ${filename}`);
+      console.log(
+        `Loaded ${
+          Object.keys(asciiArtLibrary).length
+        } art pieces from ${filename}`
+      );
     }
-    
+
     return asciiArtLibrary;
   } catch (error) {
     console.error("Error loading ASCII art library:", error);
@@ -273,12 +286,12 @@ let displayGrid = [];
 const ANIMATION_SPEEDS = {
   slow: 8,
   medium: 3,
-  fast: 1
+  fast: 1,
 };
 
 // Helper function for animation delays
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Initialize empty display grid (32 rows × 60 columns)
@@ -287,7 +300,7 @@ function initializeDisplayGrid() {
   for (let y = 0; y < 32; y++) {
     displayGrid[y] = [];
     for (let x = 0; x < 60; x++) {
-      displayGrid[y][x] = ' ';
+      displayGrid[y][x] = " ";
     }
   }
 }
@@ -297,9 +310,9 @@ function convertLinesToGrid(lines) {
   const grid = [];
   for (let y = 0; y < 32; y++) {
     grid[y] = [];
-    const line = lines[y] || '';
+    const line = lines[y] || "";
     for (let x = 0; x < 60; x++) {
-      grid[y][x] = line[x] || ' ';
+      grid[y][x] = line[x] || " ";
     }
   }
   return grid;
@@ -319,14 +332,14 @@ function copyGridToDisplay(sourceGrid) {
 function refreshDisplay() {
   const asciiArtDiv = document.querySelector(".ascii-art");
   let output = "";
-  
+
   for (let y = 0; y < 32; y++) {
     for (let x = 0; x < 60; x++) {
       output += displayGrid[y][x];
     }
     output += "\n";
   }
-  
+
   asciiArtDiv.textContent = output;
 }
 
@@ -345,23 +358,24 @@ function instantCopy(sourceGrid) {
 }
 
 // Character-by-character fade in
-async function fadeInEffect(sourceGrid, speed = 'fast') {
+async function fadeInEffect(sourceGrid, speed = "fast") {
   const delay = ANIMATION_SPEEDS[speed] || ANIMATION_SPEEDS.fast;
-  
+
   // Dynamic batch sizes based on speed
-  const CHARS_PER_UPDATE = {
-    slow: 3,
-    medium: 10,
-    fast: 30
-  }[speed] || 30;
-  
+  const CHARS_PER_UPDATE =
+    {
+      slow: 3,
+      medium: 10,
+      fast: 30,
+    }[speed] || 30;
+
   let charCount = 0;
-  
+
   for (let y = 0; y < 32; y++) {
     for (let x = 0; x < 60; x++) {
       displayGrid[y][x] = sourceGrid[y][x];
       charCount++;
-      
+
       if (charCount % CHARS_PER_UPDATE === 0) {
         refreshDisplay();
         await sleep(delay);
@@ -372,9 +386,9 @@ async function fadeInEffect(sourceGrid, speed = 'fast') {
 }
 
 // Row-by-row typewriter effect
-async function typewriterEffect(sourceGrid, speed = 'fast') {
+async function typewriterEffect(sourceGrid, speed = "fast") {
   const delay = ANIMATION_SPEEDS[speed] * 10; // Slower for row effect
-  
+
   for (let y = 0; y < 32; y++) {
     for (let x = 0; x < 60; x++) {
       displayGrid[y][x] = sourceGrid[y][x];
@@ -385,9 +399,9 @@ async function typewriterEffect(sourceGrid, speed = 'fast') {
 }
 
 // Column-by-column vertical sweep
-async function verticalSweepEffect(sourceGrid, speed = 'fast') {
+async function verticalSweepEffect(sourceGrid, speed = "fast") {
   const delay = ANIMATION_SPEEDS[speed] * 5;
-  
+
   for (let x = 0; x < 60; x++) {
     for (let y = 0; y < 32; y++) {
       displayGrid[y][x] = sourceGrid[y][x];
@@ -398,36 +412,37 @@ async function verticalSweepEffect(sourceGrid, speed = 'fast') {
 }
 
 // Random scatter effect
-async function randomScatterEffect(sourceGrid, speed = 'fast') {
+async function randomScatterEffect(sourceGrid, speed = "fast") {
   const delay = ANIMATION_SPEEDS[speed];
-  
+
   // Dynamic batch sizes based on speed
-  const CHARS_PER_UPDATE = {
-    slow: 5,
-    medium: 15,
-    fast: 40
-  }[speed] || 40;
-  
+  const CHARS_PER_UPDATE =
+    {
+      slow: 5,
+      medium: 15,
+      fast: 40,
+    }[speed] || 40;
+
   const positions = [];
-  
+
   // Create list of all positions
   for (let y = 0; y < 32; y++) {
     for (let x = 0; x < 60; x++) {
-      positions.push({x, y});
+      positions.push({ x, y });
     }
   }
-  
+
   // Shuffle positions
   for (let i = positions.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [positions[i], positions[j]] = [positions[j], positions[i]];
   }
-  
+
   // Fill in random order
   for (let i = 0; i < positions.length; i++) {
     const pos = positions[i];
     displayGrid[pos.y][pos.x] = sourceGrid[pos.y][pos.x];
-    
+
     if (i % CHARS_PER_UPDATE === 0) {
       refreshDisplay();
       await sleep(delay);
@@ -437,10 +452,13 @@ async function randomScatterEffect(sourceGrid, speed = 'fast') {
 }
 
 // Spiral inward effect
-async function spiralInEffect(sourceGrid, speed = 'fast') {
+async function spiralInEffect(sourceGrid, speed = "fast") {
   const delay = ANIMATION_SPEEDS[speed] * 2;
-  let top = 0, bottom = 31, left = 0, right = 59;
-  
+  let top = 0,
+    bottom = 31,
+    left = 0,
+    right = 59;
+
   while (top <= bottom && left <= right) {
     // Top row
     for (let x = left; x <= right; x++) {
@@ -449,7 +467,7 @@ async function spiralInEffect(sourceGrid, speed = 'fast') {
     top++;
     refreshDisplay();
     await sleep(delay);
-    
+
     // Right column
     for (let y = top; y <= bottom; y++) {
       displayGrid[y][right] = sourceGrid[y][right];
@@ -457,7 +475,7 @@ async function spiralInEffect(sourceGrid, speed = 'fast') {
     right--;
     refreshDisplay();
     await sleep(delay);
-    
+
     // Bottom row
     if (top <= bottom) {
       for (let x = right; x >= left; x--) {
@@ -467,7 +485,7 @@ async function spiralInEffect(sourceGrid, speed = 'fast') {
       refreshDisplay();
       await sleep(delay);
     }
-    
+
     // Left column
     if (left <= right) {
       for (let y = bottom; y >= top; y--) {
@@ -481,49 +499,59 @@ async function spiralInEffect(sourceGrid, speed = 'fast') {
 }
 
 // Spiral outward effect (from center out)
-async function spiralOutEffect(sourceGrid, speed = 'fast') {
+async function spiralOutEffect(sourceGrid, speed = "fast") {
   const delay = ANIMATION_SPEEDS[speed] * 2;
   const centerX = 29; // Center of 60 wide grid (0-59, so 29.5 rounded down)
   const centerY = 15; // Center of 32 tall grid (0-31, so 15.5 rounded down)
-  
+
   // Track which positions have been filled
-  const filled = Array(32).fill().map(() => Array(60).fill(false));
-  
+  const filled = Array(32)
+    .fill()
+    .map(() => Array(60).fill(false));
+
   // Start from center and expand outward
   let radius = 0;
-  const maxRadius = Math.max(centerX + 1, centerY + 1, 59 - centerX, 31 - centerY);
-  
+  const maxRadius = Math.max(
+    centerX + 1,
+    centerY + 1,
+    59 - centerX,
+    31 - centerY
+  );
+
   while (radius <= maxRadius) {
     const positions = [];
-    
+
     // Find all unfilled positions at exactly this distance from center
     for (let y = 0; y < 32; y++) {
       for (let x = 0; x < 60; x++) {
         if (!filled[y][x]) {
           // Calculate Chebyshev distance (max of horizontal and vertical distance)
-          const distance = Math.max(Math.abs(x - centerX), Math.abs(y - centerY));
-          
+          const distance = Math.max(
+            Math.abs(x - centerX),
+            Math.abs(y - centerY)
+          );
+
           if (distance === radius) {
-            positions.push({y, x});
+            positions.push({ y, x });
             filled[y][x] = true;
           }
         }
       }
     }
-    
+
     // Draw all positions at this radius
     for (const pos of positions) {
       displayGrid[pos.y][pos.x] = sourceGrid[pos.y][pos.x];
     }
-    
+
     if (positions.length > 0) {
       refreshDisplay();
       await sleep(delay);
     }
-    
+
     radius++;
   }
-  
+
   // Safety check: fill any remaining unfilled positions
   for (let y = 0; y < 32; y++) {
     for (let x = 0; x < 60; x++) {
@@ -536,9 +564,9 @@ async function spiralOutEffect(sourceGrid, speed = 'fast') {
 }
 
 // Diagonal wipe effect
-async function diagonalWipeEffect(sourceGrid, speed = 'fast') {
+async function diagonalWipeEffect(sourceGrid, speed = "fast") {
   const delay = ANIMATION_SPEEDS[speed] * 3;
-  
+
   // Fill diagonally from top-left to bottom-right
   for (let d = 0; d < 32 + 60 - 1; d++) {
     for (let y = 0; y < 32; y++) {
@@ -553,44 +581,44 @@ async function diagonalWipeEffect(sourceGrid, speed = 'fast') {
 }
 
 // Main displayAsciiArt trigger function
-async function displayAsciiArt(artName, effectName = 'fadeIn', speed = 'fast') {
+async function displayAsciiArt(artName, effectName = "fadeIn", speed = "fast") {
   if (!asciiArtLibrary[artName]) {
     console.error(`Art piece "${artName}" not found`);
     return;
   }
-  
+
   const sourceGrid = convertLinesToGrid(asciiArtLibrary[artName].rows);
-  
+
   try {
     switch (effectName) {
-      case 'instant':
+      case "instant":
         instantCopy(sourceGrid);
         break;
-      case 'fadeIn':
+      case "fadeIn":
         await fadeInEffect(sourceGrid, speed);
         break;
-      case 'typewriter':
+      case "typewriter":
         await typewriterEffect(sourceGrid, speed);
         break;
-      case 'verticalSweep':
+      case "verticalSweep":
         await verticalSweepEffect(sourceGrid, speed);
         break;
-      case 'randomScatter':
+      case "randomScatter":
         await randomScatterEffect(sourceGrid, speed);
         break;
-      case 'spiralIn':
+      case "spiralIn":
         await spiralInEffect(sourceGrid, speed);
         break;
-      case 'spiralOut':
+      case "spiralOut":
         await spiralOutEffect(sourceGrid, speed);
         break;
-      case 'diagonalWipe':
+      case "diagonalWipe":
         await diagonalWipeEffect(sourceGrid, speed);
         break;
       default:
         instantCopy(sourceGrid);
     }
-    
+
     console.log(`${artName} loaded with ${effectName} effect`);
   } catch (error) {
     console.error(`Error during ${effectName} effect: ${error.message}`);
@@ -601,13 +629,13 @@ async function displayAsciiArt(artName, effectName = 'fadeIn', speed = 'fast') {
 async function updateAsciiArtDisplay() {
   // Initialize blank display grid
   initializeDisplayGrid();
-  
+
   // Refresh to show blank display
   refreshDisplay();
-  
+
   // Wait a moment, then display CASTLE with fade-in effect using new system
-  await sleep(500);  // Brief pause before animation starts
-  await displayAsciiArt('CASTLE', 'fadeIn', 'fast');
+  await sleep(500); // Brief pause before animation starts
+  await displayAsciiArt("CASTLE", "fadeIn", "fast");
 }
 
 function updateGameStatus() {
@@ -828,7 +856,7 @@ function initializeInput() {
 document.addEventListener("DOMContentLoaded", async function () {
   // Load commands first
   commands = await loadCommands();
-  
+
   // Load ASCII art library
   await loadAsciiArtLibrary();
 
@@ -857,19 +885,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     } else if (e.altKey && e.key === "1") {
       // ALT-1: Load DEFAULT with fadeIn/fast
       e.preventDefault();
-      await displayAsciiArt('DEFAULT', 'fadeIn', 'fast');
+      await displayAsciiArt("DEFAULT", "fadeIn", "fast");
     } else if (e.altKey && e.key === "2") {
       // ALT-2: Load CASTLE with randomScatter/fast
       e.preventDefault();
-      await displayAsciiArt('CASTLE', 'randomScatter', 'fast');
+      await displayAsciiArt("CASTLE", "randomScatter", "fast");
     } else if (e.altKey && e.key === "3") {
       // ALT-3: Load SAMPLE with typewriter/fast
       e.preventDefault();
-      await displayAsciiArt('SAMPLE', 'typewriter', 'fast');
+      await displayAsciiArt("SAMPLE", "typewriter", "fast");
     } else if (e.altKey && e.key === "4") {
       // ALT-4: Load QUESTION with spiralIn/fast
       e.preventDefault();
-      await displayAsciiArt('QUESTION', 'spiralIn', 'fast');
+      await displayAsciiArt("QUESTION", "spiralIn", "fast");
     }
   });
 });
