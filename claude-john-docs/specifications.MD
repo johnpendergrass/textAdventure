@@ -5,17 +5,19 @@
 A browser-based text adventure game in the style of 1970s/1980s Zork-style games.
 Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
 
+**Current Layout:** Optimized 950×720px format for compact display while maintaining full functionality.
+
 ## Technical Specifications
 
 ### Layout
 
-- Fixed window size: 1280x720 pixels
+- Fixed window size: 950x720 pixels
 - 5-section grid layout with 2px white borders and 10px gutters:
-  1. **HEADER** - Full width, 120px height, centered text
-  2. **TEXT** - 3/4 width, main content area
-  3. **ASCIIART** - 1/4 width, 280px height, ASCII art display
-  4. **PROMPT** - 3/4 width, 40px height, command input area
-  5. **STATUS** - 1/4 width, remaining height, game status information
+  1. **HEADER** - Full width (930px), 120px height, centered text
+  2. **TEXT** - Left column (607px), main content area
+  3. **ASCIIART** - Right column (313px), 280px height, ASCII art display
+  4. **PROMPT** - Left column (607px), 40px height, command input area
+  5. **STATUS** - Right column (313px), remaining height, game status information
 
 ### Styling
 
@@ -29,6 +31,7 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
 ### Text Display System
 
 - **TEXT Box Features:**
+  - Width: 607px (583px content area)
   - Scrollable content with custom green scrollbar
   - Four-color text system:
     - **Prompt Echo** (#ffcc00 yellow): User commands ("> look north")
@@ -49,6 +52,7 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
     - Fixed grid: 60 characters wide × 32 rows tall (1,920 total characters)
     - Technical specs: 8px "Courier New" monospace font, line-height: 1
     - Fixed height: 280px (no scrolling required)
+    - Content area: 289px width (optimized for 950px layout)
     - Character-addressable grid system: each position accessible by (x, y) coordinates
     - Grid indexing starts at position 0,0 (top-left corner)
 
@@ -112,6 +116,7 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
 ### STATUS Section
 
 - **Game Status Information Display:**
+  - Width: 313px (289px content area)
   - Available commands with shortcuts
   - Current inventory with item counts
   - Game progress (treats collected, houses visited, score)
@@ -121,6 +126,7 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
 ### PROMPT Box and Input System
 
 - **Input Interface:**
+  - Width: 607px (583px content area)
   - Terminal-style prompt with ">" symbol
   - Yellow text input field matching prompt echo color
   - Auto-focus on page load
@@ -160,12 +166,13 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
 
 ### Files Structure
 
-- `index.html` - Main HTML structure with 5-section layout
-- `textGame.css` - All styling, layout, colors, and responsive design
+- `textGame.html` - Main HTML structure with 5-section layout (950×720px)
+- `textGame.css` - All styling, layout, colors, and responsive design (updated for 950px width)
 - `textGame.js` - Complete game engine with text buffer, command processing, input handling
 - `samplePlaythrough.json` - Demo game content for testing
 - `commands.json` - All game commands with smart matching and responses
-- `asciiArt.json` - ASCII art data storage with DEFAULT, CASTLE, and SAMPLE images
+- `asciiArt.txt` - Text format ASCII art library with metadata
+- `layout-diagram.svg` - Visual layout diagram showing exact dimensions
 - `backup/` - Incremental backup files folder
 
 ## ASCII Art System Status: INTEGRATED ✅
