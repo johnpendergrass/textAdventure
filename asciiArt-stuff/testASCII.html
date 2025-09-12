@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ASCII Art Test Environment</title>
+    <link rel="stylesheet" href="testASCII.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>ASCII Art Test Environment</h1>
+        <h2>Testing Various Loading Patterns and Effects</h2>
+      </div>
+      
+      <!-- BOX 1: FILE LOAD & VALIDATION -->
+      <div class="fileload">
+        <div class="fileload-title">FILE LOADER</div>
+        <div class="file-controls">
+          <button class="load-default-btn" onclick="loadDefaultFile()">Load Default (asciiArt.txt)</button>
+          <input type="file" class="file-input" id="file-selector" accept=".txt" onchange="loadSelectedFile()">
+        </div>
+        <div class="validation-results">
+          <div class="validation-summary" id="file-summary">No file loaded</div>
+          <div id="validation-details"></div>
+        </div>
+      </div>
+      
+      <!-- BOX 2: ART PIECE SELECTOR -->
+      <div class="artselect">
+        <div class="artselect-title">ART SELECTOR</div>
+        <select class="art-selector-dropdown" id="art-selector" onchange="selectArtPiece()">
+          <option value="">-- Select ASCII Art --</option>
+        </select>
+        <div class="metadata-display" id="art-metadata">
+          <div class="metadata-item">No art piece selected</div>
+        </div>
+      </div>
+      
+      <!-- BOX 3: LOADER EFFECTS -->
+      <div class="effects">
+        <div class="effects-title">ART LOADER</div>
+        <div class="effect-group">
+          <div class="effect-group-title">Effect Type:</div>
+          <div class="effect-buttons">
+            <button class="effect-btn active" onclick="selectEffect('instant')">Instant</button>
+            <button class="effect-btn" onclick="selectEffect('fadeIn')">Fade In</button>
+            <button class="effect-btn" onclick="selectEffect('typewriter')">Typewriter</button>
+            <button class="effect-btn" onclick="selectEffect('verticalSweep')">V-Sweep</button>
+            <button class="effect-btn" onclick="selectEffect('randomScatter')">Random</button>
+            <button class="effect-btn" onclick="selectEffect('spiralIn')">Spiral In</button>
+            <button class="effect-btn" onclick="selectEffect('spiralOut')">Spiral Out</button>
+            <button class="effect-btn" onclick="selectEffect('diagonalWipe')">Diagonal</button>
+          </div>
+        </div>
+        <div class="effect-group">
+          <div class="effect-group-title">Speed:</div>
+          <div class="effect-buttons">
+            <button class="effect-btn" onclick="selectSpeed('slow')">Slow</button>
+            <button class="effect-btn active" onclick="selectSpeed('medium')">Medium</button>
+            <button class="effect-btn" onclick="selectSpeed('fast')">Fast</button>
+          </div>
+        </div>
+        <button class="load-animation-btn" onclick="loadAnimation()">LOAD ART</button>
+      </div>
+      
+      <!-- BOX 4: ASCII ART DISPLAY (UNCHANGED) -->
+      <div class="ascii-art"></div>
+    </div>
+    <script src="testASCII.js"></script>
+  </body>
+</html>

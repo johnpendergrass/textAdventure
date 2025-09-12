@@ -214,6 +214,243 @@ The ASCII art system is ready for:
 - Don't suggest new features unless asked
 - Wait for user direction on each step
 
+## Data-Driven Architecture (v0.12.1+)
+
+### Overview
+Starting with version 0.12.1, the text adventure game transitions from a hardcoded prototype to a flexible, data-driven architecture. This allows the core game engine to load different games from JSON data files, making the system game-agnostic and easily extensible.
+
+### Architecture Goals
+1. **Eliminate hardcoded content** from JavaScript files
+2. **Create modular JSON data system** in `/gamedata/` folder
+3. **Build game engine incrementally** with thorough testing
+4. **Maintain generic ASCII art** that works across multiple games
+
+### Data File Structure
+
+#### `/gamedata/` Folder Organization
+```
+gamedata/
+├── movement.json    # Navigation system, room connections
+├── rooms.json       # Room descriptions, properties, actions
+├── items.json       # Item definitions, interactions, properties
+├── actions.json     # Player commands, responses, game effects  
+├── character.json   # NPCs, player stats, dialogue systems
+└── [additional files as features expand]
+```
+
+#### JSON Schema Design
+
+**movement.json** - Navigation System
+```json
+{
+  "exits": {
+    "room_id": {
+      "north": "destination_room_id",
+      "south": "destination_room_id",
+      "east": "destination_room_id", 
+      "west": "destination_room_id"
+    }
+  },
+  "blocked_exits": {
+    "room_id": {
+      "north": {
+        "reason": "The door is locked",
+        "requirement": "old_key"
+      }
+    }
+  }
+}
+```
+
+**rooms.json** - Room Definitions
+```json
+{
+  "rooms": {
+    "room_id": {
+      "name": "Room Display Name",
+      "description": "Detailed room description",
+      "asciiArt": "ART_NAME",
+      "items": ["item_id_1", "item_id_2"],
+      "npcs": ["npc_id"],
+      "actions": ["special_action_id"],
+      "properties": {
+        "lightLevel": "dim",
+        "temperature": "cold",
+        "firstVisit": true
+      }
+    }
+  }
+}
+```
+
+**items.json** - Item System
+```json
+{
+  "items": {
+    "item_id": {
+      "name": "Item Display Name",
+      "description": "Item description",
+      "asciiArt": "ITEM_ART",
+      "type": "decoration|tool|key|consumable",
+      "canTake": true,
+      "weight": 2,
+      "actions": ["examine", "take", "use"],
+      "properties": {
+        "lit": false,
+        "durability": 100
+      }
+    }
+  }
+}
+```
+
+**actions.json** - Command System
+```json
+{
+  "actions": {
+    "action_id": {
+      "aliases": ["action", "act", "do"],
+      "description": "Action description",
+      "requirements": {
+        "location": ["required_room_id"],
+        "items": ["required_item_id"],
+        "flags": ["game_flag"]
+      },
+      "effects": {
+        "message": "Action result text",
+        "changeRoom": "new_room_id",
+        "addItem": "item_id",
+        "removeItem": "item_id",
+        "setFlag": "flag_name",
+        "asciiArt": "ART_NAME"
+      }
+    }
+  }
+}
+```
+
+**character.json** - NPCs and Player
+```json
+{
+  "player": {
+    "inventory": [],
+    "stats": {
+      "health": 100,
+      "score": 0
+    },
+    "flags": {}
+  },
+  "npcs": {
+    "npc_id": {
+      "name": "NPC Name",
+      "description": "NPC description", 
+      "asciiArt": "NPC_ART",
+      "dialogue": {
+        "greeting": "Hello there!",
+        "responses": {
+          "help": "I can help you with...",
+          "goodbye": "Farewell!"
+        }
+      },
+      "inventory": ["item_id"],
+      "hostile": false,
+      "canTalk": true
+    }
+  }
+}
+```
+
+### Game Engine Components
+
+#### Data Loading System
+- **DataLoader class** handles loading and parsing JSON files
+- **Schema validation** ensures data integrity
+- **Error handling** for malformed data files
+- **Caching system** for improved performance
+
+#### Game State Manager
+- **Current game state** tracking (room, inventory, flags)
+- **State persistence** for save/load functionality
+- **State validation** against data schemas
+- **Event-driven updates** when state changes
+
+#### Command Processor
+- **Input parsing** with alias support
+- **Action resolution** using actions.json definitions
+- **Requirement checking** before executing actions
+- **Effect application** after successful actions
+
+#### Content Renderer
+- **Dynamic text generation** from data definitions
+- **ASCII art integration** based on current context
+- **UI updates** reflecting game state changes
+- **Color coding** for different text types
+
+### ASCII Art Integration
+
+#### Generic Art Design
+- **Reusable pieces** that work across multiple games
+- **Context-agnostic naming** (CASTLE, FOREST, DOOR, etc.)
+- **Flexible association** through data file references
+- **Scalable library** for expanding content
+
+#### Data-Driven Art Display
+- **Room-based art** loaded from rooms.json asciiArt field
+- **Item examination art** from items.json asciiArt field  
+- **Action-triggered art** from actions.json effects
+- **NPC character art** from character.json asciiArt field
+
+### Development Implementation Strategy
+
+#### Phase 1: Foundation (IMMEDIATE)
+1. Create `/gamedata/` folder structure
+2. Design and validate JSON schemas
+3. Implement basic DataLoader class
+4. Create minimal test data files
+5. Test data loading functionality
+
+#### Phase 2: Core Migration (INCREMENTAL)
+1. **Movement System** - Migrate room navigation
+2. **Room Descriptions** - Extract room content
+3. **Basic Commands** - Expand command system
+4. **Item Mechanics** - Add take/drop functionality
+5. **Character System** - Implement NPCs and dialogue
+
+#### Phase 3: Advanced Features
+1. **Event System** - Complex interactions and triggers
+2. **Puzzle Mechanics** - Multi-step challenges
+3. **Save/Load System** - Game state persistence
+4. **Multiple Game Support** - Different gamedata folders
+
+### Benefits of Data-Driven Architecture
+
+#### For Development
+- **Easier content creation** - JSON editing vs code changes
+- **Rapid iteration** - Quick content updates without programming
+- **Modular testing** - Individual system validation
+- **Clear separation** - Engine logic vs game content
+
+#### For Extensibility
+- **Multiple games** using same engine
+- **Community content** creation support
+- **Easy localization** through data file translation
+- **Plugin architecture** for additional features
+
+#### for Maintenance
+- **Bug isolation** - Separate engine bugs from content issues
+- **Version control** - Track content changes independently
+- **Content validation** - Schema-based error detection
+- **Performance optimization** - Targeted improvements
+
+### Success Metrics
+- ✅ All game functionality preserved during migration
+- ✅ New games can be created by editing JSON files only
+- ✅ Engine remains content-agnostic
+- ✅ Performance remains acceptable with data loading
+- ✅ ASCII art system integrates seamlessly with data
+
+This data-driven architecture transforms the text adventure from a single-purpose prototype into a flexible game creation platform while maintaining all existing functionality and the optimized 950×720px layout.
+
 ## ASCII Art Test Environment
 
 ### Overview

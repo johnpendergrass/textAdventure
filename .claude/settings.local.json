@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Read(//mnt/d/dev/projects/halloween/games/**)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(python3:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []

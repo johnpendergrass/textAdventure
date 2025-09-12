@@ -51,7 +51,7 @@ function convertLinesToGrid(lines) {
 
 // Update the DOM from display grid (identical to main game)
 function refreshDisplay() {
-  const asciiArtDiv = document.querySelector(".ascii-art-content");
+  const asciiArtDiv = document.querySelector(".ascii-art");
   let output = "";
   
   for (let y = 0; y < 32; y++) {
@@ -115,12 +115,30 @@ function parseAsciiArtText(textContent) {
   let currentMetadata = {};
   let currentRows = [];
   let lineIndex = 0;
+  let inMultiLineComment = false;
   
   for (const rawLine of lines) {
     lineIndex++;
     
     // Clean any trailing/leading whitespace and control characters
     const line = rawLine.trim();
+    
+    // Handle multi-line comments
+    if (line.includes('/*')) {
+      inMultiLineComment = true;
+      // Check if comment ends on same line
+      if (line.includes('*/') && line.indexOf('*/') > line.indexOf('/*')) {
+        inMultiLineComment = false;
+      }
+      continue;
+    }
+    
+    if (inMultiLineComment) {
+      if (line.includes('*/')) {
+        inMultiLineComment = false;
+      }
+      continue;
+    }
     
     // Skip empty lines
     if (line === '') {
@@ -147,6 +165,11 @@ function parseAsciiArtText(textContent) {
         currentMetadata = {};
         currentRows = [];
       }
+      continue;
+    }
+    
+    // Skip single-line comment lines (lines starting with //)
+    if (line.startsWith('//')) {
       continue;
     }
     
@@ -229,23 +252,322 @@ async function loadAsciiArtLibrary(filename = "asciiArt.txt") {
   }
 }
 
-// Load selected file from dropdown
+// Comprehensive file validation with line numbers
+function validateAsciiArtFile(textContent) {
+  const lines = textContent.split(/\r?\n|\r/);
+  let artPieceCount = 0;
+  let currentArt = null;
+  let currentMetadata = {};
+  let currentRows = [];
+  let errors = [];
+  let warnings = [];
+  let artPieces = [];
+  let inMultiLineComment = false;
+  
+  const requiredMetadata = ['name', 'color', 'size', 'rows', 'charsPerLine', 'charsPermitted'];
+  
+  for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+    const line = lines[lineIndex];
+    const trimmedLine = line.trim();
+    const lineNum = lineIndex + 1;
+    
+    // Handle multi-line comments
+    if (trimmedLine.includes('/*')) {
+      inMultiLineComment = true;
+      // Check if comment ends on same line
+      if (trimmedLine.includes('*/') && trimmedLine.indexOf('*/') > trimmedLine.indexOf('/*')) {
+        inMultiLineComment = false;
+      }
+      continue;
+    }
+    
+    if (inMultiLineComment) {
+      if (trimmedLine.includes('*/')) {
+        inMultiLineComment = false;
+      }
+      continue;
+    }
+    
+    // Skip empty lines
+    if (trimmedLine === '') {
+      // If we have current art, process it
+      if (currentArt) {
+        const artErrors = validateSingleArtPiece(currentArt, currentMetadata, currentRows, lineNum);
+        errors = errors.concat(artErrors);
+        artPieceCount++;
+        
+        // Collect art piece info
+        artPieces.push({
+          name: currentArt,
+          size: currentMetadata.size || '8',
+          rows: currentRows.length,
+          color: currentMetadata.color || 'white'
+        });
+        
+        // Reset for next piece
+        currentArt = null;
+        currentMetadata = {};
+        currentRows = [];
+      }
+      continue;
+    }
+    
+    // Skip single-line comment lines (lines starting with //)
+    if (trimmedLine.startsWith('//')) {
+      continue;
+    }
+    
+    // Parse metadata lines
+    if (trimmedLine.includes('=') && !trimmedLine.startsWith('"')) {
+      const [key, value] = trimmedLine.split('=', 2);
+      if (key === 'name') {
+        // Starting new art piece
+        if (currentArt) {
+          const artErrors = validateSingleArtPiece(currentArt, currentMetadata, currentRows, lineNum);
+          errors = errors.concat(artErrors);
+          artPieceCount++;
+          
+          // Collect previous art piece info
+          artPieces.push({
+            name: currentArt,
+            size: currentMetadata.size || '8',
+            rows: currentRows.length,
+            color: currentMetadata.color || 'white'
+          });
+        }
+        currentArt = value;
+        currentMetadata = { name: value };
+        currentRows = [];
+      } else {
+        currentMetadata[key] = value;
+      }
+      continue;
+    }
+    
+    // Parse quoted art rows
+    if (trimmedLine.startsWith('"') && trimmedLine.endsWith('"') && trimmedLine.length >= 2) {
+      const rowContent = trimmedLine.substring(1, trimmedLine.length - 1);
+      currentRows.push({ content: rowContent, lineNum });
+      continue;
+    }
+    
+    // Unrecognized line format
+    errors.push(`Line ${lineNum}: Unrecognized format${currentArt ? ` in art "${currentArt}"` : ''} - "${trimmedLine}"`);
+  }
+  
+  // Process final art piece if file doesn't end with blank line
+  if (currentArt) {
+    const artErrors = validateSingleArtPiece(currentArt, currentMetadata, currentRows, lines.length);
+    errors = errors.concat(artErrors);
+    artPieceCount++;
+    
+    // Collect final art piece info
+    artPieces.push({
+      name: currentArt,
+      size: currentMetadata.size || '8',
+      rows: currentRows.length,
+      color: currentMetadata.color || 'white'
+    });
+  }
+  
+  return {
+    isValid: errors.length === 0 && artPieceCount > 0,
+    artPieceCount,
+    artPieces: artPieces,
+    errors,
+    warnings,
+    summary: `Found ${artPieceCount} art pieces, ${errors.length} errors, ${warnings.length} warnings`
+  };
+}
+
+// Validate individual art piece
+function validateSingleArtPiece(name, metadata, rows, endLineNum) {
+  const errors = [];
+  const requiredFields = ['name', 'color', 'size', 'rows', 'charsPerLine', 'charsPermitted'];
+  
+  // Check required metadata
+  for (const field of requiredFields) {
+    if (!metadata[field]) {
+      errors.push(`Art "${name}": Missing required field "${field}"`);
+    }
+  }
+  
+  if (metadata.rows && parseInt(metadata.rows) !== 32) {
+    errors.push(`Art "${name}": rows=${metadata.rows}, expected 32`);
+  }
+  
+  if (metadata.charsPerLine && parseInt(metadata.charsPerLine) !== 60) {
+    errors.push(`Art "${name}": charsPerLine=${metadata.charsPerLine}, expected 60`);
+  }
+  
+  // Check actual row count
+  if (rows.length !== 32) {
+    errors.push(`Art "${name}": Has ${rows.length} rows, expected 32`);
+  }
+  
+  // Check each row
+  rows.forEach((row, index) => {
+    if (row.content.length !== 60) {
+      errors.push(`Art "${name}", Row ${index + 1} (Line ${row.lineNum}): Has ${row.content.length} chars, expected 60`);
+    }
+    
+    // Check ASCII range
+    for (let i = 0; i < row.content.length; i++) {
+      const charCode = row.content.charCodeAt(i);
+      if (charCode < 32 || charCode > 126) {
+        errors.push(`Art "${name}", Row ${index + 1}, Col ${i + 1} (Line ${row.lineNum}): Invalid character (code ${charCode})`);
+        break; // Only report first invalid char per row
+      }
+    }
+  });
+  
+  return errors;
+}
+
+// Update validation display
+function updateValidationDisplay(validation, filename = 'asciiArt.txt') {
+  const summaryElement = document.getElementById('file-summary');
+  const detailsElement = document.getElementById('validation-details');
+  
+  // Show filename and count
+  summaryElement.textContent = `File: ${filename} - ${validation.artPieceCount} pieces`;
+  summaryElement.className = 'validation-summary ' + (validation.isValid ? 'validation-ok' : 'validation-error');
+  
+  let detailsHTML = '';
+  
+  // Show list of art pieces found
+  if (validation.artPieces && validation.artPieces.length > 0) {
+    detailsHTML += '<div class="validation-item"><strong>Art Pieces Found:</strong></div>';
+    validation.artPieces.forEach(piece => {
+      detailsHTML += `<div class="validation-item">• ${piece.name} (${piece.size}px, ${piece.rows} rows, ${piece.color})</div>`;
+    });
+    detailsHTML += '<div class="validation-item">-------------------</div>';
+  }
+  
+  // Show validation status
+  if (validation.isValid) {
+    detailsHTML += '<div class="validation-item validation-ok"><strong>✓ VALIDATION PASSED</strong></div>';
+    detailsHTML += '<div class="validation-item validation-ok">All art pieces meet requirements</div>';
+  } else {
+    detailsHTML += '<div class="validation-item validation-error"><strong>✗ VALIDATION FAILED</strong></div>';
+  }
+  
+  // Show errors with line numbers
+  if (validation.errors.length > 0) {
+    detailsHTML += '<div class="validation-item validation-error"><strong>ERRORS FOUND:</strong></div>';
+    validation.errors.forEach(error => {
+      detailsHTML += `<div class="validation-item validation-error">• ${error}</div>`;
+    });
+  }
+  
+  // Show warnings if any
+  if (validation.warnings.length > 0) {
+    detailsHTML += '<div class="validation-item validation-warning"><strong>WARNINGS:</strong></div>';
+    validation.warnings.forEach(warning => {
+      detailsHTML += `<div class="validation-item validation-warning">• ${warning}</div>`;
+    });
+  }
+  
+  detailsElement.innerHTML = detailsHTML;
+}
+
+// Load default asciiArt.txt file
+async function loadDefaultFile() {
+  const summaryElement = document.getElementById('file-summary');
+  summaryElement.textContent = 'Loading default file...';
+  summaryElement.className = 'validation-summary';
+  
+  try {
+    const response = await fetch('asciiArt.txt');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const textContent = await response.text();
+    
+    // Validate file
+    const validation = validateAsciiArtFile(textContent);
+    updateValidationDisplay(validation, 'asciiArt.txt');
+    
+    if (!validation.isValid) {
+      document.getElementById('art-selector').innerHTML = '<option value="">-- File has errors --</option>';
+      return;
+    }
+    
+    // Parse and load
+    const parseResult = parseAsciiArtText(textContent);
+    asciiArtLibrary = parseResult.artPieces;
+    currentFileMetadata = parseResult.fileMetadata || {};
+    
+    populateArtDropdown();
+    updateStatus(`Loaded ${Object.keys(asciiArtLibrary).length} art pieces from asciiArt.txt`);
+    
+  } catch (error) {
+    console.error("Error loading default file:", error);
+    updateValidationDisplay({
+      isValid: false,
+      artPieceCount: 0,
+      artPieces: [],
+      errors: [`Error loading file: ${error.message}`],
+      warnings: [],
+      summary: 'Failed to load default file'
+    }, 'asciiArt.txt');
+  }
+}
+
+// Load selected file from file input
 async function loadSelectedFile() {
-  const dropdown = document.getElementById('file-selector');
-  const selectedFile = dropdown.value;
+  const fileInput = document.getElementById('file-selector');
+  const selectedFile = fileInput.files[0];
   
   if (!selectedFile) {
-    updateStatus("No file selected");
+    updateValidationDisplay({
+      isValid: false,
+      artPieceCount: 0,
+      artPieces: [],
+      errors: [],
+      warnings: [],
+      summary: 'No file selected'
+    }, 'No file');
     return;
   }
   
-  // Load the selected file
-  await loadAsciiArtLibrary(selectedFile);
+  const summaryElement = document.getElementById('file-summary');
+  summaryElement.textContent = 'Loading file...';
+  summaryElement.className = 'validation-summary';
   
-  // Repopulate art dropdown
-  populateArtDropdown();
-  
-  updateStatus(`File ${selectedFile} loaded successfully`);
+  try {
+    // Read file content
+    const textContent = await selectedFile.text();
+    
+    // Comprehensive validation
+    const validation = validateAsciiArtFile(textContent);
+    updateValidationDisplay(validation, selectedFile.name);
+    
+    if (!validation.isValid) {
+      document.getElementById('art-selector').innerHTML = '<option value="">-- File has errors --</option>';
+      return;
+    }
+    
+    // Parse the file
+    const parseResult = parseAsciiArtText(textContent);
+    asciiArtLibrary = parseResult.artPieces;
+    currentFileMetadata = parseResult.fileMetadata || {};
+    
+    // Populate art dropdown
+    populateArtDropdown();
+    updateStatus(`Loaded ${Object.keys(asciiArtLibrary).length} art pieces from ${selectedFile.name}`);
+    
+  } catch (error) {
+    console.error("Error loading file:", error);
+    updateValidationDisplay({
+      isValid: false,
+      artPieceCount: 0,
+      artPieces: [],
+      errors: [`Error loading file: ${error.message}`],
+      warnings: [],
+      summary: 'Failed to load file'
+    }, selectedFile?.name || 'Unknown file');
+  }
 }
 
 // ========================================
@@ -732,60 +1054,6 @@ function validateAsciiArt(artName) {
 // === MAIN DISPLAY FUNCTION ===
 // ========================================
 
-// Update validation display
-function updateValidationDisplay(validation) {
-  const validationDiv = document.getElementById('validation-info');
-  
-  if (!validation) {
-    validationDiv.innerHTML = `<span style="color: #aaa;">Ready for validation</span>`;
-    return;
-  }
-  
-  let html = '';
-  
-  // Overall status
-  if (validation.valid) {
-    html += `<span style="color: #00ff00; font-weight: bold;">✓ VALID</span><br/>`;
-  } else {
-    html += `<span style="color: #ff4444; font-weight: bold;">✗ INVALID</span><br/>`;
-  }
-  
-  // Errors
-  if (validation.errors.length > 0) {
-    html += `<div style="color: #ff4444; margin-top: 8px;">
-      <strong>Errors (${validation.errors.length}):</strong><br/>`;
-    validation.errors.slice(0, 5).forEach(error => {
-      html += `• ${error}<br/>`;
-    });
-    if (validation.errors.length > 5) {
-      html += `• ... and ${validation.errors.length - 5} more<br/>`;
-    }
-    html += `</div>`;
-  }
-  
-  // Warnings
-  if (validation.warnings.length > 0) {
-    html += `<div style="color: #ffcc00; margin-top: 8px;">
-      <strong>Warnings (${validation.warnings.length}):</strong><br/>`;
-    validation.warnings.forEach(warning => {
-      html += `• ${warning}<br/>`;
-    });
-    html += `</div>`;
-  }
-  
-  // Summary if valid
-  if (validation.valid) {
-    html += `<div style="color: #00ff00; margin-top: 8px;">
-      All requirements met:<br/>
-      • 32 rows ✓<br/>
-      • 60 chars/row ✓<br/>
-      • ASCII chars only ✓<br/>
-      • Text format (no escapes) ✓
-    </div>`;
-  }
-  
-  validationDiv.innerHTML = html;
-}
 
 // Update art information panel
 function updateArtInfo(artName) {
@@ -842,13 +1110,13 @@ async function displayAsciiArt(artName, effectName) {
   
   if (!asciiArtLibrary[artName]) {
     updateStatus(`Art piece "${artName}" not found`);
-    updateArtInfo(artName); // Update info even for missing art
+    // updateArtInfo(artName); // Commented out - elements don't exist in current HTML
     return;
   }
   
   isAnimating = true;
   updateStatus(`Loading ${artName} with ${effectName} effect...`);
-  updateArtInfo(artName); // Update info panel
+  // updateArtInfo(artName); // Commented out - elements don't exist in current HTML
   
   const sourceGrid = convertLinesToGrid(asciiArtLibrary[artName].rows);
   
@@ -968,64 +1236,96 @@ function populateArtDropdown() {
   }
 }
 
-function initializeControls() {
-  const controlsDiv = document.querySelector('.controls');
+// Select art piece and display metadata
+function selectArtPiece() {
+  const dropdown = document.getElementById('art-selector');
+  const selectedArt = dropdown.value;
+  const metadataDiv = document.getElementById('art-metadata');
   
-  controlsDiv.innerHTML = `
-    <div class="control-section">
-      <div class="control-title">ASCII ART PIECES</div>
-      <div class="dropdown-container">
-        <select id="art-selector" class="art-dropdown">
-          <option value="">-- Select ASCII Art --</option>
-        </select>
-        <button class="load-button" onclick="loadSelectedArt()">Load</button>
-      </div>
-    </div>
-    
-    <div class="control-section">
-      <div class="control-title">ANIMATION EFFECTS</div>
-      <div class="button-group">
-        <button class="control-button effect-button" id="effect-instant" onclick="setEffect('instant')">Instant</button>
-        <button class="control-button effect-button" id="effect-fadeIn" onclick="setEffect('fadeIn')">Fade In</button>
-        <button class="control-button effect-button" id="effect-typewriter" onclick="setEffect('typewriter')">Typewriter</button>
-        <button class="control-button effect-button" id="effect-verticalSweep" onclick="setEffect('verticalSweep')">Vertical Sweep</button>
-        <button class="control-button effect-button" id="effect-randomScatter" onclick="setEffect('randomScatter')">Random Scatter</button>
-        <button class="control-button effect-button" id="effect-spiralIn" onclick="setEffect('spiralIn')">Spiral In</button>
-        <button class="control-button effect-button" id="effect-spiralOut" onclick="setEffect('spiralOut')">Spiral Out</button>
-        <button class="control-button effect-button" id="effect-diagonalWipe" onclick="setEffect('diagonalWipe')">Diagonal Wipe</button>
-      </div>
-    </div>
-    
-    <div class="control-section">
-      <div class="control-title">ANIMATION SPEED</div>
-      <div class="speed-buttons">
-        <button class="control-button" id="speed-slow" onclick="setSpeed('slow')">Slow</button>
-        <button class="control-button" id="speed-medium" onclick="setSpeed('medium')">Med</button>
-        <button class="control-button" id="speed-fast" onclick="setSpeed('fast')">Fast</button>
-      </div>
-    </div>
-    
-    <div class="control-section">
-      <div class="control-title">UTILITIES</div>
-      <div class="button-group">
-        <button class="control-button" onclick="clearDisplay()">Clear Display</button>
-      </div>
-    </div>
-    
-    <div class="status-display">Ready to test ASCII art effects...</div>
-  `;
+  if (!selectedArt || !asciiArtLibrary[selectedArt]) {
+    metadataDiv.innerHTML = '<div class="metadata-item">No art piece selected</div>';
+    return;
+  }
   
-  updateActiveButtons();
+  const artData = asciiArtLibrary[selectedArt];
+  const metadata = currentFileMetadata[selectedArt] || {};
+  
+  let metadataHTML = '';
+  metadataHTML += `<div class="metadata-item"><span class="metadata-label">Name:</span> <span class="metadata-value">${selectedArt}</span></div>`;
+  metadataHTML += `<div class="metadata-item"><span class="metadata-label">Color:</span> <span class="metadata-value">${metadata.color || 'white'}</span></div>`;
+  metadataHTML += `<div class="metadata-item"><span class="metadata-label">Size:</span> <span class="metadata-value">${metadata.size || '8'}px</span></div>`;
+  metadataHTML += `<div class="metadata-item"><span class="metadata-label">Chars/Line:</span> <span class="metadata-value">${artData.rows[0]?.length || 0}</span></div>`;
+  metadataHTML += `<div class="metadata-item"><span class="metadata-label">Rows:</span> <span class="metadata-value">${artData.rows.length}</span></div>`;
+  
+  // Individual validation
+  const errors = validateIndividualArt(selectedArt, artData);
+  if (errors.length > 0) {
+    metadataHTML += '<div class="metadata-item validation-error">Validation Issues:</div>';
+    errors.forEach(error => {
+      metadataHTML += `<div class="metadata-item validation-error">• ${error}</div>`;
+    });
+  } else {
+    metadataHTML += '<div class="metadata-item validation-ok">✓ Validation passed</div>';
+  }
+  
+  metadataDiv.innerHTML = metadataHTML;
+}
+
+// Validate individual art piece
+function validateIndividualArt(name, artData) {
+  const errors = [];
+  
+  if (artData.rows.length !== 32) {
+    errors.push(`Has ${artData.rows.length} rows, expected 32`);
+  }
+  
+  artData.rows.forEach((row, index) => {
+    if (row.length !== 60) {
+      errors.push(`Row ${index + 1}: ${row.length} chars, expected 60`);
+    }
+  });
+  
+  return errors;
+}
+
+// Select animation effect
+function selectEffect(effect) {
+  currentEffect = effect;
+  
+  // Update button states
+  document.querySelectorAll('.effect-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.classList.add('active');
+}
+
+// Select animation speed
+function selectSpeed(speed) {
+  currentSpeed = speed;
+  
+  // Update button states in speed group
+  const speedButtons = event.target.parentElement.querySelectorAll('.effect-btn');
+  speedButtons.forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// Load animation
+async function loadAnimation() {
+  const dropdown = document.getElementById('art-selector');
+  const selectedArt = dropdown.value;
+  
+  if (!selectedArt || !asciiArtLibrary[selectedArt]) {
+    alert('Please select an art piece first');
+    return;
+  }
+  
+  await displayAsciiArt(selectedArt, currentEffect);
 }
 
 // Initialize when page loads
-document.addEventListener("DOMContentLoaded", async function () {
+document.addEventListener("DOMContentLoaded", function () {
   initializeDisplayGrid();
   refreshDisplay();
-  
-  await loadAsciiArtLibrary();
-  initializeControls();
-  populateArtDropdown();
   
   updateStatus("ASCII Art Test Environment Ready");
 });
