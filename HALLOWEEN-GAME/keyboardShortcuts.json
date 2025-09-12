@@ -1,0 +1,44 @@
+{
+  "asciiArt": [
+    {
+      "key": "Alt+1",
+      "art": "DEFAULT",
+      "effect": "fadeIn",
+      "speed": "fast",
+      "preventDefault": true
+    },
+    {
+      "key": "Alt+2",
+      "art": "CASTLE",
+      "effect": "randomScatter",
+      "speed": "fast",
+      "preventDefault": true
+    },
+    {
+      "key": "Alt+3",
+      "art": "SAMPLE",
+      "effect": "typewriter",
+      "speed": "fast",
+      "preventDefault": true
+    },
+    {
+      "key": "Alt+4",
+      "art": "QUESTION",
+      "effect": "spiralIn",
+      "speed": "fast",
+      "preventDefault": true
+    }
+  ],
+  "navigation": [
+    {
+      "key": "PageUp",
+      "action": "scrollUp",
+      "preventDefault": true
+    },
+    {
+      "key": "PageDown",
+      "action": "scrollDown",
+      "preventDefault": true
+    }
+  ]
+}

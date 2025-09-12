@@ -1,0 +1,38 @@
+{
+  "grid": {
+    "rows": 32,
+    "columns": 60
+  },
+  "animation": {
+    "speeds": {
+      "slow": 8,
+      "medium": 3,
+      "fast": 1
+    },
+    "batchSizes": {
+      "fadeIn": {
+        "slow": 3,
+        "medium": 10,
+        "fast": 30
+      },
+      "randomScatter": {
+        "slow": 5,
+        "medium": 15,
+        "fast": 40
+      }
+    },
+    "multipliers": {
+      "typewriter": 10,
+      "verticalSweep": 5,
+      "spiralIn": 2,
+      "spiralOut": 2,
+      "diagonalWipe": 3
+    }
+  },
+  "defaults": {
+    "asciiArt": "CASTLE",
+    "effect": "fadeIn",
+    "speed": "fast",
+    "startupDelay": 500
+  }
+}

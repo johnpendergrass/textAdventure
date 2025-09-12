@@ -1,0 +1,44 @@
+{
+  "inventory": [
+    {
+      "name": "Candy bag",
+      "quantity": 3,
+      "unit": "treats"
+    },
+    {
+      "name": "Plastic sword",
+      "quantity": 1
+    },
+    {
+      "name": "Flashlight",
+      "status": "on"
+    },
+    {
+      "name": "Fake vampire teeth",
+      "quantity": 1
+    },
+    {
+      "name": "Uzi machine gun",
+      "quantity": 1
+    },
+    {
+      "name": "Colorful hat",
+      "quantity": 1
+    },
+    {
+      "name": "Robot Candy gripper",
+      "quantity": 1
+    }
+  ],
+  "stats": {
+    "treats": {
+      "current": 18,
+      "max": 40
+    },
+    "houses": {
+      "current": 2,
+      "max": 12
+    },
+    "score": 150
+  }
+}

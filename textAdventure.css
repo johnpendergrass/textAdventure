@@ -47,8 +47,24 @@ body {
   text-align: center;
 }
 
+/* -----------------------------------------
+    Change the color, font, size of h1 and h2 
+    below to change the appearance of the
+    TITLE and SUBTITLE of the main header section.
+   ----------------------------------------- */
+
 .header h1 {
-  color: orange;
+  color: purple;
+  font-family: "Courier New", Courier, monospace; /* match main text font */
+  font-size: 36px; /* adjust size as you like */
+  margin: 12px 0 12px 0; /* bottom margin creates space for h2 */
+}
+
+.header h2 {
+  color: #cccccc; /* light gray (you can pick another color) */
+  font-family: "Courier New", Courier, monospace; /* match main text */
+  font-size: 18px; /* smaller than the h1, bigger than body text */
+  margin: 5px 0 0 0; /* tighten spacing under the h1 */
 }
 
 .text {
