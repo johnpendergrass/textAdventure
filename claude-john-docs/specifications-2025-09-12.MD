@@ -69,7 +69,7 @@ Look command → Room description + Dynamic exits + Items/NPCs
 ### File Architecture (NEW)
 
 #### **Configuration Files** (Static game setup)
-- `gameConfig.json` - Technical settings (grid, animation, defaults)
+- `asciiArtConfig.json` - ASCII art display settings (grid, animation, defaults)
 - `uiConfig.json` - UI text and labels  
 - `commands.json` - Command definitions (7 commands with actions)
 - `keyboardShortcuts.json` - Keyboard shortcuts
@@ -124,7 +124,7 @@ Look command → Room description + Dynamic exits + Items/NPCs
 **15 Total Rooms:**
 - **2 Street locations**: STREET-01 (start), STREET-02
 - **2 Nice House areas**: NICE-PORCH, NICE-HOUSE (Mrs. McGillicutty)
-- **10 Radley House rooms**: FRONT-PORCH, FOYER, LIBRARY, DINING-ROOM, STUDY, ARMORY, COUNTING-ROOM, KITCHEN, BEDROOM, TV-ROOM
+- **10 Radley House rooms**: FRONT-PORCH, FOYER, LIBRARY, DINING-ROOM, STUDY, ARMORY, GAME-ROOM, KITCHEN, BEDROOM, TV-ROOM
 - **1 End location**: HOME (game completion)
 
 ### Room JSON Structure (IMPLEMENTED)
@@ -249,7 +249,7 @@ function showInventory() {
 
 ### Config File Classification
 **Critical files** (game cannot run without):
-- gameConfig.json, uiConfig.json, commands.json
+- asciiArtConfig.json, uiConfig.json, commands.json
 
 **Non-critical files** (have fallbacks):
 - player.json, gameState.json, keyboardShortcuts.json, startGameText.json, asciiArt.txt
@@ -278,7 +278,7 @@ function showInventory() {
 - `CONFIG_LOCATION = "HALLOWEEN-GAME"` - Single configuration point
 
 ### Configuration Data (HALLOWEEN-GAME/)
-- `gameConfig.json` - Core game settings (grid, animations, defaults)
+- `asciiArtConfig.json` - ASCII art display settings (grid, animations, defaults)
 - `uiConfig.json` - UI text and labels
 - `commands.json` - 7 clean commands with action definitions
 - `keyboardShortcuts.json` - Keyboard shortcuts (Alt+ only)
@@ -323,7 +323,7 @@ function showInventory() {
 
 ### Animation System
 - **8 effects available**: Instant, Fade In, Typewriter, V-Sweep, Random, Spiral In/Out, Diagonal
-- **3 speed settings**: Slow, Medium, Fast (configurable in gameConfig.json)
+- **3 speed settings**: Slow, Medium, Fast (configurable in asciiArtConfig.json)
 - **Batch processing**: Optimized character-by-character updates
 - **Grid system**: 32×60 character addressable display
 

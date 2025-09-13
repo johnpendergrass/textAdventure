@@ -10,7 +10,7 @@ We have successfully completed the foundation work for a clean, data-driven text
 ### ✅ Complete Error Handling System
 **Comprehensive config file error handling implemented:**
 - **Centralized error display function** with console logging and user messages
-- **Complete fallback system** for all 9 config files (gameConfig, uiConfig, commands, player, gameState, keyboardShortcuts, startGameText, asciiArt)
+- **Complete fallback system** for all 9 config files (asciiArtConfig, uiConfig, commands, player, gameState, keyboardShortcuts, startGameText, asciiArt)
 - **Critical config validation** prevents game start if essential files fail
 - **Professional error messages** inform users of issues while maintaining functionality
 
@@ -43,7 +43,7 @@ We have successfully completed the foundation work for a clean, data-driven text
 - `CONFIG_LOCATION = "HALLOWEEN-GAME"` - Single configuration point
 
 ### Configuration Data (HALLOWEEN-GAME/)
-- `gameConfig.json` - Core settings (330 bytes)
+- `asciiArtConfig.json` - ASCII art display settings (330 bytes)
 - `player.json` - Player data (486 bytes) **[NEEDS CLEANUP]**
 - `gameState.json` - World state (84 bytes) **[NEEDS CLEANUP]**
 - `uiConfig.json` - UI configuration (403 bytes)

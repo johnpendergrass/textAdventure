@@ -23,7 +23,8 @@ let commands = {};
 let asciiArtLibrary = {};
 
 // Configuration data loaded from JSON files
-let gameConfig = {};
+let asciiArtConfig = {};
+let gameData = {};
 let player = {};
 let gameState = {};
 let uiConfig = {};
@@ -74,7 +75,7 @@ function displayConfigError(filename, location, error, isCritical = false, fallb
 
 // Fallback defaults for each config type
 const CONFIG_FALLBACKS = {
-  gameConfig: {
+  asciiArtConfig: {
     grid: { rows: 32, columns: 60 },
     animation: {
       speeds: { slow: 8, medium: 3, fast: 1 },
@@ -182,7 +183,41 @@ const CONFIG_FALLBACKS = {
     "You may experience limited functionality.",
     "",
     "Type HELP to see available commands."
-  ]
+  ],
+  
+  initGame: {
+    meta: {
+      gameName: "Halloween Text Adventure (Fallback)",
+      version: "1.0.0",
+      author: "System"
+    },
+    startup: {
+      room: "STREET-01",
+      asciiArt: {
+        name: "CASTLE",
+        effect: "fadeIn",
+        speed: "fast",
+        delay: 500
+      },
+      welcomeText: [
+        {"text": "FALLBACK: initGame.json could not be loaded.", "type": "error"},
+        {"text": "Using system defaults.", "type": "error"},
+        {"text": "", "type": "flavor"},
+        {"text": "Type HELP or H for a list of commands.", "type": "command"}
+      ],
+      availableCommands: ["help", "look", "inventory", "north", "south", "east", "west"]
+    }
+  },
+  
+  gameData: {
+    meta: {
+      gameName: "Halloween Text Adventure (Fallback)",
+      version: "0.2.0",
+      author: "System"
+    },
+    items: {},
+    globalCommands: {}
+  }
 };
 
 // ========================================
@@ -193,12 +228,12 @@ const CONFIG_FALLBACKS = {
 function checkCriticalConfigs() {
   let criticalErrors = [];
   
-  // Check gameConfig
-  if (!gameConfig || Object.keys(gameConfig).length === 0) {
-    criticalErrors.push('gameConfig is empty or missing');
+  // Check asciiArtConfig
+  if (!asciiArtConfig || Object.keys(asciiArtConfig).length === 0) {
+    criticalErrors.push('asciiArtConfig is empty or missing');
   } else {
-    if (!gameConfig.grid || !gameConfig.animation || !gameConfig.defaults) {
-      criticalErrors.push('gameConfig is missing required sections (grid, animation, defaults)');
+    if (!asciiArtConfig.grid || !asciiArtConfig.animation || !asciiArtConfig.defaults) {
+      criticalErrors.push('asciiArtConfig is missing required sections (grid, animation, defaults)');
     }
   }
   
@@ -420,8 +455,8 @@ async function loadAsciiArtLibrary(
 }
 
 // Load game configuration from JSON file
-async function loadGameConfig() {
-  const filename = 'gameConfig.json';
+async function loadAsciiArtConfig() {
+  const filename = 'asciiArtConfig.json';
   try {
     const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
     if (!response.ok) {
@@ -432,8 +467,8 @@ async function loadGameConfig() {
     return data;
   } catch (error) {
     displayConfigError(filename, CONFIG_LOCATION, error, true, true);
-    console.log(`Using fallback gameConfig defaults`);
-    return CONFIG_FALLBACKS.gameConfig;
+    console.log(`Using fallback asciiArtConfig defaults`);
+    return CONFIG_FALLBACKS.asciiArtConfig;
   }
 }
 
@@ -446,6 +481,19 @@ async function loadPlayer() {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
+    
+    // Check if player.json is empty (new game scenario)
+    if (Object.keys(data).length === 0) {
+      console.log('player.json is empty - initializing from initGame');
+      if (initGame && initGame.player) {
+        console.log('Using player data from initGame.json');
+        return initGame.player;
+      } else {
+        console.log('initGame.player not available - using fallback');
+        return CONFIG_FALLBACKS.player;
+      }
+    }
+    
     console.log(`Successfully loaded ${filename} from ${CONFIG_LOCATION}`);
     return data;
   } catch (error) {
@@ -509,13 +557,123 @@ async function loadKeyboardShortcuts() {
   }
 }
 
+// Load initial game configuration from JSON file
+async function loadInitGame() {
+  const filename = 'initGame.json';
+  try {
+    const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(`Successfully loaded ${filename} from ${CONFIG_LOCATION}`);
+    return data;
+  } catch (error) {
+    displayConfigError(filename, CONFIG_LOCATION, error, false, true);
+    console.log(`Using fallback initGame defaults`);
+    return CONFIG_FALLBACKS.initGame;
+  }
+}
+
+// Load unified game data from JSON file
+async function loadGameData() {
+  const filename = 'gameData.json';
+  try {
+    const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(`Successfully loaded ${filename} from ${CONFIG_LOCATION}`);
+    return data;
+  } catch (error) {
+    displayConfigError(filename, CONFIG_LOCATION, error, false, true);
+    console.log(`Using fallback gameData defaults`);
+    return CONFIG_FALLBACKS.gameData;
+  }
+}
+
+// Process gameData to build active items and commands
+function processGameData(gameData) {
+  const processed = {
+    activeItems: {},
+    activeCommands: {},
+    activeNPCs: {},
+    playerInventory: [],
+    startupData: gameData.startup || {}
+  };
+  
+  // Filter active items
+  if (gameData.items) {
+    Object.entries(gameData.items).forEach(([itemId, item]) => {
+      if (item.includeInGame === true) {
+        processed.activeItems[itemId] = item;
+        
+        // Build player inventory from items with startLocation: "player"
+        if (item.startLocation === "player") {
+          processed.playerInventory.push(itemId);
+        }
+      }
+    });
+  }
+  
+  // Filter active NPCs
+  if (gameData.npcs) {
+    Object.entries(gameData.npcs).forEach(([npcId, npc]) => {
+      if (npc.includeInGame === true) {
+        processed.activeNPCs[npcId] = npc;
+      }
+    });
+  }
+  
+  // Filter active commands (now from gameData.commands instead of globalCommands)
+  if (gameData.commands) {
+    Object.entries(gameData.commands).forEach(([commandId, command]) => {
+      if (command.includeInGame === true) {
+        processed.activeCommands[commandId] = command;
+      }
+    });
+  }
+  
+  console.log(`Processed gameData: ${Object.keys(processed.activeItems).length} active items, ${Object.keys(processed.activeNPCs).length} active NPCs, ${Object.keys(processed.activeCommands).length} active commands`);
+  console.log(`Built player inventory: ${processed.playerInventory.join(', ')}`);
+  
+  return processed;
+}
+
+// Validate gameData references
+function validateGameData(gameData, processed) {
+  const errors = [];
+  
+  // Check for items with invalid startLocation
+  Object.entries(processed.activeItems).forEach(([itemId, item]) => {
+    if (item.startLocation && item.startLocation !== "player") {
+      // This would be where we check if the room exists, but we don't have rooms loaded yet
+      // For now, just log it
+      console.log(`Item ${itemId} starts in location: ${item.startLocation}`);
+    }
+  });
+  
+  return errors;
+}
+
 // ========================================
 // === TEXT BUFFER MANAGEMENT ===
 // ========================================
 
-// Initialize the buffer with game text
-async function initializeBuffer() {
-  textBuffer = await loadGameText();
+// Initialize the buffer with game text  
+async function initializeBuffer(processedGameData) {
+  // Use gameData.startup.welcomeText if available, otherwise fallback to loadGameText()
+  if (processedGameData && processedGameData.startupData && processedGameData.startupData.welcomeText) {
+    textBuffer = processedGameData.startupData.welcomeText;
+    console.log('Using welcomeText from gameData.json');
+  } else if (gameData && gameData.startup && gameData.startup.welcomeText) {
+    textBuffer = gameData.startup.welcomeText;
+    console.log('Using welcomeText from gameData.json (direct)');
+  } else {
+    textBuffer = await loadGameText();
+    console.log('Fallback to loadGameText()');
+  }
   updateDisplay();
 }
 
@@ -630,8 +788,8 @@ function sleep(ms) {
 
 // Initialize empty display grid (configurable rows × columns)
 function initializeDisplayGrid() {
-  const rows = gameConfig?.grid?.rows || 32;
-  const columns = gameConfig?.grid?.columns || 60;
+  const rows = asciiArtConfig?.grid?.rows || 32;
+  const columns = asciiArtConfig?.grid?.columns || 60;
   displayGrid = [];
   for (let y = 0; y < rows; y++) {
     displayGrid[y] = [];
@@ -643,8 +801,8 @@ function initializeDisplayGrid() {
 
 // Convert array of strings to 2D character grid
 function convertLinesToGrid(lines) {
-  const rows = gameConfig?.grid?.rows || 32;
-  const columns = gameConfig?.grid?.columns || 60;
+  const rows = asciiArtConfig?.grid?.rows || 32;
+  const columns = asciiArtConfig?.grid?.columns || 60;
   const grid = [];
   for (let y = 0; y < rows; y++) {
     grid[y] = [];
@@ -669,8 +827,8 @@ function copyGridToDisplay(sourceGrid) {
 // Update the DOM from display grid
 function refreshDisplay() {
   const asciiArtDiv = document.querySelector(".ascii-art");
-  const rows = gameConfig?.grid?.rows || 32;
-  const columns = gameConfig?.grid?.columns || 60;
+  const rows = asciiArtConfig?.grid?.rows || 32;
+  const columns = asciiArtConfig?.grid?.columns || 60;
   let output = "";
 
   for (let y = 0; y < rows; y++) {
@@ -689,8 +847,8 @@ function refreshDisplay() {
 
 // Instant copy - no animation
 function instantCopy(sourceGrid) {
-  const rows = gameConfig?.grid?.rows || 32;
-  const columns = gameConfig?.grid?.columns || 60;
+  const rows = asciiArtConfig?.grid?.rows || 32;
+  const columns = asciiArtConfig?.grid?.columns || 60;
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < columns; x++) {
       displayGrid[y][x] = sourceGrid[y][x];
@@ -702,11 +860,11 @@ function instantCopy(sourceGrid) {
 // Character-by-character fade in
 async function fadeInEffect(sourceGrid, speed = "fast") {
   const delay = ANIMATION_SPEEDS[speed] || ANIMATION_SPEEDS.fast || 1;
-  const rows = gameConfig?.grid?.rows || 32;
-  const columns = gameConfig?.grid?.columns || 60;
+  const rows = asciiArtConfig?.grid?.rows || 32;
+  const columns = asciiArtConfig?.grid?.columns || 60;
 
   // Dynamic batch sizes based on speed from config
-  const batchSizes = gameConfig?.animation?.batchSizes?.fadeIn || {
+  const batchSizes = asciiArtConfig?.animation?.batchSizes?.fadeIn || {
     slow: 3,
     medium: 10,
     fast: 30,
@@ -732,10 +890,10 @@ async function fadeInEffect(sourceGrid, speed = "fast") {
 // Row-by-row typewriter effect
 async function typewriterEffect(sourceGrid, speed = "fast") {
   const baseDelay = ANIMATION_SPEEDS[speed] || ANIMATION_SPEEDS.fast || 1;
-  const multiplier = gameConfig?.animation?.multipliers?.typewriter || 10;
+  const multiplier = asciiArtConfig?.animation?.multipliers?.typewriter || 10;
   const delay = baseDelay * multiplier;
-  const rows = gameConfig?.grid?.rows || 32;
-  const columns = gameConfig?.grid?.columns || 60;
+  const rows = asciiArtConfig?.grid?.rows || 32;
+  const columns = asciiArtConfig?.grid?.columns || 60;
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < columns; x++) {
@@ -749,10 +907,10 @@ async function typewriterEffect(sourceGrid, speed = "fast") {
 // Column-by-column vertical sweep
 async function verticalSweepEffect(sourceGrid, speed = "fast") {
   const baseDelay = ANIMATION_SPEEDS[speed] || ANIMATION_SPEEDS.fast || 1;
-  const multiplier = gameConfig?.animation?.multipliers?.verticalSweep || 5;
+  const multiplier = asciiArtConfig?.animation?.multipliers?.verticalSweep || 5;
   const delay = baseDelay * multiplier;
-  const rows = gameConfig?.grid?.rows || 32;
-  const columns = gameConfig?.grid?.columns || 60;
+  const rows = asciiArtConfig?.grid?.rows || 32;
+  const columns = asciiArtConfig?.grid?.columns || 60;
 
   for (let x = 0; x < columns; x++) {
     for (let y = 0; y < rows; y++) {
@@ -766,11 +924,11 @@ async function verticalSweepEffect(sourceGrid, speed = "fast") {
 // Random scatter effect
 async function randomScatterEffect(sourceGrid, speed = "fast") {
   const delay = ANIMATION_SPEEDS[speed] || ANIMATION_SPEEDS.fast || 1;
-  const rows = gameConfig?.grid?.rows || 32;
-  const columns = gameConfig?.grid?.columns || 60;
+  const rows = asciiArtConfig?.grid?.rows || 32;
+  const columns = asciiArtConfig?.grid?.columns || 60;
 
   // Dynamic batch sizes based on speed from config
-  const batchSizes = gameConfig?.animation?.batchSizes?.randomScatter || {
+  const batchSizes = asciiArtConfig?.animation?.batchSizes?.randomScatter || {
     slow: 5,
     medium: 15,
     fast: 40,
@@ -979,7 +1137,7 @@ async function displayAsciiArt(artName, effectName = "fadeIn", speed = "fast") {
   }
 }
 
-// ASCII art display function (now uses config defaults)
+// ASCII art display function (now uses initGame startup config)
 async function updateAsciiArtDisplay() {
   // Initialize blank display grid
   initializeDisplayGrid();
@@ -987,14 +1145,25 @@ async function updateAsciiArtDisplay() {
   // Refresh to show blank display
   refreshDisplay();
 
-  // Wait a moment, then display default ASCII art with configured effect
-  const startupDelay = gameConfig?.defaults?.startupDelay || 500;
-  const defaultArt = gameConfig?.defaults?.asciiArt || "CASTLE";
-  const defaultEffect = gameConfig?.defaults?.effect || "fadeIn";
-  const defaultSpeed = gameConfig?.defaults?.speed || "fast";
+  // Use gameData.startup.asciiArt if available, otherwise fallback to asciiArtConfig defaults
+  let startupDelay, artName, effect, speed;
+  
+  if (gameData && gameData.startup && gameData.startup.asciiArt) {
+    startupDelay = gameData.startup.asciiArt.delay || 500;
+    artName = gameData.startup.asciiArt.name || "CASTLE";
+    effect = gameData.startup.asciiArt.effect || "fadeIn";
+    speed = gameData.startup.asciiArt.speed || "fast";
+    console.log('Using ASCII art settings from gameData.json');
+  } else {
+    startupDelay = asciiArtConfig?.defaults?.startupDelay || 500;
+    artName = asciiArtConfig?.defaults?.asciiArt || "CASTLE";
+    effect = asciiArtConfig?.defaults?.effect || "fadeIn";
+    speed = asciiArtConfig?.defaults?.speed || "fast";
+    console.log('Fallback to ASCII art settings from asciiArtConfig');
+  }
 
   await sleep(startupDelay);
-  await displayAsciiArt(defaultArt, defaultEffect, defaultSpeed);
+  await displayAsciiArt(artName, effect, speed);
 }
 
 function updateGameStatus() {
@@ -1010,15 +1179,21 @@ function updateGameStatus() {
   // Generate inventory section from player data
   const inventoryTitle =
     uiConfig?.statusPanel?.inventory?.title || "INVENTORY:";
-  const inventory = player?.inventory || [];
+  const inventory = player?.core?.inventory || player?.inventory || [];
 
   // Generate status section from player data
   const statusTitle = uiConfig?.statusPanel?.status?.title || "STATUS:";
-  const stats = player?.stats || {};
+  const coreStats = player?.core || {};
+  const gameStats = player?.gameStats || player?.stats || {};
 
   let inventoryHTML = "";
   inventory.forEach((item) => {
-    if (item.quantity && item.unit) {
+    // Handle string items (simple format)
+    if (typeof item === 'string') {
+      inventoryHTML += `<div>${item}</div>`;
+    }
+    // Handle object items (complex format with properties)
+    else if (item.quantity && item.unit) {
       inventoryHTML += `<div>${item.name} (${item.quantity} ${item.unit})</div>`;
     } else if (item.quantity && item.quantity > 1) {
       inventoryHTML += `<div>${item.name} (${item.quantity})</div>`;
@@ -1030,14 +1205,21 @@ function updateGameStatus() {
   });
 
   let statsHTML = "";
-  if (stats.treats) {
-    statsHTML += `<div>Treats: ${stats.treats.current}/${stats.treats.max}</div>`;
+  
+  // Core stats (score, health, etc.)
+  if (coreStats.score !== undefined) {
+    statsHTML += `<div>Score: ${coreStats.score}</div>`;
   }
-  if (stats.houses) {
-    statsHTML += `<div>Houses: ${stats.houses.current}/${stats.houses.max}</div>`;
+  if (coreStats.health !== undefined) {
+    statsHTML += `<div>Health: ${coreStats.health}</div>`;
   }
-  if (stats.score !== undefined) {
-    statsHTML += `<div>Score: ${stats.score}</div>`;
+  
+  // Game-specific stats (treats, houses, etc.)
+  if (gameStats.treats) {
+    statsHTML += `<div>Treats: ${gameStats.treats.current}/${gameStats.treats.max}</div>`;
+  }
+  if (gameStats.houses) {
+    statsHTML += `<div>Houses: ${gameStats.houses.current}/${gameStats.houses.max}</div>`;
   }
 
   statusDiv.innerHTML = `
@@ -1259,12 +1441,42 @@ document.addEventListener("DOMContentLoaded", async function () {
   try {
     // Load all configuration files first
     console.log('Loading configuration files...');
-    gameConfig = await loadGameConfig();
+    asciiArtConfig = await loadAsciiArtConfig();
+    gameData = await loadGameData();
     uiConfig = await loadUIConfig();
-    commands = await loadCommands();
-    player = await loadPlayer();
+    // Note: commands now loaded from gameData.commands
+    commands = gameData.commands || {};
+    // Note: player data built from gameData, but check for existing save
+    const savedPlayer = await loadPlayer();
     gameState = await loadGameState();
     keyboardShortcuts = await loadKeyboardShortcuts();
+    
+    // Process gameData to get active items and commands
+    const processedGameData = processGameData(gameData);
+    
+    // Create runtime player data from gameData.startup.playerStats and items
+    const runtimePlayerData = {
+      core: {
+        score: gameData.startup?.playerStats?.score || 0,
+        health: gameData.startup?.playerStats?.health || 100,
+        inventory: processedGameData.playerInventory,
+        currentRoom: gameData.startup?.playerStats?.currentRoom || "STREET-01",
+        visitedRooms: gameData.startup?.playerStats?.visitedRooms || []
+      },
+      gameStats: {
+        treats: gameData.startup?.playerStats?.treats || {current: 0, max: 40},
+        houses: gameData.startup?.playerStats?.houses || {current: 0, max: 12}
+      }
+    };
+    
+    // Use runtime data if player.json is empty (new game) or use saved data (continue game)
+    if (Object.keys(savedPlayer).length === 0) {
+      player = runtimePlayerData;
+      console.log('New game: Built player data from gameData.startup:', processedGameData.playerInventory);
+    } else {
+      player = savedPlayer;
+      console.log('Continue game: Using saved player data');
+    }
 
     // Validate critical configurations
     const configsValid = checkCriticalConfigs();
@@ -1284,7 +1496,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     // Set up animation speeds from config
-    ANIMATION_SPEEDS = gameConfig?.animation?.speeds || {
+    ANIMATION_SPEEDS = asciiArtConfig?.animation?.speeds || {
       slow: 8,
       medium: 3,
       fast: 1,
@@ -1294,7 +1506,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     await loadAsciiArtLibrary();
 
     console.log('Initializing game systems...');
-    await initializeBuffer();
+    await initializeBuffer(processedGameData);
     initializeAsciiArt();
     initializeStatusInfo();
     initializeInput();

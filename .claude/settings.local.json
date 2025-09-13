@@ -4,7 +4,8 @@
       "Read(//mnt/d/dev/projects/halloween/games/**)",
       "Bash(git restore:*)",
       "Bash(python3:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Read(//mnt/d/dev/projects/halloween/**)"
     ],
     "deny": [],
     "ask": []
