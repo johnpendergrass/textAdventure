@@ -117,48 +117,39 @@ const CONFIG_FALLBACKS = {
   
   commands: {
     help: {
-      response: [
-        "Available commands:",
-        "help (h) - Show this help",
-        "look (l) - Look around",
-        "inventory (i) - Check inventory",
-        "north (n) - Go north",
-        "south (s) - Go south", 
-        "east (e) - Go east",
-        "west (w) - Go west"
-      ],
-      type: "stateless",
-      shortcuts: ["h", "?"]
+      type: "system",
+      shortcuts: ["h", "?"],
+      action: "show_help"
     },
     look: {
-      response: ["You look around. The area seems familiar."],
-      type: "stateless",
-      shortcuts: ["l"]
+      type: "action",
+      shortcuts: ["l"],
+      action: "examine_room"
     },
     inventory: {
-      response: ["Your inventory is empty."],
-      type: "stateless", 
-      shortcuts: ["i"]
+      type: "system", 
+      shortcuts: ["i"],
+      action: "show_inventory"
     },
     north: {
-      response: ["You cannot go north from here."],
       type: "movement",
-      shortcuts: ["n"]
+      shortcuts: ["n"],
+      action: "move_north"
     },
     south: {
-      response: ["You cannot go south from here."],
       type: "movement",
-      shortcuts: ["s"]
+      shortcuts: ["s"],
+      action: "move_south"
     },
     east: {
-      response: ["You cannot go east from here."],
       type: "movement",
-      shortcuts: ["e"]
+      shortcuts: ["e"],
+      action: "move_east"
     },
     west: {
-      response: ["You cannot go west from here."],
       type: "movement",
-      shortcuts: ["w"]
+      shortcuts: ["w"],
+      action: "move_west"
     }
   },
   
@@ -1112,7 +1103,14 @@ function processCommand(command) {
     case "exact":
     case "shortcut":
     case "prefix":
-      addToBuffer(commands[result.command].response);
+      // Placeholder response until game engine is implemented
+      const cmd = commands[result.command];
+      addToBuffer([
+        { text: `Command: ${result.command}`, type: "command" },
+        { text: `Action: ${cmd.action}`, type: "command" },
+        { text: `Type: ${cmd.type}`, type: "command" },
+        { text: "[Game engine will handle this action]", type: "flavor" }
+      ]);
       isValid = true;
       break;
 
@@ -1184,13 +1182,13 @@ function addToHistory(command, wasValid) {
       actualCommand = result.command;
     }
 
-    // Check if the command is marked as stateless in the JSON data
+    // Check if the command is marked as system type (equivalent to stateless)
     if (
       actualCommand &&
       commands[actualCommand] &&
-      commands[actualCommand].type === "stateless"
+      commands[actualCommand].type === "system"
     ) {
-      return; // Don't add duplicate stateless command
+      return; // Don't add duplicate system command
     }
   }
 
