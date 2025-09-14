@@ -19,11 +19,7 @@ let historyIndex = -1;
 // Commands loaded from JSON
 let commands = {};
 
-// ASCII Art Library loaded from text file
-let asciiArtLibrary = {};
-
 // Configuration data loaded from JSON files
-let asciiArtConfig = {};
 let gameData = {};
 let player = {};
 let gameState = {};
@@ -81,29 +77,6 @@ function displayConfigError(filename, location, error, isCritical = false, fallb
 
 // Fallback defaults for each config type
 const CONFIG_FALLBACKS = {
-  asciiArtConfig: {
-    grid: { rows: 32, columns: 60 },
-    animation: {
-      speeds: { slow: 8, medium: 3, fast: 1 },
-      batchSizes: {
-        fadeIn: { slow: 3, medium: 10, fast: 30 },
-        randomScatter: { slow: 5, medium: 15, fast: 40 }
-      },
-      multipliers: {
-        typewriter: 10,
-        verticalSweep: 5,
-        spiralIn: 2,
-        spiralOut: 2,
-        diagonalWipe: 3
-      }
-    },
-    defaults: {
-      asciiArt: "CASTLE",
-      effect: "fadeIn", 
-      speed: "fast",
-      startupDelay: 500
-    }
-  },
   
   uiConfig: {
     statusPanel: {
@@ -179,8 +152,7 @@ const CONFIG_FALLBACKS = {
     navigation: [
       { key: "PageUp", action: "scrollUp", preventDefault: true },
       { key: "PageDown", action: "scrollDown", preventDefault: true }
-    ],
-    asciiArt: []
+    ]
   },
   
   gameText: [
@@ -199,12 +171,6 @@ const CONFIG_FALLBACKS = {
     },
     startup: {
       room: "STREET-01",
-      asciiArt: {
-        name: "CASTLE",
-        effect: "fadeIn",
-        speed: "fast",
-        delay: 500
-      },
       welcomeText: [
         {"text": "FALLBACK: initGame.json could not be loaded.", "type": "error"},
         {"text": "Using system defaults.", "type": "error"},
@@ -233,17 +199,8 @@ const CONFIG_FALLBACKS = {
 // Check if critical configurations loaded successfully
 function checkCriticalConfigs() {
   let criticalErrors = [];
-  
-  // Check asciiArtConfig
-  if (!asciiArtConfig || Object.keys(asciiArtConfig).length === 0) {
-    criticalErrors.push('asciiArtConfig is empty or missing');
-  } else {
-    if (!asciiArtConfig.grid || !asciiArtConfig.animation || !asciiArtConfig.defaults) {
-      criticalErrors.push('asciiArtConfig is missing required sections (grid, animation, defaults)');
-    }
-  }
-  
-  // Check uiConfig  
+
+  // Check uiConfig
   if (!uiConfig || Object.keys(uiConfig).length === 0) {
     criticalErrors.push('uiConfig is empty or missing');
   } else {
@@ -251,7 +208,7 @@ function checkCriticalConfigs() {
       criticalErrors.push('uiConfig is missing required sections (statusPanel, fallbackText)');
     }
   }
-  
+
   // Check commands
   if (!commands || Object.keys(commands).length === 0) {
     criticalErrors.push('commands is empty or missing');
@@ -336,147 +293,7 @@ async function loadCommands() {
   }
 }
 
-// Parse ASCII art from text file format
-function parseAsciiArtText(textContent) {
-  // Handle all line ending types (Windows, Unix, Mac)
-  const lines = textContent.split(/\r?\n|\r/);
-  const artPieces = {};
-  const loadValidationIssues = {};
-  const fileMetadata = {};
 
-  let currentArt = null;
-  let currentMetadata = {};
-  let currentRows = [];
-  let lineIndex = 0;
-
-  for (const rawLine of lines) {
-    lineIndex++;
-
-    // Clean any trailing/leading whitespace and control characters
-    const line = rawLine.trim();
-
-    // Skip empty lines
-    if (line === "") {
-      // If we have current art, save it
-      if (currentArt) {
-        // Build art piece in same format as JSON
-        artPieces[currentArt] = {
-          color: currentMetadata.color || "white",
-          textSize: parseInt(currentMetadata.size) || 8,
-          rows: [...currentRows], // Copy the rows
-        };
-
-        // Store metadata for display
-        fileMetadata[currentArt] = { ...currentMetadata };
-
-        // Reset for next piece
-        currentArt = null;
-        currentMetadata = {};
-        currentRows = [];
-      }
-      continue;
-    }
-
-    // Parse metadata lines (must contain = and not start with quote)
-    if (line.includes("=") && !line.startsWith('"')) {
-      const [key, value] = line.split("=", 2);
-      if (key === "name") {
-        currentArt = value;
-      } else {
-        currentMetadata[key] = value;
-      }
-      continue;
-    }
-
-    // Parse quoted art rows - must start AND end with quotes
-    if (line.startsWith('"') && line.endsWith('"') && line.length >= 2) {
-      // Strip ONLY the first and last character (the quotes)
-      const rowContent = line.substring(1, line.length - 1);
-      currentRows.push(rowContent);
-      continue;
-    }
-
-    // Unrecognized line format
-    console.warn(
-      `Unrecognized line format at line ${lineIndex}: "${line}" (length: ${line.length})`
-    );
-  }
-
-  // Handle last art piece if file doesn't end with blank line
-  if (currentArt) {
-    artPieces[currentArt] = {
-      color: currentMetadata.color || "white",
-      textSize: parseInt(currentMetadata.size) || 8,
-      rows: [...currentRows],
-    };
-
-    // Store metadata for display
-    fileMetadata[currentArt] = { ...currentMetadata };
-  }
-
-  return { artPieces, loadValidationIssues, fileMetadata };
-}
-
-// Load ASCII art library from text file
-async function loadAsciiArtLibrary(
-  filename = `${CONFIG_LOCATION}/asciiArt.txt`
-) {
-  const fileBaseName = 'asciiArt.txt';
-  try {
-    const response = await fetch(filename);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const textContent = await response.text();
-    const parseResult = parseAsciiArtText(textContent);
-
-    asciiArtLibrary = parseResult.artPieces;
-
-    // Report load-time validation issues
-    const issueCount = Object.keys(parseResult.loadValidationIssues).length;
-    if (issueCount > 0) {
-      console.warn(
-        "Load-time validation issues:",
-        parseResult.loadValidationIssues
-      );
-      console.log(
-        `Loaded ${
-          Object.keys(asciiArtLibrary).length
-        } art pieces from ${filename} (${issueCount} with issues)`
-      );
-    } else {
-      console.log(
-        `Successfully loaded ${
-          Object.keys(asciiArtLibrary).length
-        } art pieces from ${filename}`
-      );
-    }
-
-    return asciiArtLibrary;
-  } catch (error) {
-    displayConfigError(fileBaseName, CONFIG_LOCATION, error, false, true);
-    console.log(`Using empty ASCII art library as fallback`);
-    return {};
-  }
-}
-
-// Load game configuration from JSON file
-async function loadAsciiArtConfig() {
-  const filename = 'asciiArtConfig.json';
-  try {
-    const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    console.log(`Successfully loaded ${filename} from ${CONFIG_LOCATION}`);
-    return data;
-  } catch (error) {
-    displayConfigError(filename, CONFIG_LOCATION, error, true, true);
-    console.log(`Using fallback asciiArtConfig defaults`);
-    return CONFIG_FALLBACKS.asciiArtConfig;
-  }
-}
 
 // Load player data from JSON file
 async function loadPlayer() {
@@ -635,6 +452,23 @@ async function loadItems() {
   }
 }
 
+// Load scavenger items data from JSON file
+async function loadScavengerItems() {
+  const filename = 'scavengerItems.json';
+  try {
+    const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(`Successfully loaded ${filename} from ${CONFIG_LOCATION}`);
+    return data;
+  } catch (error) {
+    console.log(`No scavengerItems.json found - continuing without scavenger items`);
+    return { scavengerItems: {} };
+  }
+}
+
 // Process gameData to build active items and commands
 function processGameData(gameData) {
   const processed = {
@@ -731,6 +565,22 @@ function displayRoom(roomId = currentRoom) {
     addToBuffer([
       { text: "No obvious exits.", type: "command" }
     ]);
+  }
+
+  // Show items in room (if any)
+  const roomItems = Object.values(items).filter(item =>
+    item.includeInGame && item.startLocation === currentRoom
+  );
+
+  if (roomItems.length > 0) {
+    addToBuffer([
+      { text: "You see:", type: "command" }
+    ]);
+    roomItems.forEach(item => {
+      addToBuffer([
+        { text: `  ${item.display}`, type: "flavor" }
+      ]);
+    });
   }
 }
 
@@ -974,399 +824,9 @@ function echoCommand(command) {
 }
 
 // ========================================
-// === ASCII ART & STATUS FUNCTIONS ===
+// === STATUS FUNCTIONS ===
 // ========================================
 
-// ASCII Art Grid System
-let displayGrid = [];
-
-// Animation speeds loaded from config
-let ANIMATION_SPEEDS = {};
-
-// Helper function for animation delays
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-// Initialize empty display grid (configurable rows × columns)
-function initializeDisplayGrid() {
-  const rows = asciiArtConfig?.grid?.rows || 32;
-  const columns = asciiArtConfig?.grid?.columns || 60;
-  displayGrid = [];
-  for (let y = 0; y < rows; y++) {
-    displayGrid[y] = [];
-    for (let x = 0; x < columns; x++) {
-      displayGrid[y][x] = " ";
-    }
-  }
-}
-
-// Convert array of strings to 2D character grid
-function convertLinesToGrid(lines) {
-  const rows = asciiArtConfig?.grid?.rows || 32;
-  const columns = asciiArtConfig?.grid?.columns || 60;
-  const grid = [];
-  for (let y = 0; y < rows; y++) {
-    grid[y] = [];
-    const line = lines[y] || "";
-    for (let x = 0; x < columns; x++) {
-      grid[y][x] = line[x] || " ";
-    }
-  }
-  return grid;
-}
-
-// Copy source grid to display grid instantly
-function copyGridToDisplay(sourceGrid) {
-  for (let y = 0; y < 32; y++) {
-    for (let x = 0; x < 60; x++) {
-      displayGrid[y][x] = sourceGrid[y][x];
-    }
-  }
-  refreshDisplay();
-}
-
-// Update the DOM from display grid
-function refreshDisplay() {
-  const asciiArtDiv = document.querySelector(".ascii-art");
-  const rows = asciiArtConfig?.grid?.rows || 32;
-  const columns = asciiArtConfig?.grid?.columns || 60;
-  let output = "";
-
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < columns; x++) {
-      output += displayGrid[y][x];
-    }
-    output += "\n";
-  }
-
-  asciiArtDiv.textContent = output;
-}
-
-// ========================================
-// === ANIMATION EFFECTS ===
-// ========================================
-
-// Instant copy - no animation
-function instantCopy(sourceGrid) {
-  const rows = asciiArtConfig?.grid?.rows || 32;
-  const columns = asciiArtConfig?.grid?.columns || 60;
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < columns; x++) {
-      displayGrid[y][x] = sourceGrid[y][x];
-    }
-  }
-  refreshDisplay();
-}
-
-// Character-by-character fade in
-async function fadeInEffect(sourceGrid, speed = "fast") {
-  const delay = ANIMATION_SPEEDS[speed] || ANIMATION_SPEEDS.fast || 1;
-  const rows = asciiArtConfig?.grid?.rows || 32;
-  const columns = asciiArtConfig?.grid?.columns || 60;
-
-  // Dynamic batch sizes based on speed from config
-  const batchSizes = asciiArtConfig?.animation?.batchSizes?.fadeIn || {
-    slow: 3,
-    medium: 10,
-    fast: 30,
-  };
-  const CHARS_PER_UPDATE = batchSizes[speed] || batchSizes.fast || 30;
-
-  let charCount = 0;
-
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < columns; x++) {
-      displayGrid[y][x] = sourceGrid[y][x];
-      charCount++;
-
-      if (charCount % CHARS_PER_UPDATE === 0) {
-        refreshDisplay();
-        await sleep(delay);
-      }
-    }
-  }
-  refreshDisplay();
-}
-
-// Row-by-row typewriter effect
-async function typewriterEffect(sourceGrid, speed = "fast") {
-  const baseDelay = ANIMATION_SPEEDS[speed] || ANIMATION_SPEEDS.fast || 1;
-  const multiplier = asciiArtConfig?.animation?.multipliers?.typewriter || 10;
-  const delay = baseDelay * multiplier;
-  const rows = asciiArtConfig?.grid?.rows || 32;
-  const columns = asciiArtConfig?.grid?.columns || 60;
-
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < columns; x++) {
-      displayGrid[y][x] = sourceGrid[y][x];
-    }
-    refreshDisplay();
-    await sleep(delay);
-  }
-}
-
-// Column-by-column vertical sweep
-async function verticalSweepEffect(sourceGrid, speed = "fast") {
-  const baseDelay = ANIMATION_SPEEDS[speed] || ANIMATION_SPEEDS.fast || 1;
-  const multiplier = asciiArtConfig?.animation?.multipliers?.verticalSweep || 5;
-  const delay = baseDelay * multiplier;
-  const rows = asciiArtConfig?.grid?.rows || 32;
-  const columns = asciiArtConfig?.grid?.columns || 60;
-
-  for (let x = 0; x < columns; x++) {
-    for (let y = 0; y < rows; y++) {
-      displayGrid[y][x] = sourceGrid[y][x];
-    }
-    refreshDisplay();
-    await sleep(delay);
-  }
-}
-
-// Random scatter effect
-async function randomScatterEffect(sourceGrid, speed = "fast") {
-  const delay = ANIMATION_SPEEDS[speed] || ANIMATION_SPEEDS.fast || 1;
-  const rows = asciiArtConfig?.grid?.rows || 32;
-  const columns = asciiArtConfig?.grid?.columns || 60;
-
-  // Dynamic batch sizes based on speed from config
-  const batchSizes = asciiArtConfig?.animation?.batchSizes?.randomScatter || {
-    slow: 5,
-    medium: 15,
-    fast: 40,
-  };
-  const CHARS_PER_UPDATE = batchSizes[speed] || batchSizes.fast || 40;
-
-  const positions = [];
-
-  // Create list of all positions
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < columns; x++) {
-      positions.push({ x, y });
-    }
-  }
-
-  // Shuffle positions
-  for (let i = positions.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [positions[i], positions[j]] = [positions[j], positions[i]];
-  }
-
-  // Fill in random order
-  for (let i = 0; i < positions.length; i++) {
-    const pos = positions[i];
-    displayGrid[pos.y][pos.x] = sourceGrid[pos.y][pos.x];
-
-    if (i % CHARS_PER_UPDATE === 0) {
-      refreshDisplay();
-      await sleep(delay);
-    }
-  }
-  refreshDisplay();
-}
-
-// Spiral inward effect
-async function spiralInEffect(sourceGrid, speed = "fast") {
-  const delay = ANIMATION_SPEEDS[speed] * 2;
-  let top = 0,
-    bottom = 31,
-    left = 0,
-    right = 59;
-
-  while (top <= bottom && left <= right) {
-    // Top row
-    for (let x = left; x <= right; x++) {
-      displayGrid[top][x] = sourceGrid[top][x];
-    }
-    top++;
-    refreshDisplay();
-    await sleep(delay);
-
-    // Right column
-    for (let y = top; y <= bottom; y++) {
-      displayGrid[y][right] = sourceGrid[y][right];
-    }
-    right--;
-    refreshDisplay();
-    await sleep(delay);
-
-    // Bottom row
-    if (top <= bottom) {
-      for (let x = right; x >= left; x--) {
-        displayGrid[bottom][x] = sourceGrid[bottom][x];
-      }
-      bottom--;
-      refreshDisplay();
-      await sleep(delay);
-    }
-
-    // Left column
-    if (left <= right) {
-      for (let y = bottom; y >= top; y--) {
-        displayGrid[y][left] = sourceGrid[y][left];
-      }
-      left++;
-      refreshDisplay();
-      await sleep(delay);
-    }
-  }
-}
-
-// Spiral outward effect (from center out)
-async function spiralOutEffect(sourceGrid, speed = "fast") {
-  const delay = ANIMATION_SPEEDS[speed] * 2;
-  const centerX = 29; // Center of 60 wide grid (0-59, so 29.5 rounded down)
-  const centerY = 15; // Center of 32 tall grid (0-31, so 15.5 rounded down)
-
-  // Track which positions have been filled
-  const filled = Array(32)
-    .fill()
-    .map(() => Array(60).fill(false));
-
-  // Start from center and expand outward
-  let radius = 0;
-  const maxRadius = Math.max(
-    centerX + 1,
-    centerY + 1,
-    59 - centerX,
-    31 - centerY
-  );
-
-  while (radius <= maxRadius) {
-    const positions = [];
-
-    // Find all unfilled positions at exactly this distance from center
-    for (let y = 0; y < 32; y++) {
-      for (let x = 0; x < 60; x++) {
-        if (!filled[y][x]) {
-          // Calculate Chebyshev distance (max of horizontal and vertical distance)
-          const distance = Math.max(
-            Math.abs(x - centerX),
-            Math.abs(y - centerY)
-          );
-
-          if (distance === radius) {
-            positions.push({ y, x });
-            filled[y][x] = true;
-          }
-        }
-      }
-    }
-
-    // Draw all positions at this radius
-    for (const pos of positions) {
-      displayGrid[pos.y][pos.x] = sourceGrid[pos.y][pos.x];
-    }
-
-    if (positions.length > 0) {
-      refreshDisplay();
-      await sleep(delay);
-    }
-
-    radius++;
-  }
-
-  // Safety check: fill any remaining unfilled positions
-  for (let y = 0; y < 32; y++) {
-    for (let x = 0; x < 60; x++) {
-      if (!filled[y][x]) {
-        displayGrid[y][x] = sourceGrid[y][x];
-      }
-    }
-  }
-  refreshDisplay();
-}
-
-// Diagonal wipe effect
-async function diagonalWipeEffect(sourceGrid, speed = "fast") {
-  const delay = ANIMATION_SPEEDS[speed] * 3;
-
-  // Fill diagonally from top-left to bottom-right
-  for (let d = 0; d < 32 + 60 - 1; d++) {
-    for (let y = 0; y < 32; y++) {
-      const x = d - y;
-      if (x >= 0 && x < 60) {
-        displayGrid[y][x] = sourceGrid[y][x];
-      }
-    }
-    refreshDisplay();
-    await sleep(delay);
-  }
-}
-
-// Main displayAsciiArt trigger function
-async function displayAsciiArt(artName, effectName = "fadeIn", speed = "fast") {
-  if (!asciiArtLibrary[artName]) {
-    console.error(`Art piece "${artName}" not found`);
-    return;
-  }
-
-  const sourceGrid = convertLinesToGrid(asciiArtLibrary[artName].rows);
-
-  try {
-    switch (effectName) {
-      case "instant":
-        instantCopy(sourceGrid);
-        break;
-      case "fadeIn":
-        await fadeInEffect(sourceGrid, speed);
-        break;
-      case "typewriter":
-        await typewriterEffect(sourceGrid, speed);
-        break;
-      case "verticalSweep":
-        await verticalSweepEffect(sourceGrid, speed);
-        break;
-      case "randomScatter":
-        await randomScatterEffect(sourceGrid, speed);
-        break;
-      case "spiralIn":
-        await spiralInEffect(sourceGrid, speed);
-        break;
-      case "spiralOut":
-        await spiralOutEffect(sourceGrid, speed);
-        break;
-      case "diagonalWipe":
-        await diagonalWipeEffect(sourceGrid, speed);
-        break;
-      default:
-        instantCopy(sourceGrid);
-    }
-
-    console.log(`${artName} loaded with ${effectName} effect`);
-  } catch (error) {
-    console.error(`Error during ${effectName} effect: ${error.message}`);
-  }
-}
-
-// ASCII art display function (now uses initGame startup config)
-async function updateAsciiArtDisplay() {
-  // Initialize blank display grid
-  initializeDisplayGrid();
-
-  // Refresh to show blank display
-  refreshDisplay();
-
-  // Use gameData.startup.asciiArt if available, otherwise fallback to asciiArtConfig defaults
-  let startupDelay, artName, effect, speed;
-  
-  if (gameData && gameData.startup && gameData.startup.asciiArt) {
-    startupDelay = gameData.startup.asciiArt.delay || 500;
-    artName = gameData.startup.asciiArt.name || "CASTLE";
-    effect = gameData.startup.asciiArt.effect || "fadeIn";
-    speed = gameData.startup.asciiArt.speed || "fast";
-    console.log('Using ASCII art settings from gameData.json');
-  } else {
-    startupDelay = asciiArtConfig?.defaults?.startupDelay || 500;
-    artName = asciiArtConfig?.defaults?.asciiArt || "CASTLE";
-    effect = asciiArtConfig?.defaults?.effect || "fadeIn";
-    speed = asciiArtConfig?.defaults?.speed || "fast";
-    console.log('Fallback to ASCII art settings from asciiArtConfig');
-  }
-
-  await sleep(startupDelay);
-  await displayAsciiArt(artName, effect, speed);
-}
 
 function updateGameStatus() {
   const statusDiv = document.querySelector(".status");
@@ -1639,10 +1099,6 @@ function handleInput(event) {
 // === INITIALIZATION FUNCTIONS ===
 // ========================================
 
-// Initialize ASCII art display
-function initializeAsciiArt() {
-  updateAsciiArtDisplay();
-}
 
 // Initialize status information display
 function initializeStatusInfo() {
@@ -1665,7 +1121,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   try {
     // Load all configuration files first
     console.log('Loading configuration files...');
-    asciiArtConfig = await loadAsciiArtConfig();
     gameData = await loadGameData();
     uiConfig = await loadUIConfig();
 
@@ -1680,6 +1135,14 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const itemsData = await loadItems();
     items = itemsData.items || {};
+
+    // Load and merge scavenger items
+    const scavengerData = await loadScavengerItems();
+    const scavengerItems = scavengerData.scavengerItems || {};
+
+    // Merge scavenger items into main items object
+    items = { ...items, ...scavengerItems };
+    console.log(`Merged ${Object.keys(scavengerItems).length} scavenger items into main items list`);
 
     // Set starting room from gameData
     currentRoom = gameData.startup?.room || "STREET-01";
@@ -1733,19 +1196,10 @@ document.addEventListener("DOMContentLoaded", async function () {
       return; // Exit early - do not continue initialization
     }
 
-    // Set up animation speeds from config
-    ANIMATION_SPEEDS = asciiArtConfig?.animation?.speeds || {
-      slow: 8,
-      medium: 3,
-      fast: 1,
-    };
 
-    // Load ASCII art library
-    await loadAsciiArtLibrary();
 
     console.log('Initializing game systems...');
     await initializeBuffer(processedGameData);
-    initializeAsciiArt();
     initializeStatusInfo();
     initializeInput();
 
@@ -1770,34 +1224,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
       }
 
-      // Handle ASCII art shortcuts
-      const artShortcuts = keyboardShortcuts?.asciiArt || [];
-      for (const shortcut of artShortcuts) {
-        let keyMatches = false;
-
-        // Handle Alt+ combinations
-        if (shortcut.key.startsWith("Alt+")) {
-          const baseKey = shortcut.key.replace("Alt+", "");
-          keyMatches = e.altKey && e.key === baseKey;
-        } else {
-          // Handle single keys (case insensitive)
-          keyMatches = e.key.toLowerCase() === shortcut.key.toLowerCase();
-        }
-
-        if (keyMatches) {
-          if (shortcut.preventDefault) e.preventDefault();
-
-          if (shortcut.action === "blank") {
-            initializeDisplayGrid();
-            refreshDisplay();
-          } else if (shortcut.action === "castle") {
-            await updateAsciiArtDisplay();
-          } else if (shortcut.art) {
-            await displayAsciiArt(shortcut.art, shortcut.effect, shortcut.speed);
-          }
-          return;
-        }
-      }
     });
     
   } catch (error) {

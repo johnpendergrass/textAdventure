@@ -1,0 +1,174 @@
+{
+  "scavengerItems": {
+    "item_01": {
+      "includeInGame": true,
+      "display": "Scavenger item #1",
+      "description": "Test item for scavenger hunt",
+      "startLocation": "KITCHEN",
+      "itemType": "scavenger",
+      "points": 10,
+      "found": false,
+      "actions": {
+        "examine": "It's Scavenger item #1, worth 10 points!",
+        "take": {
+          "response": "You pick up Scavenger item #1. (10 points!)",
+          "addToInventory": true,
+          "markAsFound": true
+        }
+      }
+    },
+    "item_02": {
+      "includeInGame": true,
+      "display": "Scavenger item #2",
+      "description": "Test item for scavenger hunt",
+      "startLocation": "KITCHEN",
+      "itemType": "scavenger",
+      "points": 10,
+      "found": false,
+      "actions": {
+        "examine": "It's Scavenger item #2, worth 10 points!",
+        "take": {
+          "response": "You pick up Scavenger item #2. (10 points!)",
+          "addToInventory": true,
+          "markAsFound": true
+        }
+      }
+    },
+    "item_03": {
+      "includeInGame": true,
+      "display": "Scavenger item #3",
+      "description": "Test item for scavenger hunt",
+      "startLocation": "LIBRARY",
+      "itemType": "scavenger",
+      "points": 10,
+      "found": false,
+      "actions": {
+        "examine": "It's Scavenger item #3, worth 10 points!",
+        "take": {
+          "response": "You pick up Scavenger item #3. (10 points!)",
+          "addToInventory": true,
+          "markAsFound": true
+        }
+      }
+    },
+    "item_04": {
+      "includeInGame": true,
+      "display": "Scavenger item #4",
+      "description": "Test item for scavenger hunt",
+      "startLocation": "LIBRARY",
+      "itemType": "scavenger",
+      "points": 10,
+      "found": false,
+      "actions": {
+        "examine": "It's Scavenger item #4, worth 10 points!",
+        "take": {
+          "response": "You pick up Scavenger item #4. (10 points!)",
+          "addToInventory": true,
+          "markAsFound": true
+        }
+      }
+    },
+    "item_05": {
+      "includeInGame": true,
+      "display": "Scavenger item #5",
+      "description": "Test item for scavenger hunt",
+      "startLocation": "STUDY",
+      "itemType": "scavenger",
+      "points": 10,
+      "found": false,
+      "actions": {
+        "examine": "It's Scavenger item #5, worth 10 points!",
+        "take": {
+          "response": "You pick up Scavenger item #5. (10 points!)",
+          "addToInventory": true,
+          "markAsFound": true
+        }
+      }
+    },
+    "item_06": {
+      "includeInGame": true,
+      "display": "Scavenger item #6",
+      "description": "Test item for scavenger hunt",
+      "startLocation": "STUDY",
+      "itemType": "scavenger",
+      "points": 10,
+      "found": false,
+      "actions": {
+        "examine": "It's Scavenger item #6, worth 10 points!",
+        "take": {
+          "response": "You pick up Scavenger item #6. (10 points!)",
+          "addToInventory": true,
+          "markAsFound": true
+        }
+      }
+    },
+    "item_07": {
+      "includeInGame": true,
+      "display": "Scavenger item #7",
+      "description": "Test item for scavenger hunt",
+      "startLocation": "DINING-ROOM",
+      "itemType": "scavenger",
+      "points": 10,
+      "found": false,
+      "actions": {
+        "examine": "It's Scavenger item #7, worth 10 points!",
+        "take": {
+          "response": "You pick up Scavenger item #7. (10 points!)",
+          "addToInventory": true,
+          "markAsFound": true
+        }
+      }
+    },
+    "item_08": {
+      "includeInGame": true,
+      "display": "Scavenger item #8",
+      "description": "Test item for scavenger hunt",
+      "startLocation": "DINING-ROOM",
+      "itemType": "scavenger",
+      "points": 10,
+      "found": false,
+      "actions": {
+        "examine": "It's Scavenger item #8, worth 10 points!",
+        "take": {
+          "response": "You pick up Scavenger item #8. (10 points!)",
+          "addToInventory": true,
+          "markAsFound": true
+        }
+      }
+    },
+    "item_09": {
+      "includeInGame": true,
+      "display": "Scavenger item #9",
+      "description": "Test item for scavenger hunt",
+      "startLocation": "FOYER",
+      "itemType": "scavenger",
+      "points": 10,
+      "found": false,
+      "actions": {
+        "examine": "It's Scavenger item #9, worth 10 points!",
+        "take": {
+          "response": "You pick up Scavenger item #9. (10 points!)",
+          "addToInventory": true,
+          "markAsFound": true
+        }
+      }
+    },
+    "item_10": {
+      "includeInGame": true,
+      "display": "Scavenger item #10",
+      "description": "Test item for scavenger hunt",
+      "startLocation": "BEDROOM",
+      "itemType": "scavenger",
+      "points": 10,
+      "found": false,
+      "actions": {
+        "examine": "It's Scavenger item #10, worth 10 points!",
+        "take": {
+          "response": "You pick up Scavenger item #10. (10 points!)",
+          "addToInventory": true,
+          "markAsFound": true
+        }
+      }
+    }
+  }
+}

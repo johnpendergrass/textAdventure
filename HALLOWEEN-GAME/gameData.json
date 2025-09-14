@@ -7,12 +7,6 @@
   
   "startup": {
     "room": "STREET-01",
-    "asciiArt": {
-      "name": "CASTLE",
-      "effect": "fadeIn",
-      "speed": "fast",
-      "delay": 500
-    },
     "welcomeText": [
       {"text": "Welcome to Text Adventure - Halloween Edition!", "type": "flavor"},
       {"text": "", "type": "flavor"},

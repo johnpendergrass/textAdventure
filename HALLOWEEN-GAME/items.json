@@ -4,19 +4,34 @@
       "includeInGame": true,
       "display": "candy bag",
       "description": "A pillowcase for collecting treats",
-      "startLocation": "player",
+      "startLocation": "MUSIC-ROOM",
+      "itemType": "",
+      "points": 0,
+      "found": false,
       "capacity": 40,
       "actions": {
-        "examine": "Your trusty candy collection bag. It's getting heavy with treats."
+        "examine": "Your trusty candy collection bag. It's getting heavy with treats.",
+        "take": {
+          "response": "You pick up the candy bag.",
+          "addToInventory": true
+        }
       }
     },
     "snickers_bar": {
       "includeInGame": true,
       "display": "Snickers mini-bar",
       "description": "A fun-size Snickers bar",
-      "startLocation": "player",
+      "startLocation": "FOYER",
+      "itemType": "",
+      "points": 0,
+      "found": false,
+      "capacity": 0,
       "actions": {
         "examine": "It's a Snickers bar, what's not to like?",
+        "take": {
+          "response": "You pick up the Snickers bar.",
+          "addToInventory": true
+        },
         "eat": {"response": "Delicious! You feel slightly healthier.", "addHealth": 5, "removeItem": true}
       }
     },
@@ -24,9 +39,17 @@
       "includeInGame": true,
       "display": "Whatchamacallit bar",
       "description": "A crispy candy bar",
-      "startLocation": "player",
+      "startLocation": "LIBRARY",
+      "itemType": "",
+      "points": 0,
+      "found": false,
+      "capacity": 0,
       "actions": {
         "examine": "Crispy rice and caramel covered in chocolate. An unusual but tasty choice.",
+        "take": {
+          "response": "You pick up the Whatchamacallit bar.",
+          "addToInventory": true
+        },
         "eat": {"response": "Crunchy and sweet! The crispy bits tickle your teeth.", "addHealth": 3, "removeItem": true}
       }
     },
@@ -35,6 +58,10 @@
       "display": "doorbell",
       "description": "A brass doorbell button",
       "startLocation": "NICE-PORCH",
+      "itemType": "",
+      "points": 0,
+      "found": false,
+      "capacity": 0,
       "actions": {
         "ring": {"response": "Ding-dong! You hear footsteps approaching from inside."},
         "examine": "A brass doorbell button, slightly tarnished with age.",
@@ -46,6 +73,10 @@
       "display": "porch light",
       "description": "A warm porch light",
       "startLocation": "NICE-PORCH",
+      "itemType": "",
+      "points": 0,
+      "found": false,
+      "capacity": 0,
       "actions": {
         "examine": "The porch light is on, casting a warm, welcoming glow."
       }
@@ -55,6 +86,10 @@
       "display": "door knocker",
       "description": "A heavy iron door knocker",
       "startLocation": "FRONT-PORCH",
+      "itemType": "",
+      "points": 0,
+      "found": false,
+      "capacity": 0,
       "actions": {
         "knock": {"response": "KNOCK KNOCK! The sound echoes ominously through the house."},
         "use": {"response": "KNOCK KNOCK! The sound echoes ominously through the house."},
@@ -66,6 +101,10 @@
       "display": "porch light",
       "description": "A flickering porch light",
       "startLocation": "FRONT-PORCH",
+      "itemType": "",
+      "points": 0,
+      "found": false,
+      "capacity": 0,
       "actions": {
         "examine": "The porch light flickers eerily, casting dancing shadows."
       }
