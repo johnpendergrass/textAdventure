@@ -1,4 +1,5 @@
 # Text Adventure Game - Project Specifications
+
 # Updated: 2025-09-13 - Perfect Single-Source Architecture
 
 ## Project Overview
@@ -11,13 +12,16 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
 ## Current Architecture Status (September 13, 2025)
 
 ### ✅ PERFECT FOUNDATION COMPLETE - Single Source of Truth Achieved
+
 **Ultimate data consolidation accomplished:**
+
 - Single gameData.json file contains ALL game content
 - Zero duplication across entire codebase
 - includeInGame flags enable instant content management
 - Perfect DRY principle implementation
 
 ### 🚪 NEXT PHASE - Doors/Connections System + Minimum Game Engine
+
 Moving from perfect data architecture to playable game mechanics.
 
 ## Technical Specifications
@@ -45,6 +49,7 @@ Moving from perfect data architecture to playable game mechanics.
 ## PERFECT ARCHITECTURE: Single Source of Truth
 
 ### Architecture Goals (ACHIEVED)
+
 1. **Single source of truth** - gameData.json contains ALL game content
 2. **Zero duplication** - Every element defined exactly once
 3. **Flexible management** - includeInGame flags for instant enable/disable
@@ -70,6 +75,7 @@ Runtime State ↔ player.json + gameState.json (auto-created)
 ### File Architecture (PERFECTED)
 
 #### **Single Source File**
+
 - **gameData.json** - THE source of truth for all game content (6KB)
   - Meta information (game name, version, author)
   - Startup configuration (room, ASCII art, welcome text, player stats)
@@ -78,6 +84,7 @@ Runtime State ↔ player.json + gameState.json (auto-created)
   - NPCs with startLocation and actions
 
 #### **Navigation & Display Files**
+
 - **rooms.json** - Pure navigation data (name, enterText, lookText, exits)
 - **asciiArt.txt** - ASCII art library with comment support
 - **asciiArtConfig.json** - Display settings (grid, animations, speeds)
@@ -85,22 +92,25 @@ Runtime State ↔ player.json + gameState.json (auto-created)
 - **keyboardShortcuts.json** - Key bindings
 
 #### **Runtime Files** (Auto-created for saves)
+
 - **player.json** - Current player state (created when saving)
 - **gameState.json** - Current world state (created when saving)
 
 #### **Engine**
+
 - **textAdventure.js** - Unified game engine with single-source processing
 - **textAdventure.html/css** - Game interface
 
 ## Command System Architecture (IMPLEMENTED)
 
 ### Perfect Command Structure
+
 ```json
 {
   "commands": {
     "help": {
       "includeInGame": true,
-      "type": "system", 
+      "type": "system",
       "shortcuts": ["h", "?"],
       "action": "show_help"
     },
@@ -115,12 +125,14 @@ Runtime State ↔ player.json + gameState.json (auto-created)
 ```
 
 ### Seven Core Commands (Implemented)
+
 1. **help** - Show available commands
 2. **look** - Examine current room
 3. **inventory** - Show player inventory
 4. **north/south/east/west** - Movement commands
 
 ### Item-Specific Commands (Implemented)
+
 5. **examine {item}** - Look closely at items/NPCs
 6. **eat {item}** - Consume items
 7. **use {item}** - Use/activate items
@@ -128,7 +140,9 @@ Runtime State ↔ player.json + gameState.json (auto-created)
 ## Content Management System (PERFECT)
 
 ### Universal includeInGame Flag System
+
 **Every game element has includeInGame property:**
+
 ```json
 {
   "flashlight": {
@@ -138,19 +152,22 @@ Runtime State ↔ player.json + gameState.json (auto-created)
   },
   "magic_sword": {
     "includeInGame": false,    // Disabled (not deleted!)
-    "startLocation": "ARMORY",
+    "startLocation": "MUSIC-ROOM",
     "actions": { "wield": "Power flows through you!" }
   }
 }
 ```
 
 ### Smart Location System
+
 **startLocation property automatically places content:**
+
 - `"player"` → Added to starting inventory
 - `"ROOM-ID"` → Placed in that room
 - Engine builds room contents dynamically from item locations
 
 ### Content Processing Flow
+
 ```javascript
 1. Load gameData.json
 2. Filter where includeInGame === true
@@ -163,12 +180,14 @@ Runtime State ↔ player.json + gameState.json (auto-created)
 ## Room System Architecture (CLEANED)
 
 ### World Map (15 Rooms Total)
+
 - **2 Street locations**: STREET-01 (start), STREET-02
 - **2 Nice House areas**: NICE-PORCH, NICE-HOUSE (Mrs. McGillicutty)
-- **10 Radley House rooms**: FRONT-PORCH, FOYER, LIBRARY, DINING-ROOM, STUDY, ARMORY, GAME-ROOM, KITCHEN, BEDROOM, TV-ROOM
+- **10 Radley House rooms**: FRONT-PORCH, FOYER, LIBRARY, DINING-ROOM, STUDY, MUSIC-ROOM, GAME-ROOM, KITCHEN, BEDROOM, TV-ROOM
 - **1 End location**: HOME (game completion)
 
 ### Room Structure (Pure Navigation)
+
 ```json
 {
   "ROOM-ID": {
@@ -183,13 +202,14 @@ Runtime State ↔ player.json + gameState.json (auto-created)
       "south": "ANOTHER-ROOM-ID"
     },
     "special": {
-      "starting_location": true  // Only for game mechanics
+      "starting_location": true // Only for game mechanics
     }
   }
 }
 ```
 
 ### Room Content Population (Dynamic)
+
 - **No hardcoded items/NPCs** in rooms.json
 - **Engine populates** rooms from gameData items/NPCs with matching startLocation
 - **Look command shows**: Room description + exits + items present + NPCs present
@@ -197,6 +217,7 @@ Runtime State ↔ player.json + gameState.json (auto-created)
 ## NEXT PRIORITY: Doors/Connections System
 
 ### Current Problem
+
 - **Rooms.json exits** are simple room IDs with no validation
 - **No door states**: Can't handle locked doors, keys, puzzles
 - **No visibility control**: Can't hide secret passages
@@ -205,12 +226,13 @@ Runtime State ↔ player.json + gameState.json (auto-created)
 ### Proposed Connections Architecture
 
 #### Option A: Integrated into gameData.json
+
 ```json
 {
   "connections": {
     "FOYER_TO_LIBRARY": {
       "from": "FOYER",
-      "to": "LIBRARY", 
+      "to": "LIBRARY",
       "direction": "west",
       "barrier": {
         "type": "door",
@@ -221,25 +243,25 @@ Runtime State ↔ player.json + gameState.json (auto-created)
           "locked": true
         },
         "requirements": {
-          "unlock": {"needsItem": "brass_key"},
-          "open": {"needsState": "unlocked"}
+          "unlock": { "needsItem": "brass_key" },
+          "open": { "needsState": "unlocked" }
         }
       }
     },
-    "ARMORY_SECRET": {
-      "from": "ARMORY",
+    "MUSIC-ROOM_SECRET": {
+      "from": "MUSIC-ROOM",
       "to": "GAME-ROOM",
       "direction": "north",
       "barrier": {
         "type": "secret_door",
         "display": "section of wall",
         "states": {
-          "visible": {"requires": "found_secret", "default": false},
+          "visible": { "requires": "found_secret", "default": false },
           "open": false
         },
         "requirements": {
-          "reveal": {"method": "examine wall"},
-          "open": {"method": "push"}
+          "reveal": { "method": "examine wall" },
+          "open": { "method": "push" }
         }
       }
     }
@@ -248,6 +270,7 @@ Runtime State ↔ player.json + gameState.json (auto-created)
 ```
 
 #### Movement Processing Flow
+
 ```javascript
 // Player types: "go north"
 1. Get current room exits.north
@@ -260,6 +283,7 @@ Runtime State ↔ player.json + gameState.json (auto-created)
 ```
 
 ### Benefits of Connections System
+
 1. **Extensible**: Works for doors, windows, transport pads, teleporters
 2. **Stateful**: Track locked/unlocked, open/closed, visible/hidden
 3. **Requirements**: Support keys, puzzles, conditions
@@ -269,6 +293,7 @@ Runtime State ↔ player.json + gameState.json (auto-created)
 ## NEXT PRIORITY: Minimum Game Engine
 
 ### Core Engine Requirements
+
 **Basic playable navigation system:**
 
 ```javascript
@@ -299,6 +324,7 @@ function showInventory() {
 ```
 
 ### State Management Integration
+
 - **gameState.json**: currentRoom, visitedRooms, doorStates
 - **player.json**: inventory, stats, progress
 - **Persistent saves**: Auto-save on room transitions
@@ -306,12 +332,14 @@ function showInventory() {
 ## Development Approach
 
 ### Phase 1: Doors/Connections System (Next)
+
 1. **Design connections data structure** (gameData vs separate file)
 2. **Implement door state management** (visible, open, locked)
 3. **Create movement validation** (check requirements before allowing passage)
 4. **Test with simple/complex door scenarios**
 
 ### Phase 2: Minimum Game Engine (After doors)
+
 1. **Movement processing** - Process north/south/east/west with door validation
 2. **Room display system** - Show descriptions, exits, items, NPCs
 3. **Look command** - Enhanced room examination
@@ -319,6 +347,7 @@ function showInventory() {
 5. **Testing** - Verify navigation works through all 15 rooms
 
 ### Phase 3: Enhanced Interactions (Future)
+
 1. **Item interactions** - examine, take, use, drop
 2. **NPC conversations** - talk, give items
 3. **Inventory management** - capacity, organization
@@ -327,24 +356,28 @@ function showInventory() {
 ## Files Structure (Current Perfect State)
 
 ### Core Game Engine
+
 - **gameData.json** (6KB) - THE single source of truth
 - **rooms.json** (5KB) - Pure navigation data
 - **textAdventure.js** - Unified game engine
 - **textAdventure.html/css** - Game interface
 
 ### Display & Configuration
+
 - **asciiArtConfig.json** - Display settings
-- **uiConfig.json** - UI labels  
+- **uiConfig.json** - UI labels
 - **keyboardShortcuts.json** - Key bindings
 - **asciiArt.txt** - Art library
 
 ### Runtime (Auto-created)
+
 - **player.json** - Save game data
 - **gameState.json** - World state
 
 ## Success Criteria for Next Phase
 
 ### Doors System Success:
+
 - Player can encounter locked doors that block movement
 - Keys can unlock doors
 - Secret doors can be found and opened
@@ -352,6 +385,7 @@ function showInventory() {
 - State persists between game sessions
 
 ### Minimum Engine Success:
+
 - Player can navigate all 15 rooms using n/s/e/w commands
 - Look command shows room description, exits, items, and NPCs
 - Help and inventory commands work correctly

@@ -170,7 +170,7 @@
       "includeInGame": false,
       "display": "magic sword",
       "description": "A glowing blade of legendary power",
-      "startLocation": "ARMORY",
+      "startLocation": "MUSIC-ROOM",
       "actions": {
         "examine": "The blade pulses with mystical energy.",
         "wield": {"response": "You feel the power coursing through you!"}

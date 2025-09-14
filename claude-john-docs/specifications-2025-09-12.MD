@@ -1,4 +1,5 @@
 # Text Adventure Game - Project Specifications
+
 # Updated: 2025-09-12 - Startup-Driven Architecture
 
 ## Project Overview
@@ -11,13 +12,16 @@ Theme: Halloween Edition - "An exciting game of Trick or Treating and Suspense!"
 ## Current Architecture Status (September 12, 2025)
 
 ### ✅ FOUNDATION COMPLETE - Ready for Game Engine
+
 All core systems implemented and tested:
+
 - Complete error handling with fallbacks
 - Clean command structure (7 commands)
 - Full world map (15 rooms)
 - Data-driven configuration system
 
 ### 🔧 NEXT PHASE - Startup-Driven Game Engine
+
 Moving from configuration-driven to gameplay-driven architecture.
 
 ## Technical Specifications
@@ -45,6 +49,7 @@ Moving from configuration-driven to gameplay-driven architecture.
 ## NEW ARCHITECTURE: Startup-Driven System
 
 ### Architecture Goals
+
 1. **Startup-based initialization** - New games start from startup.json
 2. **Runtime state management** - player.json and gameState.json as containers
 3. **Clean separation** - Startup data vs. runtime data vs. configuration
@@ -69,23 +74,27 @@ Look command → Room description + Dynamic exits + Items/NPCs
 ### File Architecture (NEW)
 
 #### **Configuration Files** (Static game setup)
+
 - `asciiArtConfig.json` - ASCII art display settings (grid, animation, defaults)
-- `uiConfig.json` - UI text and labels  
+- `uiConfig.json` - UI text and labels
 - `commands.json` - Command definitions (7 commands with actions)
 - `keyboardShortcuts.json` - Keyboard shortcuts
 - `rooms.json` - Complete world map (15 rooms)
 - `asciiArt.txt` - ASCII art library
 
 #### **Startup Files** (New game initialization)
+
 - `startup.json` - **NEW** Starting configuration for new games
 
 #### **Runtime Files** (Dynamic game state)
+
 - `player.json` - Current player data (gets populated from startup.json)
 - `gameState.json` - Current world state (gets populated from startup.json)
 
 ## Command System Architecture
 
 ### Command Structure (IMPLEMENTED)
+
 ```json
 {
   "command_name": {
@@ -97,8 +106,9 @@ Look command → Room description + Dynamic exits + Items/NPCs
 ```
 
 ### Seven Essential Commands
+
 1. **help** - type: "system", action: "show_help"
-2. **look** - type: "action", action: "examine_room"  
+2. **look** - type: "action", action: "examine_room"
 3. **inventory** - type: "system", action: "show_inventory"
 4. **north** - type: "movement", action: "move_north"
 5. **south** - type: "movement", action: "move_south"
@@ -106,6 +116,7 @@ Look command → Room description + Dynamic exits + Items/NPCs
 7. **west** - type: "movement", action: "move_west"
 
 ### Game Engine Processing (TO IMPLEMENT)
+
 ```javascript
 // Command processing flow:
 1. Parse user input → find command
@@ -121,13 +132,16 @@ Look command → Room description + Dynamic exits + Items/NPCs
 ## Room System Architecture
 
 ### World Map (IMPLEMENTED)
+
 **15 Total Rooms:**
+
 - **2 Street locations**: STREET-01 (start), STREET-02
 - **2 Nice House areas**: NICE-PORCH, NICE-HOUSE (Mrs. McGillicutty)
-- **10 Radley House rooms**: FRONT-PORCH, FOYER, LIBRARY, DINING-ROOM, STUDY, ARMORY, GAME-ROOM, KITCHEN, BEDROOM, TV-ROOM
+- **10 Radley House rooms**: FRONT-PORCH, FOYER, LIBRARY, DINING-ROOM, STUDY, MUSIC-ROOM, GAME-ROOM, KITCHEN, BEDROOM, TV-ROOM
 - **1 End location**: HOME (game completion)
 
 ### Room JSON Structure (IMPLEMENTED)
+
 ```json
 {
   "ROOM-ID": {
@@ -151,6 +165,7 @@ Look command → Room description + Dynamic exits + Items/NPCs
 ```
 
 ### Room Navigation System (TO IMPLEMENT)
+
 - **Current room tracking** in gameState.json
 - **Visit history** for first/repeat entry text
 - **Dynamic exit generation** from rooms.json exits object
@@ -159,6 +174,7 @@ Look command → Room description + Dynamic exits + Items/NPCs
 ## Startup System Design (TO IMPLEMENT)
 
 ### startup.json Structure
+
 ```json
 {
   "game": {
@@ -187,12 +203,21 @@ Look command → Room description + Dynamic exits + Items/NPCs
     ]
   },
   "commands": {
-    "availableAtStart": ["help", "look", "inventory", "north", "south", "east", "west"]
+    "availableAtStart": [
+      "help",
+      "look",
+      "inventory",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
   }
 }
 ```
 
 ### Initialization Process (TO IMPLEMENT)
+
 1. **Load startup.json** on new game
 2. **Populate player.json** with starting player data
 3. **Populate gameState.json** with starting world state
@@ -203,6 +228,7 @@ Look command → Room description + Dynamic exits + Items/NPCs
 ## Game Engine Requirements (TO IMPLEMENT)
 
 ### Core Engine Functions Needed
+
 ```javascript
 // Movement system
 function movePlayer(direction) {
@@ -213,7 +239,7 @@ function movePlayer(direction) {
   // Update visit history
 }
 
-// Look system  
+// Look system
 function examineRoom() {
   // Get current room from gameState
   // Display lookText from rooms.json
@@ -234,6 +260,7 @@ function showInventory() {
 ```
 
 ### State Management
+
 - **gameState.json**: currentRoom, visitedRooms, gameFlags
 - **player.json**: inventory, stats, progress
 - **Persistent state**: Save/load capability for later
@@ -241,6 +268,7 @@ function showInventory() {
 ## Error Handling Architecture (IMPLEMENTED)
 
 ### Comprehensive Error System
+
 - **Centralized error display**: Console + user messages
 - **Complete fallbacks**: All 9 config files have defaults
 - **Critical validation**: Game won't start with missing essential files
@@ -248,15 +276,19 @@ function showInventory() {
 - **Graceful degradation**: Game continues with fallbacks when possible
 
 ### Config File Classification
+
 **Critical files** (game cannot run without):
+
 - asciiArtConfig.json, uiConfig.json, commands.json
 
 **Non-critical files** (have fallbacks):
+
 - player.json, gameState.json, keyboardShortcuts.json, startGameText.json, asciiArt.txt
 
 ## Development Approach
 
 ### Incremental Development Strategy
+
 1. **Foundation** ✅ - Error handling, commands, rooms (COMPLETE)
 2. **Startup System** 🔧 - startup.json creation and integration
 3. **Basic Engine** 🔧 - 7 commands working with rooms
@@ -264,6 +296,7 @@ function showInventory() {
 5. **Game Content** 📋 - Full Halloween adventure implementation
 
 ### Testing Strategy
+
 - **Component testing** - Test each system individually
 - **Integration testing** - Ensure systems work together
 - **User testing** - Verify game flow and usability
@@ -272,12 +305,14 @@ function showInventory() {
 ## Files Structure
 
 ### Main Game (950×720px)
+
 - `textAdventure.html` - HTML structure with 5-section layout
-- `textAdventure.css` - All styling, layout, colors, responsive design  
+- `textAdventure.css` - All styling, layout, colors, responsive design
 - `textAdventure.js` - Game engine with comprehensive error handling
 - `CONFIG_LOCATION = "HALLOWEEN-GAME"` - Single configuration point
 
 ### Configuration Data (HALLOWEEN-GAME/)
+
 - `asciiArtConfig.json` - ASCII art display settings (grid, animations, defaults)
 - `uiConfig.json` - UI text and labels
 - `commands.json` - 7 clean commands with action definitions
@@ -289,10 +324,12 @@ function showInventory() {
 - `gameState.json` - Runtime world state (populated from startup.json)
 
 ### Test Environment (/asciiArt-stuff/)
+
 - `testASCII.html/css/js` - 4-box test interface with all 8 animation effects
 - Complete ASCII art system with comment-enabled validation/parsing
 
 ### Documentation (/claude-john-docs/)
+
 - `specifications-2025-09-12.MD` - This file (current specifications)
 - `Claude-ToBeContinued-2025-09-12-1430.md` - Current project status and tasks
 - `textAdventure-program-analysis.md` - Complete program analysis
@@ -302,11 +339,12 @@ function showInventory() {
 ### IMMEDIATE PRIORITIES
 
 1. **Create startup.json** - New game initialization configuration
-2. **Strip runtime files** - Make player.json and gameState.json empty containers  
+2. **Strip runtime files** - Make player.json and gameState.json empty containers
 3. **Implement game engine** - Process 7 commands with room system
 4. **Test basic gameplay** - Ensure movement and commands work
 
 ### SUCCESS CRITERIA
+
 - Player can move between rooms using n/s/e/w
 - Look command shows room description and exits
 - Help and inventory commands work
@@ -316,12 +354,14 @@ function showInventory() {
 ## Technical Notes
 
 ### Comment System in ASCII Files
+
 - **Single-line comments**: `//` prefix ignores entire line
 - **Multi-line comments**: `/* ... */` blocks ignore all content between markers
 - **Same-line comments**: `/* comment */` works within single lines
 - **Performance**: Minimal overhead, comments efficiently skipped during parsing
 
 ### Animation System
+
 - **8 effects available**: Instant, Fade In, Typewriter, V-Sweep, Random, Spiral In/Out, Diagonal
 - **3 speed settings**: Slow, Medium, Fast (configurable in asciiArtConfig.json)
 - **Batch processing**: Optimized character-by-character updates

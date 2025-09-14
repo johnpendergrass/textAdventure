@@ -95,7 +95,7 @@
     "lookText": "You are in the library.",
     "exits": {
       "east": "FOYER",
-      "north": "ARMORY"
+      "north": "MUSIC-ROOM"
     },
     "special": {}
   },
@@ -129,13 +129,13 @@
     "special": {}
   },
 
-  "ARMORY": {
-    "name": "Armory",
+  "MUSIC-ROOM": {
+    "name": "Music Room",
     "enterText": {
-      "first": "You enter the armory.",
-      "repeat": "You are in the armory."
+      "first": "You enter the music room.",
+      "repeat": "You are in the music room."
     },
-    "lookText": "You are in the armory.",
+    "lookText": "You are in the music room.",
     "exits": {
       "south": "LIBRARY",
       "north": "GAME-ROOM"
@@ -151,7 +151,7 @@
     },
     "lookText": "You are in the game room.",
     "exits": {
-      "south": "ARMORY"
+      "south": "MUSIC-ROOM"
     },
     "special": {}
   },
