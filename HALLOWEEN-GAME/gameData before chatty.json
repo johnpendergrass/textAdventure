@@ -1,0 +1,245 @@
+{
+  "meta": {
+    "gameName": "Halloween Text Adventure",
+    "version": "0.2.0",
+    "author": "Poppy/John"
+  },
+  
+  "startup": {
+    "room": "STREET-01",
+    "asciiArt": {
+      "name": "CASTLE",
+      "effect": "fadeIn",
+      "speed": "fast",
+      "delay": 500
+    },
+    "welcomeText": [
+      {"text": "Welcome to Text Adventure - Halloween Edition!", "type": "flavor"},
+      {"text": "", "type": "flavor"},
+      {"text": "It is nearly 8:00 PM, Trick or Treat nearly over. You are tired from hauling around this heavy bag of candy all night.", "type": "flavor"},
+      {"text": "", "type": "flavor"},
+      {"text": "Your last house is Mrs. McGillicutty's. Nice house. Good, the porch light is still on. Probably has some candy left.", "type": "flavor"},
+      {"text": "", "type": "flavor"},
+      {"text": "Type HELP or H for a list of commands.", "type": "command"},
+      {"text": "", "type": "flavor"}
+    ],
+    "playerStats": {
+      "score": 0,
+      "health": 100,
+      "currentRoom": "STREET-01",
+      "visitedRooms": [],
+      "treats": {"current": 0, "max": 40},
+      "houses": {"current": 0, "max": 12}
+    }
+  },
+  
+  "commands": {
+    "help": {
+      "includeInGame": true,
+      "type": "system",
+      "shortcuts": ["h", "?"],
+      "action": "show_help"
+    },
+    "look": {
+      "includeInGame": true,
+      "type": "action",
+      "shortcuts": ["l"],
+      "action": "examine_room"
+    },
+    "inventory": {
+      "includeInGame": true,
+      "type": "system",
+      "shortcuts": ["i"],
+      "action": "show_inventory"
+    },
+    "north": {
+      "includeInGame": true,
+      "type": "movement",
+      "shortcuts": ["n"],
+      "action": "move_north"
+    },
+    "south": {
+      "includeInGame": true,
+      "type": "movement",
+      "shortcuts": ["s"],
+      "action": "move_south"
+    },
+    "east": {
+      "includeInGame": true,
+      "type": "movement",
+      "shortcuts": ["e"],
+      "action": "move_east"
+    },
+    "west": {
+      "includeInGame": true,
+      "type": "movement",
+      "shortcuts": ["w"],
+      "action": "move_west"
+    },
+    "eat": {
+      "includeInGame": true,
+      "pattern": "eat {item}",
+      "description": "Eat an item",
+      "checksItemAction": true
+    },
+    "examine": {
+      "includeInGame": true,
+      "pattern": "examine {item}",
+      "description": "Look closely at an item",
+      "checksItemAction": true,
+      "aliases": ["look at", "inspect"]
+    },
+    "use": {
+      "includeInGame": true,
+      "pattern": "use {item}",
+      "description": "Use or activate an item",
+      "checksItemAction": true
+    },
+    "turn_on": {
+      "includeInGame": true,
+      "pattern": "turn on {item}",
+      "description": "Turn something on",
+      "checksItemAction": true,
+      "aliases": ["switch on"]
+    },
+    "turn_off": {
+      "includeInGame": true,
+      "pattern": "turn off {item}",
+      "description": "Turn something off", 
+      "checksItemAction": true,
+      "aliases": ["switch off"]
+    }
+  },
+  
+  "items": {
+    "flashlight": {
+      "includeInGame": true,
+      "display": "flashlight",
+      "description": "A sturdy LED flashlight",
+      "startLocation": "player",
+      "states": {"on": false},
+      "actions": {
+        "examine": "It has fresh batteries and feels solid in your hand.",
+        "turn_on": {"setState": "on", "response": "Click! The flashlight is now on, casting a bright beam."},
+        "turn_off": {"setState": "off", "response": "The flashlight is now off."},
+        "eat": {"fail": "You can't eat a flashlight!"}
+      }
+    },
+    "candy_bag": {
+      "includeInGame": true,
+      "display": "candy bag",
+      "description": "A pillowcase for collecting treats",
+      "startLocation": "player",
+      "capacity": 40,
+      "actions": {
+        "examine": "Your trusty candy collection bag. It's getting heavy with treats.",
+        "eat": {"fail": "Eat the candy, not the bag!"}
+      }
+    },
+    "snickers_bar": {
+      "includeInGame": true,
+      "display": "Snickers mini-bar",
+      "description": "A fun-size Snickers bar",
+      "startLocation": "player",
+      "actions": {
+        "examine": "Chocolate, peanuts, caramel, nougat. The wrapper crinkles invitingly.",
+        "eat": {"response": "Delicious! The chocolate melts in your mouth. You feel slightly healthier.", "addHealth": 5, "removeItem": true}
+      }
+    },
+    "whatchamacallit": {
+      "includeInGame": true,
+      "display": "Whatchamacallit bar",
+      "description": "A crispy candy bar",
+      "startLocation": "player",
+      "actions": {
+        "examine": "Crispy rice and caramel covered in chocolate. An unusual but tasty choice.",
+        "eat": {"response": "Crunchy and sweet! The crispy bits tickle your teeth.", "addHealth": 3, "removeItem": true}
+      }
+    },
+    "plastic_knife": {
+      "includeInGame": false,
+      "display": "plastic knife",
+      "description": "A dull plastic Halloween prop",
+      "startLocation": "KITCHEN",
+      "actions": {
+        "examine": "It's clearly fake and wouldn't cut butter.",
+        "use": {"fail": "The plastic knife is too dull to be useful."}
+      }
+    },
+    "magic_sword": {
+      "includeInGame": false,
+      "display": "magic sword",
+      "description": "A glowing blade of legendary power",
+      "startLocation": "MUSIC-ROOM",
+      "actions": {
+        "examine": "The blade pulses with mystical energy.",
+        "wield": {"response": "You feel the power coursing through you!"}
+      }
+    },
+    "crushed_candy": {
+      "includeInGame": true,
+      "display": "crushed candy",
+      "description": "Someone's dropped candy that got stepped on",
+      "startLocation": "STREET-02",
+      "actions": {
+        "examine": "Someone dropped their candy and it got stepped on. What a waste!",
+        "take": {"fail": "It's too crushed and dirty to pick up."},
+        "eat": {"fail": "Eww! It's been on the ground!"}
+      }
+    },
+    "doorbell": {
+      "includeInGame": true,
+      "display": "doorbell",
+      "description": "A brass doorbell button",
+      "startLocation": "NICE-PORCH",
+      "actions": {
+        "ring": {"response": "Ding-dong! You hear footsteps approaching from inside."},
+        "examine": "A brass doorbell button, slightly tarnished with age.",
+        "push": {"response": "Ding-dong! You hear footsteps approaching from inside."}
+      }
+    },
+    "porch_light_nice": {
+      "includeInGame": true,
+      "display": "porch light",
+      "description": "A warm porch light",
+      "startLocation": "NICE-PORCH",
+      "actions": {
+        "examine": "The porch light is on, casting a warm, welcoming glow."
+      }
+    },
+    "door_knocker": {
+      "includeInGame": true,
+      "display": "door knocker",
+      "description": "A heavy iron door knocker",
+      "startLocation": "FRONT-PORCH",
+      "actions": {
+        "knock": {"response": "KNOCK KNOCK! The sound echoes ominously through the house."},
+        "use": {"response": "KNOCK KNOCK! The sound echoes ominously through the house."},
+        "examine": "A heavy iron door knocker shaped like a snarling gargoyle."
+      }
+    },
+    "porch_light_front": {
+      "includeInGame": true,
+      "display": "porch light",
+      "description": "A flickering porch light",
+      "startLocation": "FRONT-PORCH",
+      "actions": {
+        "examine": "The porch light flickers eerily, casting dancing shadows."
+      }
+    }
+  },
+  
+  "npcs": {
+    "mrs_mcgillicutty": {
+      "includeInGame": true,
+      "display": "Mrs. McGillicutty",
+      "description": "A kindly old woman",
+      "startLocation": "NICE-HOUSE",
+      "actions": {
+        "talk": {"response": "Would you like some candy, dear? I have plenty!"},
+        "examine": "A kindly old woman with a warm smile and twinkling eyes.",
+        "greet": {"response": "Hello there, sweetie! Happy Halloween!"}
+      }
+    }
+  }
+}

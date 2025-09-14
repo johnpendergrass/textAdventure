@@ -175,13 +175,48 @@ Runtime State ↔ player.json + gameState.json (auto-created)
 }
 ```
 
-## Command System Architecture (IMPLEMENTED)
+## Command System Architecture (DESIGNED)
 
-### Seven Core Commands (Ready for Movement Engine)
-1. **help** - Show available commands
-2. **look** - Examine current room and visible exits
-3. **inventory** - Show player inventory
-4. **north/south/east/west** - Movement commands with door validation
+### Two-Tier Command System
+**File Structure:**
+- **commands.json** - Global commands available everywhere
+- **items.json** - Item actions available when item is in current room
+
+### Command Processing Flow
+```
+Single Word:     "look" → Global command (commands.json)
+Two Words:       "ring doorbell" → Item action (items.json)
+Multiple Words:  "look at doorbell" → Alias → "examine doorbell"
+```
+
+### Global Commands (7 total)
+1. **help** (h, ?) - Show available commands
+2. **look** (l) - Examine current room and visible exits
+3. **inventory** (i) - Show player inventory
+4. **north/south/east/west** (n/s/e/w) - Movement commands
+
+### Item Actions (Room-Specific)
+- **ring doorbell**, **push doorbell** - Doorbell interactions
+- **eat snickers**, **eat whatchamacallit** - Consume candy
+- **knock door**, **use door** - Door knocker actions
+- **examine [item]** - Inspect any item
+
+### Parser Implementation
+```javascript
+function parseCommand(input) {
+  const words = input.toLowerCase().trim().split(/\s+/);
+
+  if (words.length === 1) {
+    return handleGlobalCommand(words[0]);
+  }
+
+  if (words.length === 2) {
+    return handleItemAction(words[0], words[1]); // verb + target
+  }
+
+  return handleComplexCommand(words); // aliases, multi-word
+}
+```
 
 ### Movement Command Processing Flow
 ```javascript

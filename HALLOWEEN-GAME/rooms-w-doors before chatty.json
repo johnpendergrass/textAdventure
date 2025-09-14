@@ -152,8 +152,7 @@
       },
       "lookText": "You are in the game room.",
       "exits": {
-        "south": { "to": "MUSIC-ROOM", "door": "music-room2game-room" },
-        "north": { "to": "HOME", "door": "game-room2home" }
+        "south": { "to": "MUSIC-ROOM", "door": "music-room2game-room" }
       },
       "special": {}
     },
@@ -214,128 +213,99 @@
   },
 
   "doors": {
-      "street-012street-02": {
-        "between": ["STREET-01", "STREET-02"],
-        "description": "It is a sidewalk.",
-        "visible": true,
-        "locked": false,
-        "open": true
-      },
-  
-      "street-012nice-porch": {
-        "between": ["STREET-01", "NICE-PORCH"],
-        "description": "It is a walkway to the porch.",
-        "visible": true,
-        "locked": false,
-        "open": true
-      },
-  
-      "nice-porch2nice-house": {
-        "between": ["NICE-PORCH", "NICE-HOUSE"],
-        "description": "It is a front door.",
-        "visible": true,
-        "locked": false,
-        "open": false
-      },
-  
-      "street022front-porch": {
-        "between": ["STREET-02", "FRONT-PORCH"],
-        "description": "It is a walkway to the porch.",
-        "visible": true,
-        "locked": false,
-        "open": true
-      },
-  
-      "front-porch2foyer": {
-        "between": ["FRONT-PORCH", "FOYER"],
-        "description": "It is a heavy front door.",
-        "visible": true,
-        "locked": true,
-        "open": false,
-        "requiresItem": "gold-key"
-      },
-  
-      "foyer2library": {
-        "between": ["FOYER", "LIBRARY"],
-        "description": "It is a door.",
-        "visible": true,
-        "locked": false,
-        "open": false
-      },
-  
-      "foyer2study": {
-        "between": ["FOYER", "STUDY"],
-        "description": "It is a door.",
-        "visible": true,
-        "locked": false,
-        "open": false
-      },
-  
-      "foyer2dining-room": {
-        "between": ["FOYER", "DINING-ROOM"],
-        "description": "It is a door.",
-        "visible": true,
-        "locked": false,
-        "open": false
-      },
-  
-      "library2music-room": {
-        "between": ["LIBRARY", "MUSIC-ROOM"],
-        "description": "It is a door.",
-        "visible": true,
-        "locked": false,
-        "open": false
-      },
-  
-      "dining-room2kitchen": {
-        "between": ["DINING-ROOM", "KITCHEN"],
-        "description": "It is a door.",
-        "visible": true,
-        "locked": false,
-        "open": false
-      },
-  
-      "dining-room2tv-room": {
-        "between": ["DINING-ROOM", "TV-ROOM"],
-        "description": "It is a door.",
-        "visible": true,
-        "locked": false,
-        "open": false
-      },
-  
-      "study2tv-room": {
-        "between": ["STUDY", "TV-ROOM"],
-        "description": "It is a door.",
-        "visible": true,
-        "locked": false,
-        "open": false
-      },
-  
-      "music-room2game-room": {
-        "between": ["MUSIC-ROOM", "GAME-ROOM"],
-        "description": "It is a secret door.",
-        "visible": false,
-        "locked": true,
-        "open": false,
-        "requiresPuzzle": "say-friend"
-      },
-  
-      "bedroom2tv-room": {
-        "between": ["BEDROOM", "TV-ROOM"],
-        "description": "It is a door.",
-        "visible": true,
-        "locked": false,
-        "open": false
-      },
-
-      "game-room2home": {
-        "between": ["GAME-ROOM", "HOME"],
-        "description": "It is an exit to home.",
-        "visible": true,
-        "locked": false,
-        "open": true
-      }
+    "street-012street-02": {
+      "between": ["STREET-01", "STREET-02"],
+      "description": "It is a sidewalk.",
+      "visible": true,
+      "locked": false
     },
+    "street-012nice-porch": {
+      "between": ["STREET-01", "NICE-PORCH"],
+      "description": "It is a walkway to the porch.",
+      "visible": true,
+      "locked": false
+    },
+    "nice-porch2nice-house": {
+      "between": ["NICE-PORCH", "NICE-HOUSE"],
+      "description": "It is a front door.",
+      "visible": true,
+      "locked": false
+    },
+    "street022front-porch": {
+      "between": ["STREET-02", "FRONT-PORCH"],
+      "description": "It is a walkway to the porch.",
+      "visible": true,
+      "locked": false
+    },
+    "front-porch2foyer": {
+      "between": ["FRONT-PORCH", "FOYER"],
+      "description": "It is a door.",
+      "visible": true,
+      "locked": true
+    },
+    "foyer2library": {
+      "between": ["FOYER", "LIBRARY"],
+      "description": "It is a door.",
+      "visible": true,
+      "locked": false
+    },
+    "foyer2study": {
+      "between": ["FOYER", "STUDY"],
+      "description": "It is a door.",
+      "visible": true,
+      "locked": false
+    },
+    "foyer2dining-room": {
+      "between": ["FOYER", "DINING-ROOM"],
+      "description": "It is a door.",
+      "visible": true,
+      "locked": false
+    },
+    "library2music-room": {
+      "between": ["LIBRARY", "MUSIC-ROOM"],
+      "description": "It is a door.",
+      "visible": true,
+      "locked": false
+    },
+    "dining-room2kitchen": {
+      "between": ["DINING-ROOM", "KITCHEN"],
+      "description": "It is a door.",
+      "visible": true,
+      "locked": false
+    },
+    "dining-room2tv-room": {
+      "between": ["DINING-ROOM", "TV-ROOM"],
+      "description": "It is a door.",
+      "visible": true,
+      "locked": false
+    },
+    "study2tv-room": {
+      "between": ["STUDY", "TV-ROOM"],
+      "description": "It is a door.",
+      "visible": true,
+      "locked": false
+    },
+    "music-room2game-room": {
+      "between": ["MUSIC-ROOM", "GAME-ROOM"],
+      "visible": false,
+      "locked": true,
+      "requirements": [
+        { "type": "puzzle", "id": "say-friend" }
+      ],
+      "messages": {
+        "hidden": "The wall looks seamless.",
+        "locked": "The stone grinds but won't open… perhaps a password?",
+        "unlocked": "Something shifts inside the stonework."
+      },
+      "alias": "secret door"
+    },
+    "bedroom2tv-room": {
+      "between": ["BEDROOM", "TV-ROOM"],
+      "description": "It is a door.",
+      "visible": true,
+      "locked": false
+    }
+  },
 
   "puzzles": {
     "say-friend": {

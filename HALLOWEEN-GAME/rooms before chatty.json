@@ -1,0 +1,214 @@
+{
+  "STREET-01": {
+    "name": "Street",
+    "enterText": {
+      "first": "You are standing on the street.",
+      "repeat": "You are on the street."
+    },
+    "lookText": "You are on the street.",
+    "exits": {
+      "north": "NICE-PORCH",
+      "east": "STREET-02"
+    },
+    "special": {
+      "starting_location": true
+    }
+  },
+
+  "STREET-02": {
+    "name": "Street",
+    "enterText": {
+      "first": "You enter the street.",
+      "repeat": "You are on the street."
+    },
+    "lookText": "You are on the street.",
+    "exits": {
+      "west": "STREET-01",
+      "north": "FRONT-PORCH"
+    },
+    "special": {}
+  },
+
+  "NICE-PORCH": {
+    "name": "Nice Porch",
+    "enterText": {
+      "first": "You are standing on Mrs. McGillicutty's porch.",
+      "repeat": "You are on the porch."
+    },
+    "lookText": "You are on a nice porch.",
+    "exits": {
+      "south": "STREET-01",
+      "north": "NICE-HOUSE"
+    },
+    "special": {}
+  },
+
+  "NICE-HOUSE": {
+    "name": "Nice House",
+    "enterText": {
+      "first": "The door to the nice house swings open.",
+      "repeat": "You ring and ring, but no one answers."
+    },
+    "lookText": "You are still on the porch.",
+    "exits": {
+      "south": "STREET-01"
+    },
+    "special": {}
+  },
+
+  "FRONT-PORCH": {
+    "name": "Front Porch",
+    "enterText": {
+      "first": "You enter the front porch.",
+      "repeat": "You are on the front porch."
+    },
+    "lookText": "You are on the front porch.",
+    "exits": {
+      "south": "STREET-02",
+      "north": "FOYER"
+    },
+    "special": {}
+  },
+
+  "FOYER": {
+    "name": "Foyer",
+    "enterText": {
+      "first": "You enter the foyer.",
+      "repeat": "You are in the foyer."
+    },
+    "lookText": "You are in the foyer.",
+    "exits": {
+      "south": "FRONT-PORCH",
+      "north": "DINING-ROOM",
+      "east": "STUDY",
+      "west": "LIBRARY"
+    },
+    "special": {}
+  },
+
+  "LIBRARY": {
+    "name": "Library",
+    "enterText": {
+      "first": "You enter the library.",
+      "repeat": "You are in the library."
+    },
+    "lookText": "You are in the library.",
+    "exits": {
+      "east": "FOYER",
+      "north": "MUSIC-ROOM"
+    },
+    "special": {}
+  },
+
+  "DINING-ROOM": {
+    "name": "Dining Room",
+    "enterText": {
+      "first": "You enter the dining room.",
+      "repeat": "You are in the dining room."
+    },
+    "lookText": "You are in the dining room.",
+    "exits": {
+      "south": "FOYER",
+      "north": "KITCHEN",
+      "east": "TV-ROOM"
+    },
+    "special": {}
+  },
+
+  "STUDY": {
+    "name": "Study",
+    "enterText": {
+      "first": "You enter the study.",
+      "repeat": "You are in the study."
+    },
+    "lookText": "You are in the study.",
+    "exits": {
+      "west": "FOYER",
+      "north": "TV-ROOM"
+    },
+    "special": {}
+  },
+
+  "MUSIC-ROOM": {
+    "name": "Music Room",
+    "enterText": {
+      "first": "You enter the music room.",
+      "repeat": "You are in the music room."
+    },
+    "lookText": "You are in the music room.",
+    "exits": {
+      "south": "LIBRARY",
+      "north": "GAME-ROOM"
+    },
+    "special": {}
+  },
+
+  "GAME-ROOM": {
+    "name": "Game Room",
+    "enterText": {
+      "first": "You enter the game room.",
+      "repeat": "You are in the game room."
+    },
+    "lookText": "You are in the game room.",
+    "exits": {
+      "south": "MUSIC-ROOM"
+    },
+    "special": {}
+  },
+
+  "KITCHEN": {
+    "name": "Kitchen",
+    "enterText": {
+      "first": "You enter the kitchen.",
+      "repeat": "You are in the kitchen."
+    },
+    "lookText": "You are in the kitchen.",
+    "exits": {
+      "south": "DINING-ROOM",
+      "east": "BEDROOM"
+    },
+    "special": {}
+  },
+
+  "BEDROOM": {
+    "name": "Bedroom",
+    "enterText": {
+      "first": "You enter the bedroom.",
+      "repeat": "You are in the bedroom."
+    },
+    "lookText": "You are in the bedroom.",
+    "exits": {
+      "south": "TV-ROOM",
+      "west": "KITCHEN"
+    },
+    "special": {}
+  },
+
+  "TV-ROOM": {
+    "name": "TV Room",
+    "enterText": {
+      "first": "You enter the TV room.",
+      "repeat": "You are in the TV room."
+    },
+    "lookText": "You are in the TV room.",
+    "exits": {
+      "south": "STUDY",
+      "north": "BEDROOM",
+      "west": "DINING-ROOM"
+    },
+    "special": {}
+  },
+
+  "HOME": {
+    "name": "Home",
+    "enterText": {
+      "first": "You are home.",
+      "repeat": "You are home."
+    },
+    "lookText": "You are home.",
+    "exits": {},
+    "special": {
+      "end_game_location": true
+    }
+  }
+}
