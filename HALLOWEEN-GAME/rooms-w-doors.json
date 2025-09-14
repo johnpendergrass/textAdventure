@@ -19,10 +19,10 @@
     "STREET-02": {
       "name": "Street",
       "enterText": {
-        "first": "You enter the street.",
-        "repeat": "You are on the street."
+        "first": "You walk down the sidewalk to the Radley House.",
+        "repeat": "You are in front of the Radley House."
       },
-      "lookText": "You are on the street.",
+      "lookText": "You are in front of the Radley House.",
       "exits": {
         "west":  { "to": "STREET-01",   "door": "street-012street-02" },
         "north": { "to": "FRONT-PORCH", "door": "street022front-porch" }
@@ -36,7 +36,7 @@
         "first": "You are standing on Mrs. McGillicutty's porch.",
         "repeat": "You are on the porch."
       },
-      "lookText": "You are on a nice porch.",
+      "lookText": "You are on Mrs. McGillicutty's porch.",
       "exits": {
         "south": { "to": "STREET-01",  "door": "street-012nice-porch" },
         "north": { "to": "NICE-HOUSE", "door": "nice-porch2nice-house" }
@@ -60,10 +60,10 @@
     "FRONT-PORCH": {
       "name": "Front Porch",
       "enterText": {
-        "first": "You enter the front porch.",
-        "repeat": "You are on the front porch."
+        "first": "You go up the walkway to the front porch.",
+        "repeat": "You are on the Radley's front porch."
       },
-      "lookText": "You are on the front porch.",
+      "lookText": "You are on the Radley's front porch.",
       "exits": {
         "south": { "to": "STREET-02", "door": "street022front-porch" },
         "north": { "to": "FOYER",     "door": "front-porch2foyer" }
@@ -74,7 +74,7 @@
     "FOYER": {
       "name": "Foyer",
       "enterText": {
-        "first": "You enter the foyer.",
+        "first": "You enter the Radley House foyer.",
         "repeat": "You are in the foyer."
       },
       "lookText": "You are in the foyer.",
@@ -152,8 +152,7 @@
       },
       "lookText": "You are in the game room.",
       "exits": {
-        "south": { "to": "MUSIC-ROOM", "door": "music-room2game-room" },
-        "north": { "to": "HOME", "door": "game-room2home" }
+        "south": { "to": "MUSIC-ROOM", "door": "music-room2game-room" }
       },
       "special": {}
     },
@@ -250,8 +249,8 @@
         "between": ["FRONT-PORCH", "FOYER"],
         "description": "It is a heavy front door.",
         "visible": true,
-        "locked": true,
-        "open": false,
+        "locked": false,
+        "open": true,
         "requiresItem": "gold-key"
       },
   
@@ -260,7 +259,7 @@
         "description": "It is a door.",
         "visible": true,
         "locked": false,
-        "open": false
+        "open": true
       },
   
       "foyer2study": {
@@ -268,7 +267,7 @@
         "description": "It is a door.",
         "visible": true,
         "locked": false,
-        "open": false
+        "open": true
       },
   
       "foyer2dining-room": {
@@ -276,7 +275,7 @@
         "description": "It is a door.",
         "visible": true,
         "locked": false,
-        "open": false
+        "open": true
       },
   
       "library2music-room": {
@@ -284,7 +283,7 @@
         "description": "It is a door.",
         "visible": true,
         "locked": false,
-        "open": false
+        "open": true
       },
   
       "dining-room2kitchen": {
@@ -292,7 +291,7 @@
         "description": "It is a door.",
         "visible": true,
         "locked": false,
-        "open": false
+        "open": true
       },
   
       "dining-room2tv-room": {
@@ -300,7 +299,7 @@
         "description": "It is a door.",
         "visible": true,
         "locked": false,
-        "open": false
+        "open": true
       },
   
       "study2tv-room": {
@@ -308,15 +307,15 @@
         "description": "It is a door.",
         "visible": true,
         "locked": false,
-        "open": false
+        "open": true
       },
   
       "music-room2game-room": {
         "between": ["MUSIC-ROOM", "GAME-ROOM"],
         "description": "It is a secret door.",
-        "visible": false,
-        "locked": true,
-        "open": false,
+        "visible": true,
+        "locked": false,
+        "open": true,
         "requiresPuzzle": "say-friend"
       },
   
@@ -325,7 +324,7 @@
         "description": "It is a door.",
         "visible": true,
         "locked": false,
-        "open": false
+        "open": true
       },
 
       "game-room2home": {

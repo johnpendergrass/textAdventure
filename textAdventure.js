@@ -30,6 +30,12 @@ let gameState = {};
 let uiConfig = {};
 let keyboardShortcuts = {};
 
+// Game world data
+let rooms = {};
+let doors = {};
+let items = {};
+let currentRoom = "STREET-01";
+
 // ========================================
 // === ERROR HANDLING FUNCTIONS ===
 // ========================================
@@ -593,6 +599,42 @@ async function loadGameData() {
   }
 }
 
+// Load rooms and doors data from JSON file
+async function loadRoomsAndDoors() {
+  const filename = 'rooms-w-doors.json';
+  try {
+    const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(`Successfully loaded ${filename} from ${CONFIG_LOCATION}`);
+    return data;
+  } catch (error) {
+    displayConfigError(filename, CONFIG_LOCATION, error, true, false);
+    console.log(`Failed to load rooms data - game cannot continue`);
+    return {};
+  }
+}
+
+// Load items data from JSON file
+async function loadItems() {
+  const filename = 'items.json';
+  try {
+    const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(`Successfully loaded ${filename} from ${CONFIG_LOCATION}`);
+    return data;
+  } catch (error) {
+    displayConfigError(filename, CONFIG_LOCATION, error, false, true);
+    console.log(`Using empty items data as fallback`);
+    return { items: {} };
+  }
+}
+
 // Process gameData to build active items and commands
 function processGameData(gameData) {
   const processed = {
@@ -655,6 +697,166 @@ function validateGameData(gameData, processed) {
   });
   
   return errors;
+}
+
+// ========================================
+// === GAME ENGINE CORE FUNCTIONS ===
+// ========================================
+
+// Display current room description
+function displayRoom(roomId = currentRoom) {
+  if (!rooms[roomId]) {
+    addToBuffer([
+      { text: "ERROR: Room not found!", type: "error" }
+    ]);
+    return;
+  }
+
+  const room = rooms[roomId];
+
+  // Always use first enterText for Phase 1 (ignore visit tracking)
+  const enterText = room.enterText?.first || room.lookText || `You are in ${room.name}`;
+
+  addToBuffer([
+    { text: enterText, type: "flavor" }
+  ]);
+
+  // Show available exits
+  const exits = Object.keys(room.exits || {});
+  if (exits.length > 0) {
+    addToBuffer([
+      { text: `Exits: ${exits.join(", ")}`, type: "command" }
+    ]);
+  } else {
+    addToBuffer([
+      { text: "No obvious exits.", type: "command" }
+    ]);
+  }
+}
+
+// Check if movement through a door is allowed
+function canMoveThrough(door) {
+  if (!door) return { allowed: false, message: "There is no exit in that direction." };
+
+  const doorData = doors[door.door];
+  if (!doorData) return { allowed: false, message: "There is no exit in that direction." };
+
+  // Check visibility
+  if (!doorData.visible) {
+    return { allowed: false, message: "There is no exit in that direction." };
+  }
+
+  // Check if door is locked
+  if (doorData.locked) {
+    return { allowed: false, message: "The door is locked." };
+  }
+
+  // Check if door is closed
+  if (!doorData.open) {
+    return { allowed: false, message: "The door is closed." };
+  }
+
+  return { allowed: true };
+}
+
+// Move player in a direction
+function movePlayer(direction) {
+  const room = rooms[currentRoom];
+  if (!room || !room.exits) {
+    addToBuffer([
+      { text: "You can't move from here.", type: "error" }
+    ]);
+    return;
+  }
+
+  const exit = room.exits[direction];
+  const moveResult = canMoveThrough(exit);
+
+  if (!moveResult.allowed) {
+    addToBuffer([
+      { text: moveResult.message, type: "error" }
+    ]);
+    return;
+  }
+
+  // Move to new room
+  currentRoom = exit.to;
+  addToBuffer([
+    { text: "", type: "flavor" }  // Blank line before room description
+  ]);
+  displayRoom(currentRoom);
+}
+
+// Show help command
+function showHelp() {
+  addToBuffer([
+    { text: "Available commands:", type: "command" },
+    { text: "", type: "flavor" },
+    { text: "Movement: north (n), south (s), east (e), west (w)", type: "flavor" },
+    { text: "Actions: look (l), inventory (i), help (h)", type: "flavor" },
+    { text: "", type: "flavor" }
+  ]);
+}
+
+// Show inventory
+function showInventory() {
+  const inventory = player?.core?.inventory || player?.inventory || [];
+
+  if (inventory.length === 0) {
+    addToBuffer([
+      { text: "Your inventory is empty.", type: "flavor" }
+    ]);
+  } else {
+    addToBuffer([
+      { text: "You are carrying:", type: "command" }
+    ]);
+    inventory.forEach(item => {
+      const itemName = typeof item === 'string' ? item : item.display || item.name || 'unknown item';
+      addToBuffer([
+        { text: `  ${itemName}`, type: "flavor" }
+      ]);
+    });
+  }
+}
+
+// Show room description (look command)
+function lookAtRoom() {
+  const room = rooms[currentRoom];
+  if (!room) {
+    addToBuffer([
+      { text: "You can't see anything here.", type: "error" }
+    ]);
+    return;
+  }
+
+  const lookText = room.lookText || room.enterText?.first || `You are in ${room.name}`;
+  addToBuffer([
+    { text: lookText, type: "flavor" }
+  ]);
+
+  // Show available exits
+  const exits = Object.keys(room.exits || {});
+  if (exits.length > 0) {
+    addToBuffer([
+      { text: `Exits: ${exits.join(", ")}`, type: "command" }
+    ]);
+  }
+
+  // Show items in room (if any)
+  const roomItems = Object.values(items).filter(item =>
+    item.includeInGame && item.startLocation === currentRoom
+  );
+
+  if (roomItems.length > 0) {
+    addToBuffer([
+      { text: "You see:", type: "command" }
+    ]);
+    roomItems.forEach(item => {
+      addToBuffer([
+        { text: `  ${item.display}`, type: "flavor" }
+      ]);
+    });
+  }
 }
 
 // ========================================
@@ -1285,14 +1487,36 @@ function processCommand(command) {
     case "exact":
     case "shortcut":
     case "prefix":
-      // Placeholder response until game engine is implemented
       const cmd = commands[result.command];
-      addToBuffer([
-        { text: `Command: ${result.command}`, type: "command" },
-        { text: `Action: ${cmd.action}`, type: "command" },
-        { text: `Type: ${cmd.type}`, type: "command" },
-        { text: "[Game engine will handle this action]", type: "flavor" }
-      ]);
+
+      // Handle different command actions
+      switch (cmd.action) {
+        case "move_north":
+          movePlayer("north");
+          break;
+        case "move_south":
+          movePlayer("south");
+          break;
+        case "move_east":
+          movePlayer("east");
+          break;
+        case "move_west":
+          movePlayer("west");
+          break;
+        case "examine_room":
+          lookAtRoom();
+          break;
+        case "show_inventory":
+          showInventory();
+          break;
+        case "show_help":
+          showHelp();
+          break;
+        default:
+          addToBuffer([
+            { text: `Unknown action: ${cmd.action}`, type: "error" }
+          ]);
+      }
       isValid = true;
       break;
 
@@ -1437,15 +1661,29 @@ function initializeInput() {
 // Initialize when page loads
 document.addEventListener("DOMContentLoaded", async function () {
   console.log(`Starting game initialization with CONFIG_LOCATION: ${CONFIG_LOCATION}`);
-  
+
   try {
     // Load all configuration files first
     console.log('Loading configuration files...');
     asciiArtConfig = await loadAsciiArtConfig();
     gameData = await loadGameData();
     uiConfig = await loadUIConfig();
-    // Note: commands now loaded from gameData.commands
-    commands = gameData.commands || {};
+
+    // Load commands from separate commands.json file
+    const commandsData = await loadCommands();
+    commands = commandsData.commands || {};
+
+    // Load game world data
+    const roomsData = await loadRoomsAndDoors();
+    rooms = roomsData.rooms || {};
+    doors = roomsData.doors || {};
+
+    const itemsData = await loadItems();
+    items = itemsData.items || {};
+
+    // Set starting room from gameData
+    currentRoom = gameData.startup?.room || "STREET-01";
+
     // Note: player data built from gameData, but check for existing save
     const savedPlayer = await loadPlayer();
     gameState = await loadGameState();
@@ -1510,6 +1748,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     initializeAsciiArt();
     initializeStatusInfo();
     initializeInput();
+
+    // Show starting room after welcome text
+    addToBuffer([
+      { text: "", type: "flavor" }
+    ]);
+    displayRoom(currentRoom);
 
     console.log('Game initialization completed successfully');
 
