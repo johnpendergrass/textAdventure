@@ -84,6 +84,7 @@ const CONFIG_FALLBACKS = {
         title: "COMMANDS:",
         list: [
           "(h)elp (l)ook (i)nventory",
+          "(t)ake e(x)amine (d)rop",
           "(n)orth (s)outh (e)ast (w)est"
         ]
       },
@@ -130,15 +131,35 @@ const CONFIG_FALLBACKS = {
       type: "movement",
       shortcuts: ["w"],
       action: "move_west"
+    },
+    take: {
+      type: "action",
+      shortcuts: ["get", "grab", "pick"],
+      action: "take_item"
+    },
+    examine: {
+      type: "action",
+      shortcuts: ["x", "ex"],
+      action: "examine_item"
+    },
+    drop: {
+      type: "action",
+      shortcuts: ["put", "place"],
+      action: "drop_item"
     }
   },
   
   player: {
-    inventory: [],
-    stats: {
-      treats: { current: 0, max: 10 },
-      houses: { current: 0, max: 25 },
-      score: 0
+    core: {
+      score: 0,
+      health: 100,
+      inventory: [],
+      currentRoom: "STREET-01",
+      visitedRooms: []
+    },
+    gameStats: {
+      treats: { current: 0, max: 40 },
+      houses: { current: 0, max: 12 }
     }
   },
   
@@ -569,7 +590,7 @@ function displayRoom(roomId = currentRoom) {
 
   // Show items in room (if any)
   const roomItems = Object.values(items).filter(item =>
-    item.includeInGame && item.startLocation === currentRoom
+    item.includeInGame && item.startLocation === currentRoom && item.visible
   );
 
   if (roomItems.length > 0) {
@@ -643,16 +664,19 @@ function showHelp() {
     { text: "Available commands:", type: "command" },
     { text: "", type: "flavor" },
     { text: "Movement: north (n), south (s), east (e), west (w)", type: "flavor" },
-    { text: "Actions: look (l), inventory (i), help (h)", type: "flavor" },
+    { text: "Actions: look (l), inventory (i), help (h), take (get), examine (x), drop (put)", type: "flavor" },
     { text: "", type: "flavor" }
   ]);
 }
 
 // Show inventory
 function showInventory() {
-  const inventory = player?.core?.inventory || player?.inventory || [];
+  // Get items from INVENTORY room
+  const inventoryItems = Object.values(items).filter(item =>
+    item.includeInGame && item.startLocation === "INVENTORY"
+  );
 
-  if (inventory.length === 0) {
+  if (inventoryItems.length === 0) {
     addToBuffer([
       { text: "Your inventory is empty.", type: "flavor" }
     ]);
@@ -660,12 +684,167 @@ function showInventory() {
     addToBuffer([
       { text: "You are carrying:", type: "command" }
     ]);
-    inventory.forEach(item => {
-      const itemName = typeof item === 'string' ? item : item.display || item.name || 'unknown item';
+    inventoryItems.forEach(item => {
+      const points = item.points || 0;
       addToBuffer([
-        { text: `  ${itemName}`, type: "flavor" }
+        { text: `  ${item.display} (+${points})`, type: "flavor" }
       ]);
     });
+  }
+}
+
+// Handle take/get command
+function handleTakeCommand(command) {
+  // Extract the item name (single word, trimmed)
+  const words = command.trim().split(/\s+/);
+  if (words.length < 2) {
+    addToBuffer([
+      { text: "Take what?", type: "error" }
+    ]);
+    return;
+  }
+
+  const targetTypedName = words[1].trim();
+
+  // Find item in current room with matching typedName
+  const roomItems = Object.entries(items).filter(([key, item]) =>
+    item.includeInGame &&
+    item.startLocation === currentRoom &&
+    item.visible &&
+    !item.locked &&
+    item.typedName === targetTypedName &&
+    item.actions?.take?.addToInventory === true
+  );
+
+  if (roomItems.length === 0) {
+    addToBuffer([
+      { text: `You don't see any "${targetTypedName}" here that you can take.`, type: "error" }
+    ]);
+    return;
+  }
+
+  // Take the first matching item
+  const [itemKey, item] = roomItems[0];
+  const takeAction = item.actions.take;
+
+  // Show response message
+  addToBuffer([
+    { text: takeAction.response || `You pick up the ${item.display}.`, type: "flavor" }
+  ]);
+
+  // Move item to inventory
+  item.startLocation = "INVENTORY";
+
+  // Mark as found if specified (for scavenger hunt)
+  if (takeAction.markAsFound) {
+    item.found = true;
+  }
+
+  // Update the status panel to show new inventory
+  updateGameStatus();
+}
+
+// Handle drop/put command
+function handleDropCommand(command) {
+  // Extract the item name (single word, trimmed)
+  const words = command.trim().split(/\s+/);
+  if (words.length < 2) {
+    addToBuffer([
+      { text: "Drop what?", type: "error" }
+    ]);
+    return;
+  }
+
+  const targetTypedName = words[1].trim();
+
+  // Find item in inventory with matching typedName
+  const inventoryItems = Object.entries(items).filter(([key, item]) =>
+    item.includeInGame &&
+    item.startLocation === "INVENTORY" &&
+    item.typedName === targetTypedName &&
+    item.actions?.take  // Can only drop items that are portable (have take action)
+  );
+
+  if (inventoryItems.length === 0) {
+    addToBuffer([
+      { text: `You're not carrying any "${targetTypedName}".`, type: "error" }
+    ]);
+    return;
+  }
+
+  // Drop the first matching item
+  const [itemKey, item] = inventoryItems[0];
+
+  // Show response message
+  addToBuffer([
+    { text: `You drop the ${item.display}.`, type: "flavor" }
+  ]);
+
+  // Move item from inventory to current room
+  item.startLocation = currentRoom;
+
+  // Update the status panel to show new inventory
+  updateGameStatus();
+}
+
+// Handle examine command
+function handleExamineCommand(command) {
+  // Extract the item name (single word, trimmed)
+  const words = command.trim().split(/\s+/);
+  if (words.length < 2) {
+    addToBuffer([
+      { text: "Examine what?", type: "error" }
+    ]);
+    return;
+  }
+
+  const targetTypedName = words[1].trim();
+
+  // Find item by typedName in either inventory or current room
+  const allItems = Object.entries(items).filter(([key, item]) =>
+    item.includeInGame && item.typedName === targetTypedName
+  );
+
+  if (allItems.length === 0) {
+    addToBuffer([
+      { text: `You don't see any "${targetTypedName}" here.`, type: "error" }
+    ]);
+    return;
+  }
+
+  const [itemKey, item] = allItems[0];
+
+  // Check if item has examine action
+  if (!item.actions || !item.actions.examine) {
+    addToBuffer([
+      { text: `You can't examine the ${item.display}.`, type: "error" }
+    ]);
+    return;
+  }
+
+  // Determine examine rules based on whether item has take action
+  if (item.actions.take) {
+    // Item has take action - must be in inventory to examine
+    if (item.startLocation === "INVENTORY") {
+      addToBuffer([
+        { text: `${item.display}: ${item.actions.examine}`, type: "flavor" }
+      ]);
+    } else {
+      addToBuffer([
+        { text: `You need to pick up the ${item.display} first to examine it closely.`, type: "error" }
+      ]);
+    }
+  } else {
+    // Item doesn't have take action - can examine if visible in current room
+    if (item.startLocation === currentRoom && item.visible && !item.locked) {
+      addToBuffer([
+        { text: `${item.display}: ${item.actions.examine}`, type: "flavor" }
+      ]);
+    } else {
+      addToBuffer([
+        { text: `You don't see any "${targetTypedName}" here.`, type: "error" }
+      ]);
+    }
   }
 }
 
@@ -694,7 +873,7 @@ function lookAtRoom() {
 
   // Show items in room (if any)
   const roomItems = Object.values(items).filter(item =>
-    item.includeInGame && item.startLocation === currentRoom
+    item.includeInGame && item.startLocation === currentRoom && item.visible
   );
 
   if (roomItems.length > 0) {
@@ -838,51 +1017,54 @@ function updateGameStatus() {
     "(n)orth (s)outh (e)ast (w)est",
   ];
 
-  // Generate inventory section from player data
+  // Generate inventory section from INVENTORY room
   const inventoryTitle =
     uiConfig?.statusPanel?.inventory?.title || "INVENTORY:";
-  const inventory = player?.core?.inventory || player?.inventory || [];
+  const inventory = Object.values(items).filter(item =>
+    item.includeInGame && item.startLocation === "INVENTORY"
+  );
+
+  // Calculate separate score components
+  let regularItemsScore = 0;
+  let scavengerScore = 0;
+
+  inventory.forEach(item => {
+    const points = item.points || 0;
+    if (item.isScavengerItem) {
+      scavengerScore += points;
+    } else {
+      regularItemsScore += points;
+    }
+  });
+
+  const healthScore = player?.core?.health || 0;
+  const totalScore = regularItemsScore + scavengerScore + healthScore;
+
+  // Update player score with total
+  if (player.core) {
+    player.core.score = totalScore;
+  }
 
   // Generate status section from player data
-  const statusTitle = uiConfig?.statusPanel?.status?.title || "STATUS:";
+  const statusTitle = uiConfig?.statusPanel?.status?.title || "SCORE:";
   const coreStats = player?.core || {};
   const gameStats = player?.gameStats || player?.stats || {};
 
   let inventoryHTML = "";
   inventory.forEach((item) => {
-    // Handle string items (simple format)
-    if (typeof item === 'string') {
-      inventoryHTML += `<div>${item}</div>`;
-    }
-    // Handle object items (complex format with properties)
-    else if (item.quantity && item.unit) {
-      inventoryHTML += `<div>${item.name} (${item.quantity} ${item.unit})</div>`;
-    } else if (item.quantity && item.quantity > 1) {
-      inventoryHTML += `<div>${item.name} (${item.quantity})</div>`;
-    } else if (item.status) {
-      inventoryHTML += `<div>${item.name} (${item.status})</div>`;
-    } else {
-      inventoryHTML += `<div>${item.name}</div>`;
-    }
+    // Handle item objects from INVENTORY room
+    const points = item.points || 0;
+    inventoryHTML += `<div>${item.display} (+${points})</div>`;
   });
 
   let statsHTML = "";
-  
-  // Core stats (score, health, etc.)
-  if (coreStats.score !== undefined) {
-    statsHTML += `<div>Score: ${coreStats.score}</div>`;
-  }
-  if (coreStats.health !== undefined) {
-    statsHTML += `<div>Health: ${coreStats.health}</div>`;
-  }
-  
-  // Game-specific stats (treats, houses, etc.)
-  if (gameStats.treats) {
-    statsHTML += `<div>Treats: ${gameStats.treats.current}/${gameStats.treats.max}</div>`;
-  }
-  if (gameStats.houses) {
-    statsHTML += `<div>Houses: ${gameStats.houses.current}/${gameStats.houses.max}</div>`;
-  }
+
+  // Display score breakdown
+  statsHTML += `<div>Treats: ${regularItemsScore}</div>`;
+  statsHTML += `<div>Scavenger: ${scavengerScore}</div>`;
+  statsHTML += `<div>Health: ${healthScore}</div>`;
+  statsHTML += `<div>───────────</div>`;
+  statsHTML += `<div>Score: ${totalScore}</div>`;
 
   statusDiv.innerHTML = `
     <div class="status-section">
@@ -908,7 +1090,8 @@ function updateGameStatus() {
 
 // Smart command matching function
 function findCommand(input) {
-  const cmd = input.toLowerCase().trim();
+  const fullInput = input.toLowerCase().trim();
+  const cmd = fullInput.split(/\s+/)[0]; // Extract first word for command matching
 
   // Check for exact matches first (including full command names)
   if (commands[cmd]) {
@@ -971,6 +1154,15 @@ function processCommand(command) {
           break;
         case "show_help":
           showHelp();
+          break;
+        case "take_item":
+          handleTakeCommand(command);
+          break;
+        case "examine_item":
+          handleExamineCommand(command);
+          break;
+        case "drop_item":
+          handleDropCommand(command);
           break;
         default:
           addToBuffer([
@@ -1139,6 +1331,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Load and merge scavenger items
     const scavengerData = await loadScavengerItems();
     const scavengerItems = scavengerData.scavengerItems || {};
+
+    // Mark scavenger items for scoring purposes
+    Object.values(scavengerItems).forEach(item => {
+      item.isScavengerItem = true;
+    });
 
     // Merge scavenger items into main items object
     items = { ...items, ...scavengerItems };

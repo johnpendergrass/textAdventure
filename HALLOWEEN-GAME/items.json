@@ -2,13 +2,15 @@
   "items": {
     "candy_bag": {
       "includeInGame": true,
+      "typedName": "bag",
       "display": "candy bag",
       "description": "A pillowcase for collecting treats",
       "startLocation": "MUSIC-ROOM",
-      "itemType": "",
       "points": 0,
-      "found": false,
-      "capacity": 40,
+      "health": 1,
+      "eatable": true,
+      "visible": true,
+      "locked": false,
       "actions": {
         "examine": "Your trusty candy collection bag. It's getting heavy with treats.",
         "take": {
@@ -19,13 +21,15 @@
     },
     "snickers_bar": {
       "includeInGame": true,
+      "typedName": "snickers",
       "display": "Snickers mini-bar",
       "description": "A fun-size Snickers bar",
       "startLocation": "FOYER",
-      "itemType": "",
-      "points": 0,
-      "found": false,
-      "capacity": 0,
+      "points": 1,
+      "health": 1,
+      "eatable": true,
+      "visible": true,
+      "locked": false,
       "actions": {
         "examine": "It's a Snickers bar, what's not to like?",
         "take": {
@@ -37,13 +41,15 @@
     },
     "whatchamacallit": {
       "includeInGame": true,
+      "typedName": "whatchamacallit",
       "display": "Whatchamacallit bar",
       "description": "A crispy candy bar",
       "startLocation": "LIBRARY",
-      "itemType": "",
-      "points": 0,
-      "found": false,
-      "capacity": 0,
+      "points": 1,
+      "health": 1,
+      "eatable": true,
+      "visible": true,
+      "locked": false,
       "actions": {
         "examine": "Crispy rice and caramel covered in chocolate. An unusual but tasty choice.",
         "take": {
@@ -55,13 +61,15 @@
     },
     "doorbell": {
       "includeInGame": true,
+      "typedName": "doorbell",
       "display": "doorbell",
       "description": "A brass doorbell button",
       "startLocation": "NICE-PORCH",
-      "itemType": "",
       "points": 0,
-      "found": false,
-      "capacity": 0,
+      "health": 0,
+      "eatable": false,
+      "visible": false,
+      "locked": false,
       "actions": {
         "ring": {"response": "Ding-dong! You hear footsteps approaching from inside."},
         "examine": "A brass doorbell button, slightly tarnished with age.",
@@ -70,26 +78,30 @@
     },
     "porch_light_nice": {
       "includeInGame": true,
+      "typedName": "light",
       "display": "porch light",
       "description": "A warm porch light",
       "startLocation": "NICE-PORCH",
-      "itemType": "",
       "points": 0,
-      "found": false,
-      "capacity": 0,
+      "health": 0,
+      "eatable": false,
+      "visible": true,
+      "locked": false,
       "actions": {
         "examine": "The porch light is on, casting a warm, welcoming glow."
       }
     },
     "door_knocker": {
       "includeInGame": true,
+      "typedName": "knocker",
       "display": "door knocker",
       "description": "A heavy iron door knocker",
       "startLocation": "FRONT-PORCH",
-      "itemType": "",
       "points": 0,
-      "found": false,
-      "capacity": 0,
+      "health": 0,
+      "eatable": false,
+      "visible": true,
+      "locked": false,
       "actions": {
         "knock": {"response": "KNOCK KNOCK! The sound echoes ominously through the house."},
         "use": {"response": "KNOCK KNOCK! The sound echoes ominously through the house."},
@@ -98,13 +110,15 @@
     },
     "porch_light_front": {
       "includeInGame": true,
+      "typedName": "light",
       "display": "porch light",
       "description": "A flickering porch light",
       "startLocation": "FRONT-PORCH",
-      "itemType": "",
       "points": 0,
-      "found": false,
-      "capacity": 0,
+      "health": 0,
+      "eatable": false,
+      "visible": false,
+      "locked": false,
       "actions": {
         "examine": "The porch light flickers eerily, casting dancing shadows."
       }

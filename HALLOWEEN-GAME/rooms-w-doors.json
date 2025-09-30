@@ -1,5 +1,15 @@
 {
   "rooms": {
+    "INVENTORY": {
+      "name": "Inventory",
+      "enterText": {},
+      "lookText": "",
+      "exits": {},
+      "special": {
+        "inventory-room": true
+      }
+    },
+
     "STREET-01": {
       "name": "Street",
       "enterText": {

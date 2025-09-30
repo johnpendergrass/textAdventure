@@ -4,6 +4,7 @@
       "title": "COMMANDS:",
       "list": [
         "(h)elp (l)ook (i)nventory",
+        "(t)ake e(x)amine (d)rop",
         "(n)orth (s)outh (e)ast (w)est"
       ]
     },
@@ -11,7 +12,7 @@
       "title": "INVENTORY:"
     },
     "status": {
-      "title": "STATUS:"
+      "title": "SCORE:"
     }
   },
   "fallbackText": {

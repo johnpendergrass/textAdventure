@@ -41,6 +41,24 @@
       "type": "movement",
       "shortcuts": ["w"],
       "action": "move_west"
+    },
+    "take": {
+      "includeInGame": true,
+      "type": "action",
+      "shortcuts": ["get", "grab", "pick"],
+      "action": "take_item"
+    },
+    "examine": {
+      "includeInGame": true,
+      "type": "action",
+      "shortcuts": ["x", "ex"],
+      "action": "examine_item"
+    },
+    "drop": {
+      "includeInGame": true,
+      "type": "action",
+      "shortcuts": ["put", "place"],
+      "action": "drop_item"
     }
   }
 }
