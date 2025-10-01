@@ -94,7 +94,9 @@
         "east":  { "to": "STUDY",        "door": "foyer2study" },
         "west":  { "to": "LIBRARY",      "door": "foyer2library" }
       },
-      "special": {}
+      "special": {
+        "displaySquare": 7
+      }
     },
 
     "LIBRARY": {
@@ -108,7 +110,9 @@
         "east":  { "to": "FOYER",  "door": "foyer2library" },
         "north": { "to": "MUSIC-ROOM", "door": "library2music-room" }
       },
-      "special": {}
+      "special": {
+        "displaySquare": 6
+      }
     },
 
     "DINING-ROOM": {
@@ -123,7 +127,9 @@
         "north": { "to": "KITCHEN",     "door": "dining-room2kitchen" },
         "east":  { "to": "TV-ROOM",     "door": "dining-room2tv-room" }
       },
-      "special": {}
+      "special": {
+        "displaySquare": 4
+      }
     },
 
     "STUDY": {
@@ -137,7 +143,9 @@
         "west":  { "to": "FOYER",   "door": "foyer2study" },
         "north": { "to": "TV-ROOM", "door": "study2tv-room" }
       },
-      "special": {}
+      "special": {
+        "displaySquare": 8
+      }
     },
 
     "MUSIC-ROOM": {
@@ -151,7 +159,9 @@
         "south": { "to": "LIBRARY",   "door": "library2music-room" },
         "north": { "to": "GAME-ROOM", "door": "music-room2game-room" }
       },
-      "special": {}
+      "special": {
+        "displaySquare": 3
+      }
     },
 
     "GAME-ROOM": {
@@ -164,7 +174,9 @@
       "exits": {
         "south": { "to": "MUSIC-ROOM", "door": "music-room2game-room" }
       },
-      "special": {}
+      "special": {
+        "displaySquare": 0
+      }
     },
 
     "KITCHEN": {
@@ -177,7 +189,9 @@
       "exits": {
         "south": { "to": "DINING-ROOM", "door": "dining-room2kitchen" }
       },
-      "special": {}
+      "special": {
+        "displaySquare": 1
+      }
     },
 
     "BEDROOM": {
@@ -190,7 +204,9 @@
       "exits": {
         "south": { "to": "TV-ROOM", "door": "bedroom2tv-room" }
       },
-      "special": {}
+      "special": {
+        "displaySquare": 2
+      }
     },
 
     "TV-ROOM": {
@@ -205,7 +221,9 @@
         "north": { "to": "BEDROOM", "door": "bedroom2tv-room" },
         "west":  { "to": "DINING-ROOM", "door": "dining-room2tv-room" }
       },
-      "special": {}
+      "special": {
+        "displaySquare": 5
+      }
     },
 
     "HOME": {

@@ -680,16 +680,60 @@ function showInventory() {
     addToBuffer([
       { text: "Your inventory is empty.", type: "flavor" }
     ]);
-  } else {
+    return;
+  }
+
+  // Separate by type
+  const scavengerItems = inventoryItems.filter(item => item.type === "scavenger");
+  const candyItems = inventoryItems.filter(item => item.type === "candy");
+
+  // Sort scavenger items by room displaySquare (0-8)
+  scavengerItems.sort((a, b) => {
+    const roomA = Object.values(rooms).find(r =>
+      Object.keys(rooms).find(key => rooms[key] === r) === a.originalLocation
+    );
+    const roomB = Object.values(rooms).find(r =>
+      Object.keys(rooms).find(key => rooms[key] === r) === b.originalLocation
+    );
+    const squareA = roomA?.special?.displaySquare ?? 999;
+    const squareB = roomB?.special?.displaySquare ?? 999;
+    return squareA - squareB;
+  });
+
+  addToBuffer([
+    { text: "You are carrying:", type: "command" }
+  ]);
+
+  // Display scavenger items first, each on own line
+  if (scavengerItems.length > 0) {
     addToBuffer([
-      { text: "You are carrying:", type: "command" }
+      { text: "SCAVENGER ITEMS:", type: "flavor" },
+      { text: "-----------------", type: "flavor" }
     ]);
-    inventoryItems.forEach(item => {
-      const points = item.points || 0;
+    scavengerItems.forEach(item => {
       addToBuffer([
-        { text: `  ${item.display} (+${points})`, type: "flavor" }
+        { text: `  ${item.display}`, type: "flavor" }
       ]);
     });
+  }
+
+  // Blank line between sections
+  if (scavengerItems.length > 0 && candyItems.length > 0) {
+    addToBuffer([
+      { text: "", type: "flavor" }
+    ]);
+  }
+
+  // Display candy items, comma-separated
+  if (candyItems.length > 0) {
+    addToBuffer([
+      { text: "TREATS:", type: "flavor" },
+      { text: "--------", type: "flavor" }
+    ]);
+    const candyList = candyItems.map(item => item.display).join(", ");
+    addToBuffer([
+      { text: `  ${candyList}`, type: "flavor" }
+    ]);
   }
 }
 
@@ -745,6 +789,9 @@ function handleTakeCommand(command) {
 
   // Update the status panel to show new inventory
   updateGameStatus();
+
+  // Update scavenger grid if item was marked as found
+  updateScavengerGrid();
 }
 
 // Handle drop/put command
@@ -780,6 +827,14 @@ function handleDropCommand(command) {
 
   // Drop the first matching item
   const [itemKey, item] = inventoryItems[0];
+
+  // Check if item is droppable
+  if (item.droppable === false) {
+    addToBuffer([
+      { text: "You worked hard to find this treasure! You cannot drop it.", type: "error" }
+    ]);
+    return;
+  }
 
   // Show response message
   addToBuffer([
@@ -1056,14 +1111,43 @@ function updateGameStatus() {
 
 // Initialize scavenger grid display
 function initScavengerGrid() {
+  updateScavengerGrid();
+}
+
+// Update scavenger grid based on found items
+function updateScavengerGrid() {
   const scavengerDiv = document.querySelector(".scavenger");
 
   // Create 9 squares for the 3x3 grid
   let gridHTML = "";
-  for (let i = 0; i < 9; i++) {
+
+  for (let squareIndex = 0; squareIndex < 9; squareIndex++) {
+    // Find room with this displaySquare number
+    const room = Object.values(rooms).find(r => r.special?.displaySquare === squareIndex);
+
+    let imgSrc = ""; // Default image commented out: "assets/scavenger/default90x90.png"
+    let isFound = false;
+
+    if (room) {
+      const roomName = Object.keys(rooms).find(key => rooms[key] === room);
+
+      // Find scavenger item that was originally in this room with includeInGame: true
+      const item = Object.values(items).find(item =>
+        item.includeInGame &&
+        item.isScavengerItem &&
+        item.originalLocation === roomName
+      );
+
+      // If item found, use its icon
+      if (item && item.found) {
+        imgSrc = item.icon90x90 || ""; // "assets/scavenger/default90x90.png";
+        isFound = true;
+      }
+    }
+
     gridHTML += `
-      <div class="scavenger-square">
-        <img src="assets/scavenger/orange90x90.png" alt="Test image ${i + 1}">
+      <div class="scavenger-square${isFound ? ' found' : ''}">
+        ${imgSrc ? `<img src="${imgSrc}" alt="Square ${squareIndex}">` : ''}
       </div>
     `;
   }
@@ -1319,9 +1403,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     const scavengerData = await loadScavengerItems();
     const scavengerItems = scavengerData.scavengerItems || {};
 
-    // Mark scavenger items for scoring purposes
+    // Mark scavenger items for scoring purposes and save original location
     Object.values(scavengerItems).forEach(item => {
       item.isScavengerItem = true;
+      item.originalLocation = item.location; // Save original location for grid display
     });
 
     // Merge scavenger items into main items object
