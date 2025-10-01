@@ -1,210 +1,253 @@
 {
   "scavengerItems": {
-    "item_01": {
+    "nvidia": {
       "includeInGame": true,
-      "typedName": "item1",
-      "display": "Scavenger item #1",
-      "description": "Test item for scavenger hunt",
-      "location": "KITCHEN",
-      "points": 11,
-      "health": 1,
-      "eatable": true,
+      "typedName": ["nvidia5090videocard", "nvidia5090", "nvidia", "5090", "nvidiavideocard", "graphicscard", "nvidia5090card", "5090card", "nvidia5090video"],
+      "display": "NVidia 5090 Video Card",
+      "description": "A decent video card for gaming.",
+      "location": "GAME-ROOM",
+      "points": 10,
+      "health": 0,
+      "eatable": false,
       "found": false,
       "visible": true,
       "locked": false,
+      "icon90x90": "assets/scavenger/nVidia90x90.png",
+      "icon250x250": "assets/scavenger/nVidia250x250.png",
       "actions": {
-        "examine": "It's Scavenger item #1.",
+        "examine": "An ASUS 5090 Video Card! This will be a great card to play Minesweeper on!",
         "take": {
-          "response": "You pick up Scavenger item #1.",
+          "response": "You pick up the NVidia 5090 Video Card.",
           "addToInventory": true,
           "markAsFound": true
         }
       }
     },
-    "item_02": {
+    "beatles": {
       "includeInGame": true,
-      "typedName": "item2",
-      "display": "Scavenger item #2",
-      "description": "Test item for scavenger hunt",
-      "location": "KITCHEN",
-      "points": 12,
-      "health": 1,
-      "eatable": true,
+      "typedName": ["beatlesrevolvermusiccd", "beatlesrevolver", "beatles", "revolver", "musiccd", "music", "cd"],
+      "display": "Beatles Revolver Music CD",
+      "description": "The Beatles 1966 classic album",
+      "location": "MUSIC-ROOM",
+      "points": 10,
+      "health": 0,
+      "eatable": false,
       "found": false,
       "visible": true,
       "locked": false,
+      "icon90x90": "assets/scavenger/beatles90x90.png",
+      "icon250x250": "assets/scavenger/beatles250x250.png",
       "actions": {
-        "examine": "It's Scavenger item #2.",
+        "examine": "Wow! What a great album! I cannot wait to listen to Eleanor Rigby.",
         "take": {
-          "response": "You pick up Scavenger item #2.",
+          "response": "You put the Beatles Revolver Music CD in your treat bag.",
           "addToInventory": true,
           "markAsFound": true
         }
       }
     },
-    "item_03": {
+    "catmug": {
       "includeInGame": true,
-      "typedName": "item3",
-      "display": "Scavenger item #3",
-      "description": "Test item for scavenger hunt",
+      "typedName": ["catmug", "cat", "mug", "cup", "kittymug"],
+      "display": "Cat Mug",
+      "description": "A black mug in the shape of a cat's head. Scary!",
+      "location": "DINING-ROOM",
+      "points": 10,
+      "health": 0,
+      "eatable": false,
+      "found": false,
+      "visible": true,
+      "locked": false,
+      "icon90x90": "assets/scavenger/catMug90x90.png",
+      "icon250x250": "assets/scavenger/catMug250x250.png",
+      "actions": {
+        "examine": "A heavy ceramic mug shaped like a cat's head. Black. Scary. This thing could do some real damage in the wrong hands!",
+        "take": {
+          "response": "You put the heavy cat mug in your treat bag.",
+          "addToInventory": true,
+          "markAsFound": true
+        }
+      }
+    },
+    "cuponoodles": {
+      "includeInGame": true,
+      "typedName": ["cupo'noodles", "cuponoodles", "noodles", "food", "noodle", "cupofnoodles"],
+      "display": "Cup O' Noodles",
+      "description": "Delicious seafood style noodles! - and in a cup too!",
       "location": "LIBRARY",
-      "points": 13,
-      "health": 1,
-      "eatable": true,
+      "points": 10,
+      "health": 0,
+      "eatable": false,
       "found": false,
       "visible": true,
       "locked": false,
+      "icon90x90": "assets/scavenger/cuponoodles90x90.png",
+      "icon250x250": "assets/scavenger/cuponoodles250x250.png",
       "actions": {
-        "examine": "It's Scavenger item #3.",
+        "examine": "Delicious seafood noodles in a styrofoam cup. This will make a great snack!",
         "take": {
-          "response": "You pick up Scavenger item #3.",
+          "response": "You pick up the Cup O' Noodles and put them in your bag.",
           "addToInventory": true,
           "markAsFound": true
         }
       }
     },
-    "item_04": {
+    "watch": {
       "includeInGame": true,
-      "typedName": "item4",
-      "display": "Scavenger item #4",
-      "description": "Test item for scavenger hunt",
-      "location": "LIBRARY",
-      "points": 14,
-      "health": 1,
-      "eatable": true,
+      "typedName": ["fancywatch", "watch", "fancy", "timepiece", "langeandsohnewatch", "clock"],
+      "display": "Fancy Watch",
+      "description": "An expensive Lange & Sohne watch!",
+      "location": "BEDROOM",
+      "points": 10,
+      "health": 0,
+      "eatable": false,
       "found": false,
       "visible": true,
       "locked": false,
+      "icon90x90": "assets/scavenger/watch90x90.png",
+      "icon250x250": "assets/scavenger/watch250x250.png",
       "actions": {
-        "examine": "It's Scavenger item #4.",
+        "examine": "Fantastic! A very expensive Lange & Sohne watch! It calculates the seasons! It even tells the time!",
         "take": {
-          "response": "You pick up Scavenger item #4.",
+          "response": "You put the watch on your wrist",
           "addToInventory": true,
           "markAsFound": true
         }
       }
     },
-    "item_05": {
-      "includeInGame": true,
-      "typedName": "item5",
-      "display": "Scavenger item #5",
-      "description": "Test item for scavenger hunt",
-      "location": "STUDY",
-      "points": 15,
-      "health": 1,
-      "eatable": true,
-      "found": false,
-      "visible": true,
-      "locked": false,
-      "actions": {
-        "examine": "It's Scavenger item #5.",
-        "take": {
-          "response": "You pick up Scavenger item #5.",
-          "addToInventory": true,
-          "markAsFound": true
-        }
-      }
-    },
-    "item_06": {
+    "bringingupbaby": {
       "includeInGame": true,
       "typedName": "item6",
-      "display": "Scavenger item #6",
-      "description": "Test item for scavenger hunt",
-      "location": "STUDY",
-      "points": 16,
-      "health": 1,
-      "eatable": true,
+      "display": "Bringing Up Baby DVD",
+      "description": "A DVD of the 1938 classic movie Bringing Up Baby, starring Cary Grant and Katharine Hepburn.",
+      "location": "TV-ROOM",
+      "points": 10,
+      "health": 0,
+      "eatable": false,
       "found": false,
       "visible": true,
       "locked": false,
+      "icon90x90": "assets/scavenger/bringingUpBaby90x90.png",
+      "icon250x250": "assets/scavenger/bringingUpBaby250x250.png",
       "actions": {
-        "examine": "It's Scavenger item #6.",
+        "examine": "An old style clamshell case DVD of the 1938 classic movie Bringing Up Baby. Not scratched at all!",
         "take": {
-          "response": "You pick up Scavenger item #6.",
+          "response": "You put the DVD in your treat bag.",
           "addToInventory": true,
           "markAsFound": true
         }
       }
     },
-    "item_07": {
+    "dog": {
       "includeInGame": true,
-      "typedName": "item7",
-      "display": "Scavenger item #7",
-      "description": "Test item for scavenger hunt",
-      "location": "DINING-ROOM",
-      "points": 17,
-      "health": 1,
-      "eatable": true,
-      "found": false,
-      "visible": true,
-      "locked": false,
-      "actions": {
-        "examine": "It's Scavenger item #7.",
-        "take": {
-          "response": "You pick up Scavenger item #7.",
-          "addToInventory": true,
-          "markAsFound": true
-        }
-      }
-    },
-    "item_08": {
-      "includeInGame": true,
-      "typedName": "item8",
-      "display": "Scavenger item #8",
-      "description": "Test item for scavenger hunt",
-      "location": "DINING-ROOM",
-      "points": 18,
-      "health": 1,
-      "eatable": true,
-      "found": false,
-      "visible": true,
-      "locked": false,
-      "actions": {
-        "examine": "It's Scavenger item #8.",
-        "take": {
-          "response": "You pick up Scavenger item #8.",
-          "addToInventory": true,
-          "markAsFound": true
-        }
-      }
-    },
-    "item_09": {
-      "includeInGame": true,
-      "typedName": "item9",
-      "display": "Scavenger item #9",
-      "description": "Test item for scavenger hunt",
+      "typedName": ["odddog", "dog", "odd", "weird", "weirddog", "weirddoggy", "cavalier", "cavalierkingcharles", "ceramicdog"],
+      "display": "Odd Dog",
+      "description": "Small ceramic figurine of a King Charles Cavalier. Not weird at all!",
       "location": "FOYER",
-      "points": 19,
-      "health": 1,
-      "eatable": true,
+      "points": 10,
+      "health": 0,
+      "eatable": false,
       "found": false,
       "visible": true,
       "locked": false,
+      "icon90x90": "assets/scavenger/dog90x90.png",
+      "icon250x250": "assets/scavenger/dog250x250.png",
       "actions": {
-        "examine": "It's Scavenger item #9.",
+        "examine": "Ceramic figure of a King Charles Cavalier Spaniel. Will be great for throwing at a ghost or something.",
         "take": {
-          "response": "You pick up Scavenger item #9.",
+          "response": "You pick up the oddly shaped ceramic dog and put it in your bag.",
           "addToInventory": true,
           "markAsFound": true
         }
       }
     },
-    "item_10": {
+    "krugerrand": {
       "includeInGame": true,
-      "typedName": "item10",
-      "display": "Scavenger item #10",
-      "description": "Test item for scavenger hunt",
-      "location": "BEDROOM",
-      "points": 20,
-      "health": 1,
-      "eatable": true,
+      "typedName": ["krugerrand", "coin", "goldcoin", "gold", "currency"],
+      "display": "Krugerrand",
+      "description": "Ohh! a 2025 South African Krugerrand! 1 once of solid gold!",
+      "location": "STUDY",
+      "points": 10,
+      "health": 0,
+      "eatable": false,
       "found": false,
       "visible": true,
       "locked": false,
+      "icon90x90": "assets/scavenger/Krugerrand90x90.png",
+      "icon250x250": "assets/scavenger/Krugerrand250x250.png",
       "actions": {
-        "examine": "It's Scavenger item #10.",
+        "examine": "A 1 once coin of 91.6% gold! That ought to help pay the rent!",
         "take": {
-          "response": "You pick up Scavenger item #10.",
+          "response": "You carefully put the krugerrand in your pocket.",
+          "addToInventory": true,
+          "markAsFound": true
+        }
+      }
+    },
+    "pumpkin": {
+      "includeInGame": true,
+      "typedName": ["decorativepumpkin", "pumpkin", "ceramicpumpkin", "glasspumpkin", "knickknack"],
+      "display": "Decorative Pumpkin",
+      "description": "A small decorative pumpkin to celebrate the season!",
+      "location": "FRONT-PORCH",
+      "points": 10,
+      "health": 0,
+      "eatable": false,
+      "found": false,
+      "visible": true,
+      "locked": false,
+      "icon90x90": "assets/scavenger/pumpkin90x90.png",
+      "icon250x250": "assets/scavenger/pumpkin250x250.png",
+      "actions": {
+        "examine": "A finely made glass pumpkin, lovingly hand painted. Feels good in the hand",
+        "take": {
+          "response": "You carefully pick up the pumpkin and put it in your bag.",
+          "addToInventory": true,
+          "markAsFound": true
+        }
+      }
+    },
+    "gamingmouse": {
+      "includeInGame": true,
+      "typedName": ["razergamingmouse", "gamingmouse", "mouse", "razorgamingmouse", "razermouse", "razormouse", "razer", "razor"],
+      "display": "Razer Gaming Mouse",
+      "description": "Top of the line gaming mouse from Razer.",
+      "location": "GAME-ROOM",
+      "points": 10,
+      "health": 0,
+      "eatable": false,
+      "found": false,
+      "visible": true,
+      "locked": false,
+      "icon90x90": "assets/scavenger/gamingMouse90x90.png",
+      "icon250x250": "assets/scavenger/gamingMouse250x250.png",
+      "actions": {
+        "examine": "Great gaming mouse from Razer. Laser. High DPI. Low-latency. Wired or wireless. RGB. and more!",
+        "take": {
+          "response": "You put the Razer mouse in your bag.",
+          "addToInventory": true,
+          "markAsFound": true
+        }
+      }
+    },
+    "frankenstein": {
+      "includeInGame": true,
+      "typedName": ["frankensteinbook", "frankenstein", "book", "novel", "maryshelley", "frankensteinnovel"],
+      "display": "Frankenstein book",
+      "description": "Hardback copy of Mary Shelley's 1818 Frankenstein novel.",
+      "location": "LIBRARY",
+      "points": 10,
+      "health": 0,
+      "eatable": false,
+      "found": false,
+      "visible": true,
+      "locked": false,
+      "icon90x90": "assets/scavenger/frankenstein90x90.png",
+      "icon250x250": "assets/scavenger/frankenstein250x250.png",
+      "actions": {
+        "examine": "A well worn copy of Mary Shelley's tale of the misunderstood monster and it's creator, Victor Frankenstein.",
+        "take": {
+          "response": "You put the book in your bag to read later.",
           "addToInventory": true,
           "markAsFound": true
         }
