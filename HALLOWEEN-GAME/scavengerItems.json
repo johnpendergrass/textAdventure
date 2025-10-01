@@ -3,7 +3,7 @@
     "nvidia": {
       "includeInGame": true,
       "type": "scavenger",
-      "typedNames": ["nvidia5090videocard", "nvidia5090", "nvidia", "5090", "nvidiavideocard", "graphicscard", "nvidia5090card", "5090card", "nvidia5090video"],
+      "typedNames": ["nvidia5090videocard", "nvidia5090", "nvidia", "5090", "videocard", "nvidiavideocard", "graphicscard", "nvidia5090card", "5090card", "nvidia5090video"],
       "display": "NVidia 5090 Video Card",
       "description": "A decent video card for gaming.",
       "location": "GAME-ROOM",
@@ -78,7 +78,7 @@
     "cuponoodles": {
       "includeInGame": true,
       "type": "scavenger",
-      "typedNames": ["cupo'noodles", "cuponoodles", "noodles", "food", "noodle", "cupofnoodles"],
+      "typedNames": ["cupo'noodles", "cuponoodles", "cup", "bowl", "noodles", "food", "noodle", "cupofnoodles"],
       "display": "Cup O' Noodles",
       "description": "Delicious seafood style noodles! - and in a cup too!",
       "location": "KITCHEN",
@@ -102,7 +102,7 @@
     },
     "watch": {
       "includeInGame": false,
-      "typedNames": ["fancywatch", "watch", "fancy", "timepiece", "langeandsohnewatch", "clock"],
+      "typedNames": ["fancywatch", "watch", "timepiece", "langeandsohnewatch", "clock", "luxurywatch"],
       "display": "Fancy Watch",
       "description": "An expensive Lange & Sohne watch!",
       "location": "BEDROOM",
@@ -127,7 +127,7 @@
     "bringingupbaby": {
       "includeInGame": true,
       "type": "scavenger",
-      "typedNames": ["bringingupbaby", "bringingup", "baby", "dvd", "movie", "carygrant"],
+      "typedNames": ["bringingupbaby", "bringingup", "baby", "dvd", "movie", "carygrant", "katherinehepburn"],
       "display": "Bringing Up Baby DVD",
       "description": "A DVD of the 1938 classic movie Bringing Up Baby, starring Cary Grant and Katharine Hepburn.",
       "location": "TV-ROOM",

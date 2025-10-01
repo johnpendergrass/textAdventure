@@ -195,6 +195,7 @@
         "100grand",
         "100grandbar",
         "grand",
+        "100",
         "crispybar"
       ],
       "display": "100 Grand bar",
@@ -227,6 +228,8 @@
         "3musketeers",
         "threemusketeers",
         "musketeers",
+        "threemusketeers",
+        "threemusketeersbar",
         "fluffybar"
       ],
       "display": "3 Musketeers bar",
@@ -259,6 +262,7 @@
         "butterfinger",
         "butterfingerbar",
         "crispyorange",
+        "butterbar",
         "peanutbutterbar"
       ],
       "display": "Butterfinger bar",
@@ -354,7 +358,7 @@
         "mrgoodbar",
         "mistergoodbar",
         "goodbar",
-        "peanutchocolate"
+        "peanutchocolatebar"
       ],
       "display": "Mr. Goodbar",
       "description": "A peanut chocolate bar",
@@ -411,17 +415,21 @@
         }
       }
     },
-    "corn": {
+    "cannedcorn": {
       "includeInGame": true,
       "type": "candy",
       "typedNames": [
-        "corn",
-        "earofcorn",
-        "corncob",
-        "vegetable"
+        "cannedcorn",
+        "delmontecorn",
+        "delmontecannedcorn",
+        "delmonte",
+        "fiestacorn",
+        "fiesta",
+        "cornkernals",
+        "corn"
       ],
-      "display": "Ear of corn",
-      "description": "A fresh ear of corn",
+      "display": "Del Monte Canned Corn",
+      "description": "A large can of Del Monte Canned 'Fiesta' corn.",
       "location": "KITCHEN",
       "points": 1,
       "health": 1,
@@ -431,13 +439,13 @@
       "locked": false,
       "icon150": "assets/items/corn150.png",
       "actions": {
-        "examine": "A fresh ear of corn. Odd Halloween treat, but it's food!",
+        "examine": "Well, it will taste great with my fajitas later.",
         "take": {
-          "response": "You pick up the ear of corn.",
+          "response": "It is heavy. But I'll put it in my bag anyway.",
           "addToInventory": true
         },
         "eat": {
-          "response": "Crunchy and surprisingly sweet! Better than expected.",
+          "response": "This would be better heated up.",
           "addHealth": 5,
           "removeItem": true
         }
@@ -549,7 +557,7 @@
         "fruitcandy"
       ],
       "display": "Jolly Rancher",
-      "description": "A handful of hard fruit candies",
+      "description": "A small bag of hard fruit candies",
       "location": "BEDROOM",
       "points": 1,
       "health": 1,
@@ -565,7 +573,7 @@
           "addToInventory": true
         },
         "eat": {
-          "response": "Intensely fruity! Your mouth is puckering.",
+          "response": "Insanely fruity! Your mouth is puckering.",
           "addHealth": 2,
           "removeItem": true
         }
@@ -578,6 +586,8 @@
         "lemondrops",
         "lemoncandy",
         "sourdrops",
+        "lemon",
+        "drops",
         "yellowcandy"
       ],
       "display": "Lemon Drops",
@@ -597,7 +607,7 @@
           "addToInventory": true
         },
         "eat": {
-          "response": "Tart and sweet! Makes your mouth water.",
+          "response": "Tart and sweet! Makes your mouth pucker.",
           "addHealth": 2,
           "removeItem": true
         }
@@ -613,7 +623,7 @@
         "ringcandy"
       ],
       "display": "Life Savers",
-      "description": "A roll of Life Savers candy",
+      "description": "A roll of Butter Rum Life Savers candy",
       "location": "STUDY",
       "points": 1,
       "health": 1,
@@ -623,9 +633,9 @@
       "locked": false,
       "icon150": "assets/items/lifeSavers150.png",
       "actions": {
-        "examine": "Classic ring-shaped hard candies in assorted flavors.",
+        "examine": "A full sized roll of tasty Butter Rum Life Savers!",
         "take": {
-          "response": "You pick up the Life Savers.",
+          "response": "You pick up the Life Savers roll.",
           "addToInventory": true
         },
         "eat": {
@@ -642,10 +652,12 @@
         "popcorn",
         "poppedcorn",
         "kernels",
-        "snack"
+        "snack",
+        "moviebuttered",
+        "butteredpopcorn"
       ],
       "display": "Popcorn",
-      "description": "A small bag of popcorn",
+      "description": "A small bag of movie style buttered popcorn",
       "location": "GAME-ROOM",
       "points": 1,
       "health": 1,
@@ -655,13 +667,13 @@
       "locked": false,
       "icon150": "assets/items/popcorn150.png",
       "actions": {
-        "examine": "Fresh popped popcorn. Light and crunchy!",
+        "examine": "Fresh popped popcorn. Movie style. Salted and buttered just right!",
         "take": {
-          "response": "You pick up the bag of popcorn.",
+          "response": "You pick up the bag of popcorn and put it in your bag. It spills everywhere.",
           "addToInventory": true
         },
         "eat": {
-          "response": "Light and fluffy! Some kernels stuck in your teeth though.",
+          "response": "Light and fluffy! This is delicious.",
           "addHealth": 3,
           "removeItem": true
         }
@@ -673,8 +685,7 @@
       "typedNames": [
         "reesespieces",
         "reeses",
-        "pbcandy",
-        "orangeandyellow"
+        "pieces"
       ],
       "display": "Reese's Pieces",
       "description": "A bag of peanut butter candy",
