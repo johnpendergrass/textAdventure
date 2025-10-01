@@ -1026,71 +1026,49 @@ function updateGameStatus() {
     "(n)orth (s)outh (e)ast (w)est",
   ];
 
-  // Generate inventory section from INVENTORY room
-  const inventoryTitle =
-    uiConfig?.statusPanel?.inventory?.title || "INVENTORY:";
+  // Get inventory items from INVENTORY room
   const inventory = Object.values(items).filter(item =>
     item.includeInGame && item.location === "INVENTORY"
   );
 
-  // Calculate separate score components
-  let regularItemsScore = 0;
-  let scavengerScore = 0;
+  // Count treats (non-scavenger items) - limit display to 20
+  const treatsCount = inventory.filter(item => !item.isScavengerItem).length;
+  const displayCount = Math.min(treatsCount, 20);
 
-  inventory.forEach(item => {
-    const points = item.points || 0;
-    if (item.isScavengerItem) {
-      scavengerScore += points;
-    } else {
-      regularItemsScore += points;
-    }
-  });
-
-  const healthScore = player?.core?.health || 0;
-  const totalScore = regularItemsScore + scavengerScore + healthScore;
-
-  // Update player score with total
-  if (player.core) {
-    player.core.score = totalScore;
-  }
-
-  // Generate status section from player data
+  // Generate status section
   const statusTitle = uiConfig?.statusPanel?.status?.title || "SCORE:";
-  const coreStats = player?.core || {};
-  const gameStats = player?.gameStats || player?.stats || {};
-
-  let inventoryHTML = "";
-  inventory.forEach((item) => {
-    // Handle item objects from INVENTORY room
-    const points = item.points || 0;
-    inventoryHTML += `<div>${item.display} (+${points})</div>`;
-  });
 
   let statsHTML = "";
-
-  // Display score breakdown
-  statsHTML += `<div>Treats: ${regularItemsScore}</div>`;
-  statsHTML += `<div>Scavenger: ${scavengerScore}</div>`;
-  statsHTML += `<div>Health: ${healthScore}</div>`;
-  statsHTML += `<div>───────────</div>`;
-  statsHTML += `<div>Score: ${totalScore}</div>`;
+  statsHTML += `<div>Treats: ${displayCount} / 20</div>`;
 
   statusDiv.innerHTML = `
     <div class="status-section">
       <div class="status-title">${statusTitle}</div>
       ${statsHTML}
     </div>
-    
-    <div class="status-section">
-      <div class="status-title">${inventoryTitle}</div>
-      ${inventoryHTML}
-    </div>
-    
+
     <div class="status-section">
       <div class="status-title">${commandsTitle}</div>
       ${commandsList.map((cmd) => `<div>${cmd}</div>`).join("")}
     </div>
   `;
+}
+
+// Initialize scavenger grid display
+function initScavengerGrid() {
+  const scavengerDiv = document.querySelector(".scavenger");
+
+  // Create 9 squares for the 3x3 grid
+  let gridHTML = "";
+  for (let i = 0; i < 9; i++) {
+    gridHTML += `
+      <div class="scavenger-square">
+        <img src="assets/scavenger/orange90x90.png" alt="Test image ${i + 1}">
+      </div>
+    `;
+  }
+
+  scavengerDiv.innerHTML = gridHTML;
 }
 
 // ========================================
@@ -1407,6 +1385,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.log('Initializing game systems...');
     await initializeBuffer(processedGameData);
     initializeStatusInfo();
+    initScavengerGrid();
     initializeInput();
 
     // Show starting room after welcome text

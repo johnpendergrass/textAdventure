@@ -74,7 +74,7 @@
       "typedNames": ["cupo'noodles", "cuponoodles", "noodles", "food", "noodle", "cupofnoodles"],
       "display": "Cup O' Noodles",
       "description": "Delicious seafood style noodles! - and in a cup too!",
-      "location": "LIBRARY",
+      "location": "KITCHEN",
       "points": 10,
       "health": 0,
       "eatable": false,
@@ -93,7 +93,7 @@
       }
     },
     "watch": {
-      "includeInGame": true,
+      "includeInGame": false,
       "typedNames": ["fancywatch", "watch", "fancy", "timepiece", "langeandsohnewatch", "clock"],
       "display": "Fancy Watch",
       "description": "An expensive Lange & Sohne watch!",
@@ -143,7 +143,7 @@
       "typedNames": ["odddog", "dog", "odd", "weird", "weirddog", "weirddoggy", "cavalier", "cavalierkingcharles", "ceramicdog"],
       "display": "Odd Dog",
       "description": "Small ceramic figurine of a King Charles Cavalier. Not weird at all!",
-      "location": "FOYER",
+      "location": "STUDY",
       "points": 10,
       "health": 0,
       "eatable": false,
@@ -166,7 +166,7 @@
       "typedNames": ["krugerrand", "coin", "goldcoin", "gold", "currency"],
       "display": "Krugerrand",
       "description": "Ohh! a 2025 South African Krugerrand! 1 once of solid gold!",
-      "location": "STUDY",
+      "location": "BEDROOM",
       "points": 10,
       "health": 0,
       "eatable": false,
@@ -189,7 +189,7 @@
       "typedNames": ["decorativepumpkin", "pumpkin", "ceramicpumpkin", "glasspumpkin", "knickknack"],
       "display": "Decorative Pumpkin",
       "description": "A small decorative pumpkin to celebrate the season!",
-      "location": "FRONT-PORCH",
+      "location": "FOYER",
       "points": 10,
       "health": 0,
       "eatable": false,
@@ -208,7 +208,7 @@
       }
     },
     "gamingmouse": {
-      "includeInGame": true,
+      "includeInGame": false,
       "typedNames": ["razergamingmouse", "gamingmouse", "mouse", "razorgamingmouse", "razermouse", "razormouse", "razer", "razor"],
       "display": "Razer Gaming Mouse",
       "description": "Top of the line gaming mouse from Razer.",
