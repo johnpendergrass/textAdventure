@@ -113,7 +113,7 @@ Today's session has been **extremely productive** - we've implemented the drop c
   "typedName": "snickers",
   "display": "Snickers mini-bar",
   "description": "A fun-size Snickers bar",
-  "startLocation": "FOYER",
+  "location": "FOYER",
   "points": 1,
   "health": 1,
   "eatable": true,

@@ -506,8 +506,8 @@ function processGameData(gameData) {
       if (item.includeInGame === true) {
         processed.activeItems[itemId] = item;
         
-        // Build player inventory from items with startLocation: "player"
-        if (item.startLocation === "player") {
+        // Build player inventory from items with location: "player"
+        if (item.location === "player") {
           processed.playerInventory.push(itemId);
         }
       }
@@ -542,12 +542,12 @@ function processGameData(gameData) {
 function validateGameData(gameData, processed) {
   const errors = [];
   
-  // Check for items with invalid startLocation
+  // Check for items with invalid location
   Object.entries(processed.activeItems).forEach(([itemId, item]) => {
-    if (item.startLocation && item.startLocation !== "player") {
+    if (item.location && item.location !== "player") {
       // This would be where we check if the room exists, but we don't have rooms loaded yet
       // For now, just log it
-      console.log(`Item ${itemId} starts in location: ${item.startLocation}`);
+      console.log(`Item ${itemId} starts in location: ${item.location}`);
     }
   });
   
@@ -590,7 +590,7 @@ function displayRoom(roomId = currentRoom) {
 
   // Show items in room (if any)
   const roomItems = Object.values(items).filter(item =>
-    item.includeInGame && item.startLocation === currentRoom && item.visible
+    item.includeInGame && item.location === currentRoom && item.visible
   );
 
   if (roomItems.length > 0) {
@@ -673,7 +673,7 @@ function showHelp() {
 function showInventory() {
   // Get items from INVENTORY room
   const inventoryItems = Object.values(items).filter(item =>
-    item.includeInGame && item.startLocation === "INVENTORY"
+    item.includeInGame && item.location === "INVENTORY"
   );
 
   if (inventoryItems.length === 0) {
@@ -709,7 +709,7 @@ function handleTakeCommand(command) {
   // Find item in current room with matching typedName
   const roomItems = Object.entries(items).filter(([key, item]) =>
     item.includeInGame &&
-    item.startLocation === currentRoom &&
+    item.location === currentRoom &&
     item.visible &&
     !item.locked &&
     item.typedName === targetTypedName &&
@@ -733,7 +733,7 @@ function handleTakeCommand(command) {
   ]);
 
   // Move item to inventory
-  item.startLocation = "INVENTORY";
+  item.location = "INVENTORY";
 
   // Mark as found if specified (for scavenger hunt)
   if (takeAction.markAsFound) {
@@ -760,7 +760,7 @@ function handleDropCommand(command) {
   // Find item in inventory with matching typedName
   const inventoryItems = Object.entries(items).filter(([key, item]) =>
     item.includeInGame &&
-    item.startLocation === "INVENTORY" &&
+    item.location === "INVENTORY" &&
     item.typedName === targetTypedName &&
     item.actions?.take  // Can only drop items that are portable (have take action)
   );
@@ -781,7 +781,7 @@ function handleDropCommand(command) {
   ]);
 
   // Move item from inventory to current room
-  item.startLocation = currentRoom;
+  item.location = currentRoom;
 
   // Update the status panel to show new inventory
   updateGameStatus();
@@ -825,7 +825,7 @@ function handleExamineCommand(command) {
   // Determine examine rules based on whether item has take action
   if (item.actions.take) {
     // Item has take action - must be in inventory to examine
-    if (item.startLocation === "INVENTORY") {
+    if (item.location === "INVENTORY") {
       addToBuffer([
         { text: `${item.display}: ${item.actions.examine}`, type: "flavor" }
       ]);
@@ -836,7 +836,7 @@ function handleExamineCommand(command) {
     }
   } else {
     // Item doesn't have take action - can examine if visible in current room
-    if (item.startLocation === currentRoom && item.visible && !item.locked) {
+    if (item.location === currentRoom && item.visible && !item.locked) {
       addToBuffer([
         { text: `${item.display}: ${item.actions.examine}`, type: "flavor" }
       ]);
@@ -873,7 +873,7 @@ function lookAtRoom() {
 
   // Show items in room (if any)
   const roomItems = Object.values(items).filter(item =>
-    item.includeInGame && item.startLocation === currentRoom && item.visible
+    item.includeInGame && item.location === currentRoom && item.visible
   );
 
   if (roomItems.length > 0) {
@@ -1021,7 +1021,7 @@ function updateGameStatus() {
   const inventoryTitle =
     uiConfig?.statusPanel?.inventory?.title || "INVENTORY:";
   const inventory = Object.values(items).filter(item =>
-    item.includeInGame && item.startLocation === "INVENTORY"
+    item.includeInGame && item.location === "INVENTORY"
   );
 
   // Calculate separate score components

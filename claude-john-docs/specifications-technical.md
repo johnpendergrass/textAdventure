@@ -25,7 +25,7 @@ Item Validation & State Changes
   ├─ Parse "snickers" from "drop snickers"
   ├─ Find item by typedName in INVENTORY
   ├─ Validate has actions.take (droppable)
-  └─ Change item.startLocation to currentRoom
+  └─ Change item.location to currentRoom
     ↓
 updateGameStatus() - Recalculate score components & refresh UI
   ├─ Filter inventory items
@@ -79,7 +79,7 @@ function findCommand(input) {
 {
   "includeInGame": true,
   "display": "Snickers mini-bar",
-  "startLocation": "FOYER"
+  "location": "FOYER"
 }
 ```
 
@@ -89,7 +89,7 @@ function findCommand(input) {
   "includeInGame": true,
   "typedName": "snickers",
   "display": "Snickers mini-bar",
-  "startLocation": "FOYER",
+  "location": "FOYER",
   "visible": true,
   "locked": false,
   "actions": { "take": {...}, "examine": "..." }
@@ -103,7 +103,7 @@ function findCommand(input) {
   "typedName": "snickers",
   "display": "Snickers mini-bar",
   "description": "A fun-size Snickers bar",
-  "startLocation": "FOYER",
+  "location": "FOYER",
   "points": 1,
   "health": 1,
   "eatable": true,
@@ -159,23 +159,23 @@ player.inventory.forEach(itemId => {
 }
 
 // Add to inventory - simple location change
-item.startLocation = "INVENTORY";
+item.location = "INVENTORY";
 
 // Remove from inventory - simple location change
-item.startLocation = currentRoom;
+item.location = currentRoom;
 
 // Check if in inventory - same as checking any room
-if (item.startLocation === "INVENTORY") { ... }
+if (item.location === "INVENTORY") { ... }
 
 // Display inventory - same filtering as any room
 const inventoryItems = Object.values(items).filter(item =>
-  item.includeInGame && item.startLocation === "INVENTORY"
+  item.includeInGame && item.location === "INVENTORY"
 );
 ```
 
 **Technical Benefits:**
 1. **No special cases** - Inventory uses same code paths as rooms
-2. **No synchronization** - Single source of truth (item.startLocation)
+2. **No synchronization** - Single source of truth (item.location)
 3. **No arrays** - Objects with locations, not array management
 4. **Automatic updates** - Changing location updates everywhere instantly
 5. **Simple filtering** - Same pattern for all item queries
@@ -188,7 +188,7 @@ const inventoryItems = Object.values(items).filter(item =>
 function getVisibleItems(location) {
   return Object.values(items).filter(item =>
     item.includeInGame &&
-    item.startLocation === location &&
+    item.location === location &&
     item.visible
   );
 }
@@ -207,7 +207,7 @@ function handleTakeCommand(command) {
   // 2. Find matching items with 6-step validation
   const roomItems = Object.entries(items).filter(([key, item]) =>
     item.includeInGame &&                    // Step 1: Active item
-    item.startLocation === currentRoom &&    // Step 2: In current room
+    item.location === currentRoom &&    // Step 2: In current room
     item.visible &&                          // Step 3: Discoverable
     !item.locked &&                          // Step 4: Not restricted
     item.typedName === targetTypedName &&    // Step 5: Name match
@@ -227,7 +227,7 @@ function handleTakeCommand(command) {
   ]);
 
   // 5. Update location
-  item.startLocation = "INVENTORY";
+  item.location = "INVENTORY";
 
   // 6. Mark as found (for scavenger items)
   if (item.actions.take.markAsFound) {
@@ -252,7 +252,7 @@ function handleDropCommand(command) {
   // 2. Find matching items in INVENTORY
   const inventoryItems = Object.entries(items).filter(([key, item]) =>
     item.includeInGame &&
-    item.startLocation === "INVENTORY" &&
+    item.location === "INVENTORY" &&
     item.typedName === targetTypedName &&
     item.actions?.take  // Must be portable to be droppable
   );
@@ -270,7 +270,7 @@ function handleDropCommand(command) {
   ]);
 
   // 5. Update location (reverse of take)
-  item.startLocation = currentRoom;
+  item.location = currentRoom;
 
   // 6. Update UI
   updateGameStatus();
@@ -291,7 +291,7 @@ function handleExamineCommand(command) {
   const allItems = Object.entries(items).filter(([key, item]) =>
     item.includeInGame &&
     item.typedName === targetTypedName &&
-    (item.startLocation === currentRoom || item.startLocation === "INVENTORY")
+    (item.location === currentRoom || item.location === "INVENTORY")
   );
 
   if (allItems.length === 0) {
@@ -308,7 +308,7 @@ function handleExamineCommand(command) {
   // DECISION TREE: Portable vs Fixed
   if (item.actions.take) {
     // PORTABLE ITEM RULE - Must be in inventory
-    if (item.startLocation === "INVENTORY") {
+    if (item.location === "INVENTORY") {
       // Can examine - it's in your hands
       addToBuffer([
         { text: `${item.display}: ${item.actions.examine}`, type: "flavor" }
@@ -321,7 +321,7 @@ function handleExamineCommand(command) {
     }
   } else {
     // FIXED ITEM RULE - Must be visible in current room
-    if (item.startLocation === currentRoom && item.visible && !item.locked) {
+    if (item.location === currentRoom && item.visible && !item.locked) {
       // Can examine - it's here and visible
       addToBuffer([
         { text: `${item.display}: ${item.actions.examine}`, type: "flavor" }
@@ -382,7 +382,7 @@ function updateGameStatus() {
 
   // 1. Get inventory items
   const inventory = Object.values(items).filter(item =>
-    item.includeInGame && item.startLocation === "INVENTORY"
+    item.includeInGame && item.location === "INVENTORY"
   );
 
   // 2. Calculate separate score components
@@ -612,7 +612,7 @@ async function loadXXX() {
 3. During game initialization
 4. Future: After handleEatCommand() when implemented
 
-**No manual synchronization needed** - changing item.startLocation automatically reflects in next updateGameStatus() call.
+**No manual synchronization needed** - changing item.location automatically reflects in next updateGameStatus() call.
 
 ### Text Buffer Management
 ```javascript
@@ -637,12 +637,12 @@ function addToBuffer(messages) {
 ```
 User Action (take/drop)
     ↓
-Handler function modifies item.startLocation
+Handler function modifies item.location
     ↓
 Handler calls updateGameStatus()
     ↓
 updateGameStatus() recalculates:
-  ├─ Inventory contents (filter by startLocation)
+  ├─ Inventory contents (filter by location)
   ├─ Score components (regular vs scavenger)
   ├─ Total score (sum + health)
   └─ player.core.score (persistence)
@@ -699,7 +699,7 @@ python3 -c "import json; json.load(open('HALLOWEEN-GAME/gameData.json'))"
 ```javascript
 const roomItems = Object.values(items).filter(item =>
   item.includeInGame &&
-  item.startLocation === currentRoom &&
+  item.location === currentRoom &&
   item.visible
 );
 ```
@@ -708,7 +708,7 @@ const roomItems = Object.values(items).filter(item =>
 ```javascript
 // DON'T DO THIS - inefficient multiple iterations
 const activeItems = items.filter(item => item.includeInGame);
-const roomItems = activeItems.filter(item => item.startLocation === currentRoom);
+const roomItems = activeItems.filter(item => item.location === currentRoom);
 const visibleItems = roomItems.filter(item => item.visible);
 ```
 
@@ -723,7 +723,7 @@ const visibleItems = roomItems.filter(item => item.visible);
 ```javascript
 // Current: Recalculate inventory every updateGameStatus()
 const inventory = Object.values(items).filter(item =>
-  item.includeInGame && item.startLocation === "INVENTORY"
+  item.includeInGame && item.location === "INVENTORY"
 );
 
 // Future: Cache inventory, invalidate on changes
@@ -733,7 +733,7 @@ let inventoryDirty = true;
 function getInventory() {
   if (inventoryDirty) {
     cachedInventory = Object.values(items).filter(item =>
-      item.includeInGame && item.startLocation === "INVENTORY"
+      item.includeInGame && item.location === "INVENTORY"
     );
     inventoryDirty = false;
   }
@@ -769,7 +769,7 @@ if (!item.actions?.examine) {
 }
 
 // Item not in inventory (portable items)
-if (item.actions.take && item.startLocation !== "INVENTORY") {
+if (item.actions.take && item.location !== "INVENTORY") {
   return showError(`You need to pick up the ${item.display} first to examine it closely.`);
 }
 
@@ -854,22 +854,22 @@ All current logic would remain unchanged due to consistent data structure.
 describe('Item Commands', () => {
   test('take command moves item to inventory', () => {
     const item = items['snickers_bar'];
-    item.startLocation = 'FOYER';
+    item.location = 'FOYER';
     handleTakeCommand('take snickers');
-    expect(item.startLocation).toBe('INVENTORY');
+    expect(item.location).toBe('INVENTORY');
   });
 
   test('drop command moves item to current room', () => {
     currentRoom = 'LIBRARY';
     const item = items['snickers_bar'];
-    item.startLocation = 'INVENTORY';
+    item.location = 'INVENTORY';
     handleDropCommand('drop snickers');
-    expect(item.startLocation).toBe('LIBRARY');
+    expect(item.location).toBe('LIBRARY');
   });
 
   test('score components calculate correctly', () => {
-    items['snickers_bar'].startLocation = 'INVENTORY';  // 1 pt
-    items['item_01'].startLocation = 'INVENTORY';       // 11 pts
+    items['snickers_bar'].location = 'INVENTORY';  // 1 pt
+    items['item_01'].location = 'INVENTORY';       // 11 pts
     player.core.health = 100;                           // 100 pts
     updateGameStatus();
     expect(player.core.score).toBe(112);
@@ -877,6 +877,254 @@ describe('Item Commands', () => {
 });
 ```
 
+## Visual Scavenger Hunt Implementation (DESIGNED)
+
+### 3×3 Grid Layout Calculations
+
+**Scavenger box dimensions:**
+```
+Container allocation (from CSS grid): 313px × 280px
+- Border: 2px × 4 sides = 4px width, 4px height
+- Padding: 3px × 4 sides = 6px width, 6px height (reduced from 10px)
+- Usable content area: 303px × 270px
+
+Grid layout (3 columns × 3 rows):
+- Grid gaps: 3px × 2 horizontal = 6px, 3px × 2 vertical = 6px
+- Cell width: (303 - 6) / 3 = 99px
+- Cell height: (270 - 6) / 3 = 90px
+- Perfect fit for 90×90px images with minimal margin
+```
+
+### CSS Implementation
+
+**Scavenger box grid styling:**
+```css
+.scavenger {
+  grid-area: scavenger;
+  border: 2px solid white;
+  padding: 3px;  /* Changed from 10px for grid layout */
+  box-sizing: border-box;
+
+  /* Grid layout */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 3px;
+
+  font-family: "Courier New", Courier, monospace;
+  overflow: hidden;  /* No scrolling needed for fixed grid */
+}
+
+.scavenger-item {
+  border: 1px solid #666;
+  background: #1a1a1a;
+
+  /* Center image in cell */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Optional hover effect */
+  transition: border-color 0.2s;
+}
+
+.scavenger-item:hover {
+  border-color: #ffcc00;
+}
+
+.scavenger-item img {
+  max-width: 90px;
+  max-height: 90px;
+  object-fit: contain;  /* Maintain aspect ratio */
+  display: block;
+}
+```
+
+### HTML Structure
+
+**Grid cells in scavenger div:**
+```html
+<div class="scavenger">
+  <div class="scavenger-item" data-index="0">
+    <img src="assets/scavenger/_90x90blank.png" alt="Item 1">
+  </div>
+  <div class="scavenger-item" data-index="1">
+    <img src="assets/scavenger/_90x90blank.png" alt="Item 2">
+  </div>
+  <!-- ... 7 more cells for 3×3 grid ... -->
+</div>
+```
+
+### JavaScript Implementation
+
+**Update grid based on found items:**
+```javascript
+function updateScavengerGrid() {
+  // Get scavenger items in order
+  const scavengerItems = Object.values(items)
+    .filter(item => item.isScavengerItem)
+    .slice(0, 9);  // Take only first 9 for 3×3 grid
+
+  scavengerItems.forEach((item, index) => {
+    const cell = document.querySelector(`.scavenger-item[data-index="${index}"]`);
+    if (!cell) return;
+
+    const img = cell.querySelector('img');
+    if (item.found) {
+      // Show actual item image
+      img.src = `assets/scavenger/${item.imageFile}`;
+      img.alt = item.display;
+    } else {
+      // Show placeholder
+      img.src = 'assets/scavenger/_90x90blank.png';
+      img.alt = '???';
+    }
+  });
+}
+
+// Call from updateGameStatus() to keep grid in sync
+function updateGameStatus() {
+  // ... existing score/inventory code ...
+
+  // Update scavenger grid
+  updateScavengerGrid();
+}
+```
+
+**Add imageFile property to scavenger items:**
+```json
+{
+  "item_01": {
+    "includeInGame": true,
+    "typedName": "dog",
+    "display": "Dog figurine",
+    "imageFile": "dog90x90.png",  // NEW property
+    "location": "KITCHEN",
+    "points": 11,
+    "found": false,
+    "isScavengerItem": true
+  }
+}
+```
+
+## Candy Image Display Implementation (OPTIONS)
+
+### Option 1: Inline Text Buffer Display
+
+**Simplest approach - insert image directly into text:**
+```javascript
+function handleExamineCommand(command) {
+  // ... existing examination code ...
+
+  // For candy items, show image inline
+  if (item.eatable && item.imageFile) {
+    addToBuffer([
+      {
+        text: `<img src="assets/candy/${item.imageFile}" style="display:block; margin:10px auto; max-width:250px; max-height:250px;">`,
+        type: "flavor"
+      },
+      { text: `${item.display}: ${item.actions.examine}`, type: "flavor" }
+    ]);
+  } else {
+    addToBuffer([
+      { text: `${item.display}: ${item.actions.examine}`, type: "flavor" }
+    ]);
+  }
+}
+```
+
+**Pros:** Minimal code, works immediately, no CSS changes
+**Cons:** Scrolls away with text buffer
+
+### Option 2: Temporary Overlay Display
+
+**Prominent display over status box:**
+```css
+.candy-overlay {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 313px;
+  height: 360px;
+  background: rgba(0, 0, 0, 0.95);
+  border: 2px solid #ffcc00;
+  display: none;
+  z-index: 100;
+  padding: 20px;
+  box-sizing: border-box;
+
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.candy-overlay img {
+  max-width: 250px;
+  max-height: 250px;
+  margin-bottom: 15px;
+}
+
+.candy-overlay .description {
+  color: white;
+  text-align: center;
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+}
+```
+
+```javascript
+function showCandyOverlay(imagePath, description) {
+  const overlay = document.querySelector('.candy-overlay');
+  overlay.innerHTML = `
+    <img src="${imagePath}" alt="Candy">
+    <div class="description">${description}</div>
+  `;
+  overlay.style.display = 'flex';
+}
+
+function processCommand(command) {
+  // Clear overlay at start of every command
+  const overlay = document.querySelector('.candy-overlay');
+  if (overlay) overlay.style.display = 'none';
+
+  // ... rest of command processing ...
+}
+```
+
+**Pros:** Prominent, doesn't scroll away, auto-clears
+**Cons:** More code, needs HTML div added, covers status temporarily
+
+### Option 3: Split Scavenger Box
+
+**Top section for images, bottom for grid:**
+```css
+.scavenger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.scavenger-image {
+  height: 100px;
+  border: 1px solid #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a1a1a;
+}
+
+.scavenger-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 3px;
+}
+```
+
+**Pros:** Permanent display area, doesn't scroll or overlay
+**Cons:** Reduces grid size, more complex layout
+
 ---
 
-*This technical specification provides the implementation details needed to understand, maintain, and extend the Halloween Text Adventure codebase. The architecture emphasizes simplicity, consistency, and extensibility while solving real-world development challenges like browser caching, score tracking, and state management.*
+*This technical specification provides the implementation details needed to understand, maintain, and extend the Halloween Text Adventure codebase. The architecture emphasizes simplicity, consistency, and extensibility while solving real-world development challenges like browser caching, score tracking, state management, and visual feedback systems.*

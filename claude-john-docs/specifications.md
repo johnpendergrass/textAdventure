@@ -15,8 +15,8 @@
 ```
 /mnt/d/dev/projects/halloween/games/textAdventure/
 ├── textAdventure.html           (44 lines)
-├── textAdventure.css            (193 lines, Halloween themed)
-├── textAdventure.js             (~1150 lines, enhanced with scoring)
+├── textAdventure.css            (193 lines, monospace themed)
+├── textAdventure.js             (~1450 lines, enhanced with scoring)
 ├── HALLOWEEN-GAME/
 │   ├── gameData.json            (29 lines)
 │   ├── rooms-w-doors.json       (360 lines, +INVENTORY room)
@@ -25,8 +25,12 @@
 │   ├── scavengerItems.json      (194 lines, streamlined properties)
 │   ├── uiConfig.json            (21 lines)
 │   └── keyboardShortcuts.json   (15 lines)
+├── assets/
+│   ├── candy/                   (18 candy bar images, various sizes)
+│   └── scavenger/               (12 items, each with 90×90 and 250×250 versions)
 └── claude-john-docs/
-    ├── Claude-ToBeContinued-2025-09-29-1800.md (this session)
+    ├── Claude-ToBeContinued-2025-09-30.md (latest session)
+    ├── Claude-ToBeContinued-2025-09-29-1800.md (scoring system)
     ├── Claude-ToBeContinued-2025-09-29-1652.md (morning session)
     ├── specifications.md (this file)
     └── specifications-technical.md
@@ -79,7 +83,7 @@
   "typedName": "snickers",         // One-word command name
   "display": "Snickers mini-bar",  // Display name
   "description": "A fun-size Snickers bar",
-  "startLocation": "FOYER",        // Physical room or "INVENTORY"
+  "location": "FOYER",        // Physical room or "INVENTORY"
   "points": 1,                     // Score contribution
   "health": 1,                     // Health value (for eating)
   "eatable": true,                 // Can be eaten
@@ -111,8 +115,8 @@
 ### INVENTORY as Room Innovation
 **Revolutionary approach to inventory management:**
 - **INVENTORY room** - Virtual room in rooms-w-doors.json
-- **Unified location system** - All items always have startLocation
-- **No separate arrays** - Inventory items are just items with startLocation: "INVENTORY"
+- **Unified location system** - All items always have location
+- **No separate arrays** - Inventory items are just items with location: "INVENTORY"
 - **Consistent filtering** - Same code handles room items and inventory items
 
 ### Multi-Component Scoring System (NEW)
@@ -211,7 +215,7 @@ handleDropCommand() receives full "drop snickers" input
 ↓
 Extracts "snickers" → finds item by typedName → validates in INVENTORY
 ↓
-Updates item.startLocation from "INVENTORY" to currentRoom
+Updates item.location from "INVENTORY" to currentRoom
 ↓
 updateGameStatus() refreshes score panel and calculates new total
 ```
@@ -477,6 +481,109 @@ You see:
 - Multiple difficulty levels
 - Hint system
 - Achievement tracking
+
+## Image Assets & Visual System
+
+### Asset Directory Structure
+```
+/mnt/d/dev/projects/halloween/games/textAdventure/assets/
+├── candy/                  (18 candy bar images)
+│   ├── Snickers.png       (354×101)
+│   ├── MarsBar.png        (799×261)
+│   ├── gummyBears.png     (970×425)
+│   └── ... (15 more candy images)
+└── scavenger/             (12 scavenger hunt items)
+    ├── dog90x90.png       (90×90 thumbnail)
+    ├── dog250x250.png     (250×250 display)
+    ├── watch90x90.png     (90×90 thumbnail)
+    ├── watch250x250.png   (250×250 display)
+    ├── _90x90blank.png    (placeholder with "?")
+    ├── _250x250blank.png  (placeholder)
+    └── ... (10 more items, each with 2 sizes)
+```
+
+### Scavenger Hunt Items (12 total)
+1. Krugerrand (gold coin)
+2. Beatles album
+3. Bringing Up Baby (movie)
+4. Cat mug
+5. Cup o' Noodles
+6. Dog figurine
+7. Flashlight
+8. Gaming mouse
+9. Maria Schneider album
+10. nVidia graphics card
+11. Pumpkin
+12. Watch
+
+**Note:** Currently have 10 items in scavengerItems.json but 12 prepared images. Need to either:
+- Add 2 more items to JSON
+- Remove 2 image sets
+- Use 10 items and adjust grid (2×5 or remove 1 for 3×3)
+
+### Visual Scavenger Hunt System (DESIGNED, NOT YET IMPLEMENTED)
+
+**Concept:**
+Replace text-based scavenger item list with visual 3×3 grid showing hunt progress.
+
+**Layout Design:**
+```
+┌─────────────────────────────┐
+│  Scavenger Box (313×280px)  │
+├─────────────────────────────┤
+│  ┌───┬───┬───┐              │
+│  │ ? │ ? │ ? │  3×3 Grid    │
+│  ├───┼───┼───┤              │
+│  │ ? │ ? │ ? │  Each cell:  │
+│  ├───┼───┼───┤  99×90px     │
+│  │ ? │ ? │ ? │              │
+│  └───┴───┴───┘              │
+└─────────────────────────────┘
+```
+
+**Box Calculations:**
+- Total: 313px × 280px
+- Border: 2px (each side)
+- Padding: 3px (each side) ← Reduced from 10px
+- Usable: 303px × 270px
+- Grid gaps: 3px
+- Cell size: 99px × 90px
+- Image size: 90×90px (perfect fit)
+
+**Behavior:**
+1. **Initial state:** All 9 cells show `_90x90blank.png` (question mark placeholder)
+2. **Item found:** Cell updates to show actual item image (90×90 version)
+3. **Progress tracking:** Visual representation of hunt completion (X/9 items found)
+4. **Badge feel:** Achievement-style unlocking as items discovered
+
+**Implementation Requirements:**
+- CSS Grid layout (3×3, 3px gaps)
+- JavaScript function to update cells based on `item.found` property
+- Mapping between scavenger items and grid cells (0-8 indices)
+- Image swap logic in updateGameStatus()
+
+### Candy Image Display (PLANNED)
+
+**Goal:** Show candy image when examining candy items
+
+**Option 1: Inline Text Buffer Display**
+- Insert `<img>` tag into text output
+- Size: 200-250px (clearly visible)
+- Scrolls away naturally
+- Simple implementation (~5 lines)
+
+**Option 2: Temporary Status Box Overlay**
+- Absolutely positioned div
+- Shows 250×250 image prominently
+- Auto-clears on next command
+- More complex (~30 lines + CSS)
+
+**Option 3: Split Scavenger Box**
+- Top section: Image display (variable)
+- Bottom section: Reduced scavenger grid
+- Permanent display area
+
+**Decision:** Test Option 1 first, upgrade if scrolling is problematic
 
 ## Design Philosophy & Technical Innovation
 

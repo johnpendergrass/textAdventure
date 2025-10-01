@@ -5,7 +5,10 @@
       "Bash(git restore:*)",
       "Bash(python3:*)",
       "Bash(ls:*)",
-      "Read(//mnt/d/dev/projects/halloween/**)"
+      "Read(//mnt/d/dev/projects/halloween/**)",
+      "Bash(for:*)",
+      "Bash(do file \"$f\")",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []
