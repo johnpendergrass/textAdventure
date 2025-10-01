@@ -2,7 +2,7 @@
   "scavengerItems": {
     "nvidia": {
       "includeInGame": true,
-      "typedName": ["nvidia5090videocard", "nvidia5090", "nvidia", "5090", "nvidiavideocard", "graphicscard", "nvidia5090card", "5090card", "nvidia5090video"],
+      "typedNames": ["nvidia5090videocard", "nvidia5090", "nvidia", "5090", "nvidiavideocard", "graphicscard", "nvidia5090card", "5090card", "nvidia5090video"],
       "display": "NVidia 5090 Video Card",
       "description": "A decent video card for gaming.",
       "location": "GAME-ROOM",
@@ -25,7 +25,7 @@
     },
     "beatles": {
       "includeInGame": true,
-      "typedName": ["beatlesrevolvermusiccd", "beatlesrevolver", "beatles", "revolver", "musiccd", "music", "cd"],
+      "typedNames": ["beatlesrevolvermusiccd", "beatlesrevolver", "beatles", "revolver", "musiccd", "music", "cd"],
       "display": "Beatles Revolver Music CD",
       "description": "The Beatles 1966 classic album",
       "location": "MUSIC-ROOM",
@@ -48,7 +48,7 @@
     },
     "catmug": {
       "includeInGame": true,
-      "typedName": ["catmug", "cat", "mug", "cup", "kittymug"],
+      "typedNames": ["catmug", "cat", "mug", "cup", "kittymug"],
       "display": "Cat Mug",
       "description": "A black mug in the shape of a cat's head. Scary!",
       "location": "DINING-ROOM",
@@ -71,7 +71,7 @@
     },
     "cuponoodles": {
       "includeInGame": true,
-      "typedName": ["cupo'noodles", "cuponoodles", "noodles", "food", "noodle", "cupofnoodles"],
+      "typedNames": ["cupo'noodles", "cuponoodles", "noodles", "food", "noodle", "cupofnoodles"],
       "display": "Cup O' Noodles",
       "description": "Delicious seafood style noodles! - and in a cup too!",
       "location": "LIBRARY",
@@ -94,7 +94,7 @@
     },
     "watch": {
       "includeInGame": true,
-      "typedName": ["fancywatch", "watch", "fancy", "timepiece", "langeandsohnewatch", "clock"],
+      "typedNames": ["fancywatch", "watch", "fancy", "timepiece", "langeandsohnewatch", "clock"],
       "display": "Fancy Watch",
       "description": "An expensive Lange & Sohne watch!",
       "location": "BEDROOM",
@@ -117,7 +117,7 @@
     },
     "bringingupbaby": {
       "includeInGame": true,
-      "typedName": "item6",
+      "typedNames": ["bringingupbaby", "bringingup", "baby", "dvd", "movie", "carygrant"],
       "display": "Bringing Up Baby DVD",
       "description": "A DVD of the 1938 classic movie Bringing Up Baby, starring Cary Grant and Katharine Hepburn.",
       "location": "TV-ROOM",
@@ -140,7 +140,7 @@
     },
     "dog": {
       "includeInGame": true,
-      "typedName": ["odddog", "dog", "odd", "weird", "weirddog", "weirddoggy", "cavalier", "cavalierkingcharles", "ceramicdog"],
+      "typedNames": ["odddog", "dog", "odd", "weird", "weirddog", "weirddoggy", "cavalier", "cavalierkingcharles", "ceramicdog"],
       "display": "Odd Dog",
       "description": "Small ceramic figurine of a King Charles Cavalier. Not weird at all!",
       "location": "FOYER",
@@ -163,7 +163,7 @@
     },
     "krugerrand": {
       "includeInGame": true,
-      "typedName": ["krugerrand", "coin", "goldcoin", "gold", "currency"],
+      "typedNames": ["krugerrand", "coin", "goldcoin", "gold", "currency"],
       "display": "Krugerrand",
       "description": "Ohh! a 2025 South African Krugerrand! 1 once of solid gold!",
       "location": "STUDY",
@@ -186,7 +186,7 @@
     },
     "pumpkin": {
       "includeInGame": true,
-      "typedName": ["decorativepumpkin", "pumpkin", "ceramicpumpkin", "glasspumpkin", "knickknack"],
+      "typedNames": ["decorativepumpkin", "pumpkin", "ceramicpumpkin", "glasspumpkin", "knickknack"],
       "display": "Decorative Pumpkin",
       "description": "A small decorative pumpkin to celebrate the season!",
       "location": "FRONT-PORCH",
@@ -209,7 +209,7 @@
     },
     "gamingmouse": {
       "includeInGame": true,
-      "typedName": ["razergamingmouse", "gamingmouse", "mouse", "razorgamingmouse", "razermouse", "razormouse", "razer", "razor"],
+      "typedNames": ["razergamingmouse", "gamingmouse", "mouse", "razorgamingmouse", "razermouse", "razormouse", "razer", "razor"],
       "display": "Razer Gaming Mouse",
       "description": "Top of the line gaming mouse from Razer.",
       "location": "GAME-ROOM",
@@ -232,7 +232,7 @@
     },
     "frankenstein": {
       "includeInGame": true,
-      "typedName": ["frankensteinbook", "frankenstein", "book", "novel", "maryshelley", "frankensteinnovel"],
+      "typedNames": ["frankensteinbook", "frankenstein", "book", "novel", "maryshelley", "frankensteinnovel"],
       "display": "Frankenstein book",
       "description": "Hardback copy of Mary Shelley's 1818 Frankenstein novel.",
       "location": "LIBRARY",

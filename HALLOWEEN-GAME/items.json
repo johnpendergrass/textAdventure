@@ -2,7 +2,7 @@
   "items": {
     "candy_bag": {
       "includeInGame": true,
-      "typedName": "bag",
+      "typedNames": ["bag", "candybag", "pillowcase", "sack"],
       "display": "candy bag",
       "description": "A pillowcase for collecting treats",
       "location": "MUSIC-ROOM",
@@ -21,7 +21,7 @@
     },
     "doorbell": {
       "includeInGame": true,
-      "typedName": "doorbell",
+      "typedNames": ["doorbell", "bell", "button", "ringer"],
       "display": "doorbell",
       "description": "A brass doorbell button",
       "location": "NICE-PORCH",
@@ -38,7 +38,7 @@
     },
     "porch_light_nice": {
       "includeInGame": true,
-      "typedName": "light",
+      "typedNames": ["nicelight", "warmlight", "welcominglight", "friendlylight"],
       "display": "porch light",
       "description": "A warm porch light",
       "location": "NICE-PORCH",
@@ -53,7 +53,7 @@
     },
     "door_knocker": {
       "includeInGame": true,
-      "typedName": "knocker",
+      "typedNames": ["knocker", "doorknocker", "gargoyle", "ironknocker"],
       "display": "door knocker",
       "description": "A heavy iron door knocker",
       "location": "FRONT-PORCH",
@@ -70,7 +70,7 @@
     },
     "porch_light_front": {
       "includeInGame": true,
-      "typedName": "light",
+      "typedNames": ["eerielight", "spookylight", "flickeringlight", "hauntedlight"],
       "display": "porch light",
       "description": "A flickering porch light",
       "location": "FRONT-PORCH",
@@ -85,7 +85,7 @@
     },
     "snickers": {
       "includeInGame": true,
-      "typedName": "snickers",
+      "typedNames": ["snickers", "snickersbar", "chocolatebar"],
       "display": "Snickers mini-bar",
       "description": "A fun-size Snickers bar",
       "location": "FOYER",
@@ -106,7 +106,7 @@
     },
     "whatchamacallit": {
       "includeInGame": true,
-      "typedName": "whatchamacallit",
+      "typedNames": ["whatchamacallit", "whatchamacallitbar", "crispybar"],
       "display": "Whatchamacallit bar",
       "description": "A crispy candy bar",
       "location": "LIBRARY",
@@ -508,7 +508,7 @@
       "typedNames": ["smarties", "smartiescandy", "chalkycandy", "tabletcandy"],
       "display": "Smarties",
       "description": "A roll of Smarties candy tablets",
-      "location": "DINING-ROOM",
+      "location": "MUSIC-ROOM",
       "points": 1,
       "health": 1,
       "eatable": true,
@@ -529,7 +529,7 @@
       "typedNames": ["socks", "oldsocks", "dirtysocks", "stinkysocks"],
       "display": "Dirty socks",
       "description": "A pair of dirty old socks",
-      "location": "TV-ROOM",
+      "location": "BEDROOM",
       "points": 1,
       "health": 1,
       "eatable": false,
@@ -570,7 +570,7 @@
       "typedNames": ["twizzlers", "licorice", "redlicorice", "strawberrytwist"],
       "display": "Twizzlers",
       "description": "A pack of strawberry Twizzlers",
-      "location": "GAME-ROOM",
+      "location": "TV-ROOM",
       "points": 1,
       "health": 1,
       "eatable": true,

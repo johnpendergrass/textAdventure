@@ -709,13 +709,13 @@ function handleTakeCommand(command) {
   const remainder = input.substring(firstSpace + 1).trim();
   const targetTypedName = remainder.replace(/\s+/g, ''); // Strip all spaces
 
-  // Find item in current room with matching typedName or typedNames
+  // Find item in current room with matching typedNames
   const roomItems = Object.entries(items).filter(([key, item]) =>
     item.includeInGame &&
     item.location === currentRoom &&
     item.visible &&
     !item.locked &&
-    (item.typedNames?.includes(targetTypedName) || item.typedName === targetTypedName) &&
+    item.typedNames?.includes(targetTypedName) &&
     item.actions?.take?.addToInventory === true
   );
 
@@ -763,11 +763,11 @@ function handleDropCommand(command) {
   const remainder = input.substring(firstSpace + 1).trim();
   const targetTypedName = remainder.replace(/\s+/g, ''); // Strip all spaces
 
-  // Find item in inventory with matching typedName or typedNames
+  // Find item in inventory with matching typedNames
   const inventoryItems = Object.entries(items).filter(([key, item]) =>
     item.includeInGame &&
     item.location === "INVENTORY" &&
-    (item.typedNames?.includes(targetTypedName) || item.typedName === targetTypedName) &&
+    item.typedNames?.includes(targetTypedName) &&
     item.actions?.take  // Can only drop items that are portable (have take action)
   );
 
@@ -809,9 +809,9 @@ function handleExamineCommand(command) {
   const remainder = input.substring(firstSpace + 1).trim();
   const targetTypedName = remainder.replace(/\s+/g, ''); // Strip all spaces
 
-  // Find item by typedName or typedNames in either inventory or current room
+  // Find item by typedNames in either inventory or current room
   const allItems = Object.entries(items).filter(([key, item]) =>
-    item.includeInGame && (item.typedNames?.includes(targetTypedName) || item.typedName === targetTypedName)
+    item.includeInGame && item.typedNames?.includes(targetTypedName)
   );
 
   if (allItems.length === 0) {
