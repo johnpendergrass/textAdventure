@@ -19,7 +19,7 @@
         }
       }
     },
-    "snickers_bar": {
+    "snickers": {
       "includeInGame": true,
       "typedName": "snickers",
       "display": "Snickers mini-bar",
@@ -33,7 +33,7 @@
       "actions": {
         "examine": "It's a Snickers bar, what's not to like?",
         "take": {
-          "response": "You pick up the Snickers bar.",
+          "response": "You pick up the Snickers bar and put it in your trick or treat bag.",
           "addToInventory": true
         },
         "eat": {"response": "Delicious! You feel slightly healthier.", "addHealth": 5, "removeItem": true}
@@ -53,7 +53,7 @@
       "actions": {
         "examine": "Crispy rice and caramel covered in chocolate. An unusual but tasty choice.",
         "take": {
-          "response": "You pick up the Whatchamacallit bar.",
+          "response": "You pick up the Whatchamacallit bar and put it in your trick or treat bag.",
           "addToInventory": true
         },
         "eat": {"response": "Crunchy and sweet! The crispy bits tickle your teeth.", "addHealth": 3, "removeItem": true}
