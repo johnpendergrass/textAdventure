@@ -94,7 +94,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/Snickers150.png",
       "actions": {
         "examine": "It's a Snickers bar, what's not to like?",
         "take": {
@@ -115,7 +114,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/Whatchamacallit150.png",
       "actions": {
         "examine": "Crispy rice and caramel covered in chocolate. An unusual but tasty choice.",
         "take": {
@@ -136,7 +134,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/100Grand150.png",
       "actions": {
         "examine": "Crispy crunchies in caramel, covered in milk chocolate. Feels like a fortune!",
         "take": {
@@ -157,7 +154,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/3Musketeers150.png",
       "actions": {
         "examine": "Light, fluffy nougat covered in rich chocolate. One for all!",
         "take": {
@@ -178,7 +174,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/Butterfinger150.png",
       "actions": {
         "examine": "Crispy, crunchy peanut butter layers covered in chocolate. Nobody better lay a finger!",
         "take": {
@@ -199,7 +194,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/Mars150.png",
       "actions": {
         "examine": "Nougat and caramel with almonds, covered in chocolate. Out of this world!",
         "take": {
@@ -220,7 +214,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/Mounds150.png",
       "actions": {
         "examine": "Sweet coconut surrounded by dark chocolate. Sometimes you feel like a nut!",
         "take": {
@@ -241,7 +234,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/MrGoodbar150.png",
       "actions": {
         "examine": "Milk chocolate with peanuts. A good bar indeed!",
         "take": {
@@ -262,7 +254,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/apple150.png",
       "actions": {
         "examine": "A perfectly shiny red apple. The healthiest treat you'll find tonight!",
         "take": {
@@ -283,7 +274,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/corn150.png",
       "actions": {
         "examine": "A fresh ear of corn. Odd Halloween treat, but it's food!",
         "take": {
@@ -304,7 +294,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/gummyBears150.png",
       "actions": {
         "examine": "Colorful, chewy gummy bears in all the fruit flavors!",
         "take": {
@@ -325,7 +314,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/hersheysKisses150.png",
       "actions": {
         "examine": "Classic Hershey's Kisses wrapped in silver foil. Iconic!",
         "take": {
@@ -346,7 +334,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/hotdog150.png",
       "actions": {
         "examine": "A cold hot dog. Who gives out hot dogs for Halloween?",
         "take": {
@@ -367,7 +354,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/jollyRancher150.png",
       "actions": {
         "examine": "Hard fruit-flavored candies. Long-lasting flavor!",
         "take": {
@@ -388,7 +374,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/lemonDrops150.png",
       "actions": {
         "examine": "Bright yellow lemon drops. Sweet and sour!",
         "take": {
@@ -409,7 +394,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/lifeSavers150.png",
       "actions": {
         "examine": "Classic ring-shaped hard candies in assorted flavors.",
         "take": {
@@ -430,7 +414,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/popcorn150.png",
       "actions": {
         "examine": "Fresh popped popcorn. Light and crunchy!",
         "take": {
@@ -451,7 +434,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/reesesPieces150.png",
       "actions": {
         "examine": "Colorful peanut butter candy coated in a crunchy shell.",
         "take": {
@@ -472,7 +454,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/rottenTomato150x150.png",
       "actions": {
         "examine": "This tomato has seen better days. It's mushy and smells awful.",
         "take": {
@@ -493,7 +474,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/skittles150.png",
       "actions": {
         "examine": "Taste the rainbow! Colorful fruit-flavored candies.",
         "take": {
@@ -514,7 +494,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/smarties150.png",
       "actions": {
         "examine": "Colorful candy tablets wrapped in cellophane. Chalky but nostalgic!",
         "take": {
@@ -535,7 +514,6 @@
       "eatable": false,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/socks150.png",
       "actions": {
         "examine": "Old, dirty socks. Who put these here? Gross!",
         "take": {
@@ -555,7 +533,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/spiceDrops150.png",
       "actions": {
         "examine": "Colorful spiced gumdrops. An acquired taste!",
         "take": {
@@ -576,7 +553,6 @@
       "eatable": true,
       "visible": true,
       "locked": false,
-      "icon150": "assets/items/twizzlers150.png",
       "actions": {
         "examine": "Long red licorice twists. Chewy strawberry flavor!",
         "take": {
