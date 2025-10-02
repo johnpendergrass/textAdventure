@@ -6,7 +6,8 @@
       "lookText": "",
       "exits": {},
       "special": {
-        "inventory-room": true
+        "inventory-room": true,
+        "backgroundPic": "assets/background/RadleyHouse250x250.png"
       }
     },
 
@@ -22,7 +23,8 @@
         "east":  { "to": "STREET-02",  "door": "street-012street-02" }
       },
       "special": {
-        "starting-location": true
+        "starting-location": true,
+        "backgroundPic": "assets/background/McGillicuttyHouse250x250.png"
       }
     },
 
@@ -37,7 +39,9 @@
         "west":  { "to": "STREET-01",   "door": "street-012street-02" },
         "north": { "to": "FRONT-PORCH", "door": "street022front-porch" }
       },
-      "special": {}
+      "special": {
+        "backgroundPic": "assets/background/RadleyHouse250x250.png"
+      }
     },
 
     "NICE-PORCH": {
@@ -51,26 +55,30 @@
         "south": { "to": "STREET-01",  "door": "street-012nice-porch" },
         "north": { "to": "NICE-HOUSE", "door": "nice-porch2nice-house" }
       },
-      "special": {}
+      "special": {
+        "backgroundPic": "assets/background/McGillicuttyHouse250x250.png"
+      }
     },
 
     "NICE-HOUSE": {
       "name": "Nice House",
-      "enterText": {
-        "first": "The door to the nice house swings open.",
+        "enterText": {
+          "first": "The door to the nice house swings open.  Mrs. McGillicutty answers, dressed in her best witch'es costume, and holds out a skull shaped candy dish, saying 'Take two, dear.'  After you have taken the candy she bends over and whispers '... oh, and Mr. Radley and his son Aurthur are having a scavenger hunt next door.  You might find this item useful during that game!  She hands you a piece of paper and you put it in your pocket.  'Good luck, dear!', and shuts the door.",
         "repeat": "You ring and ring, but no one answers."
       },
       "lookText": "You are still on the porch.",
       "exits": {
         "south": { "to": "NICE-PORCH", "door": "nice-porch2nice-house" }
       },
-      "special": {}
+      "special": {
+        "backgroundPic": "assets/background/McGillicuttyHouse250x250.png"
+      }
     },
 
     "FRONT-PORCH": {
       "name": "Front Porch",
       "enterText": {
-        "first": "You go up the walkway to the front porch.",
+"first": "You go up the walkway to the front porch.",
         "repeat": "You are on the Radley's front porch."
       },
       "lookText": "You are on the Radley's front porch.",
@@ -78,7 +86,9 @@
         "south": { "to": "STREET-02", "door": "street022front-porch" },
         "north": { "to": "FOYER",     "door": "front-porch2foyer" }
       },
-      "special": {}
+      "special": {
+        "backgroundPic": "assets/background/RadleyHouse250x250.png"
+      }
     },
 
     "FOYER": {
@@ -95,7 +105,8 @@
         "west":  { "to": "LIBRARY",      "door": "foyer2library" }
       },
       "special": {
-        "displaySquare": 7
+        "displaySquare": 7,
+        "backgroundPic": "assets/background/RadleyHouse250x250.png"
       }
     },
 
@@ -111,7 +122,8 @@
         "north": { "to": "MUSIC-ROOM", "door": "library2music-room" }
       },
       "special": {
-        "displaySquare": 6
+        "displaySquare": 6,
+        "backgroundPic": "assets/background/RadleyHouse250x250.png"
       }
     },
 
@@ -128,7 +140,8 @@
         "east":  { "to": "TV-ROOM",     "door": "dining-room2tv-room" }
       },
       "special": {
-        "displaySquare": 4
+        "displaySquare": 4,
+        "backgroundPic": "assets/background/RadleyHouse250x250.png"
       }
     },
 
@@ -144,7 +157,8 @@
         "north": { "to": "TV-ROOM", "door": "study2tv-room" }
       },
       "special": {
-        "displaySquare": 8
+        "displaySquare": 8,
+        "backgroundPic": "assets/background/RadleyHouse250x250.png"
       }
     },
 
@@ -160,7 +174,8 @@
         "north": { "to": "GAME-ROOM", "door": "music-room2game-room" }
       },
       "special": {
-        "displaySquare": 3
+        "displaySquare": 3,
+        "backgroundPic": "assets/background/RadleyHouse250x250.png"
       }
     },
 
@@ -175,7 +190,8 @@
         "south": { "to": "MUSIC-ROOM", "door": "music-room2game-room" }
       },
       "special": {
-        "displaySquare": 0
+        "displaySquare": 0,
+        "backgroundPic": "assets/background/RadleyHouse250x250.png"
       }
     },
 
@@ -190,7 +206,8 @@
         "south": { "to": "DINING-ROOM", "door": "dining-room2kitchen" }
       },
       "special": {
-        "displaySquare": 1
+        "displaySquare": 1,
+        "backgroundPic": "assets/background/RadleyHouse250x250.png"
       }
     },
 
@@ -205,7 +222,8 @@
         "south": { "to": "TV-ROOM", "door": "bedroom2tv-room" }
       },
       "special": {
-        "displaySquare": 2
+        "displaySquare": 2,
+        "backgroundPic": "assets/background/RadleyHouse250x250.png"
       }
     },
 
@@ -222,7 +240,8 @@
         "west":  { "to": "DINING-ROOM", "door": "dining-room2tv-room" }
       },
       "special": {
-        "displaySquare": 5
+        "displaySquare": 5,
+          "backgroundPic": "assets/background/RadleyHouse250x250.png"
       }
     },
 
@@ -235,7 +254,8 @@
       "lookText": "You are home.",
       "exits": {},
       "special": {
-        "end-game-location": true
+        "end-game-location": true,
+        "backgroundPic": "assets/background/homeAfterTrickorTreat205x250.png"
       }
     }
   },
@@ -262,7 +282,7 @@
         "description": "It is a front door.",
         "visible": true,
         "locked": false,
-        "open": false
+        "open": true
       },
   
       "street022front-porch": {

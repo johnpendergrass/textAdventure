@@ -683,6 +683,7 @@ function movePlayer(direction) {
 
   // Move to new room
   currentRoom = exit.to;
+  updateScavengerBackground(currentRoom);
   addToBuffer([
     { text: "", type: "flavor" }, // Blank line before room description
   ]);
@@ -1202,6 +1203,21 @@ function updateScavengerGrid() {
   scavengerDiv.innerHTML = gridHTML;
 }
 
+// Update scavenger grid background based on current room
+function updateScavengerBackground(roomName) {
+  const scavengerDiv = document.querySelector(".scavenger");
+  if (!scavengerDiv) return;
+
+  const room = rooms[roomName];
+  if (!room) return;
+
+  // Get backgroundPic from room's special properties, or use default
+  const backgroundPic = room.special?.backgroundPic || "assets/scavenger/RadleyHouse250x250.png";
+
+  // Update the background-image style
+  scavengerDiv.style.backgroundImage = `url("${backgroundPic}")`;
+}
+
 // ========================================
 // === COMMAND PROCESSING ===
 // ========================================
@@ -1532,6 +1548,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     await initializeBuffer(processedGameData);
     initializeStatusInfo();
     initScavengerGrid();
+    updateScavengerBackground(currentRoom);
     initializeInput();
 
     // Show starting room after welcome text

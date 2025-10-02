@@ -174,7 +174,6 @@ body {
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   gap: 2px;
-  background-image: url("assets/scavenger/RadleyHouse250x250.png");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
