@@ -124,6 +124,10 @@ body {
   color: #ff4444;
 }
 
+.underlined-text {
+  text-decoration: underline;
+}
+
 .prompt {
   grid-area: prompt;
   border: 2px solid white;
@@ -170,7 +174,7 @@ body {
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   gap: 2px;
-  background-image: url("assets/scavenger/default250x250.png");
+  background-image: url("assets/scavenger/RadleyHouse250x250.png");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;

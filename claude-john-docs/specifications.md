@@ -1,13 +1,35 @@
 # Halloween Text Adventure - Complete Specifications
-# TypedNames Array System & Expanded Content (v0.23)
+# v0.24 - Visual Scavenger Grid & Enhanced Inventory System
 
 ## Project Overview
 
-**Total Project Size:** ~190KB (expanded with new items)
+**Version:** 0.24
+**Total Project Size:** ~200KB (with grid assets)
 **Source Files:** 8 core files + 40 items + documentation
-**Architecture:** Clean vanilla HTML/CSS/JavaScript with unified typedNames array system
+**Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking
 **Target Platform:** Web browsers (GitHub Pages compatible)
-**Current State:** Fully interactive text adventure with 29 regular items + 11 scavenger items, natural language input, multi-component scoring
+**Current State:** Fully interactive text adventure with visual 3×3 scavenger grid, categorized inventory, 40 items with type classification
+
+## Major Features
+
+### Visual Scavenger Hunt System ✨ NEW
+- 3×3 grid showing 9 scavenger item locations
+- Background image support
+- Items appear when discovered with green checkmark overlay
+- Icon halos for visibility against any background
+- Spatial mapping to house rooms
+
+### Enhanced Inventory Display ✨ NEW
+- Categorized display (Scavenger Items / Treats)
+- Progress tracking (X/Total format)
+- Scavenger items sorted by room location
+- Underlined section headers
+- Clean, organized layout
+
+### Item Type Classification ✨ NEW
+- All items categorized: scavenger, candy, or fixed
+- Droppable property prevents loss of valuable items
+- Self-documenting JSON structure
 
 ## Overall Structure & File Size
 
@@ -15,539 +37,683 @@
 ```
 /mnt/d/dev/projects/halloween/games/textAdventure/
 ├── textAdventure.html           (44 lines)
-├── textAdventure.css            (193 lines, monospace themed)
-├── textAdventure.js             (~1450 lines, typedNames array support)
+├── textAdventure.css            (200+ lines, includes grid styles)
+├── textAdventure.js             (~1540 lines, grid + inventory)
 ├── HALLOWEEN-GAME/
 │   ├── gameData.json            (29 lines)
-│   ├── rooms-w-doors.json       (360 lines, +INVENTORY room)
+│   ├── rooms-w-doors.json       (360+ lines, with displaySquare properties)
 │   ├── commands.json            (64 lines, 10 commands)
-│   ├── items.json               (590 lines, 29 items with typedNames arrays)
-│   ├── scavengerItems.json      (257 lines, 11 items with typedNames arrays)
+│   ├── items.json               (640+ lines, 29 items with type & droppable)
+│   ├── scavengerItems.json      (280+ lines, 11 items with type & droppable)
 │   ├── uiConfig.json            (21 lines)
 │   └── keyboardShortcuts.json   (15 lines)
 ├── assets/
 │   ├── items/                   (24 candy/food images at 150px dimension)
-│   └── scavenger/               (12 items, each with 90×90 and 250×250 versions)
+│   └── scavenger/               (scavenger items: 90×90 and 250×250 versions)
+│       ├── default250x250.png   (grid background image)
+│       └── [item]90x90.png      (scavenger item icons)
 └── claude-john-docs/
-    ├── Claude-ToBeContinued-2025-10-01.md (latest - typedNames migration)
+    ├── Claude-ToBeContinued-2025-10-01-1600.md (latest - grid & inventory)
+    ├── Claude-ToBeContinued-2025-10-01.md (typedNames migration)
     ├── Claude-ToBeContinued-2025-09-30.md (location refactoring)
-    ├── Claude-ToBeContinued-2025-09-29-1800.md (scoring system)
     ├── specifications.md (this file)
-    └── specifications-technical.md
+    └── specifications-technical-v0.23-updates.md
 ```
 
-**Total JavaScript Code:** ~1450 lines (natural language parsing)
-**Game Data:** 1340 lines across 5 JSON files
-**Documentation:** 4 comprehensive files
-**Total Items:** 40 (29 regular + 11 scavenger)
+**Total JavaScript Code:** ~1540 lines (includes scavenger grid system)
+**Game Data:** 1400+ lines across 5 JSON files
+**Total Items:** 40 (24 candy + 11 scavenger + 5 fixed)
 
-## Screen Layout & Fixed Dimensions
+## Screen Layout & Grid System
 
 ### Main Game Area
-- **Total Size:** 1280px × 720px (completely fixed, not responsive)
-- **Position:** Absolute center of viewport using transform: translate(-50%, -50%)
+- **Total Size:** 1280px × 720px (completely fixed)
+- **Position:** Absolute center using transform
 - **Border:** 3px solid #ff6600 (orange)
 - **Border Radius:** 15px
-- **Background:** Dark gradient with Halloween theme colors
 
 ### Three-Panel Layout
 
-#### Left Navigation Panel (Score & Info)
-- **Position:** absolute at (0, 0)
-- **Width:** 250px (fixed)
-- **Height:** 720px
-- **Content:** Game title, SCORE breakdown (Treats/Scavenger/Health/Total), game description
-- **Background:** Linear gradient (#3d2817 to #2a1810)
-
 #### Center Game Area (Main Interface)
-- **Position:** absolute at (250px, 0)
-- **Width:** 950px
-- **Height:** 720px
-- **Content:** Text adventure output, command input, item interactions
-- **Background:** Linear gradient (#1a1410 to #261a10)
+- **Position:** 607px wide
+- **Content:** Text output, command input, gameplay
 
-#### Right Panel (Status & Inventory)
-- **Position:** absolute at (1030px, 0)
-- **Width:** 250px
-- **Height:** 720px
-- **Content:** INVENTORY list with item (+X) point display, scavenger checklist
-- **Background:** Linear gradient (#3d2817 to #2a1810)
+#### Right Top Panel (Scavenger Grid) ✨ NEW
+- **Position:** 313px × 280px
+- **Content:** 3×3 scavenger item grid
+- **Grid:** CSS Grid with 2px gap
+- **Background:** Supports full-bleed background image
+- **Squares:** Transparent, ~95×84px each
+- **Display:** Shows found items with icons + green checkmarks
 
-## Data Architecture (UNIFIED TYPEDNAMES SYSTEM)
+#### Right Bottom Panel (Status Box)
+- **Position:** 313px × variable height
+- **Content:** SCORE display, COMMANDS reference
+- **Score Format:** `Treats: X / 20`
+- **Commands:** Help reference (unchanged)
+
+## Data Architecture
+
+### Item Type System ✨ NEW
+
+**All 40 items now classified by type:**
+
+**Type: "scavenger" (11 items)**
+- Purpose: Scavenger hunt collectibles
+- Points: 10 each
+- Droppable: false
+- Display: Visual grid + inventory category
+- Special: icon90x90, icon250x250, found property
+
+**Type: "candy" (24 items)**
+- Purpose: Treat collection
+- Points: 1 each
+- Droppable: true
+- Display: Inventory treats category
+- Special: icon150, eatable, health values
+
+**Type: "fixed" (5 items)**
+- Purpose: Environmental/utility items
+- Points: 0
+- Droppable: true (except where not takeable)
+- Items: candy_bag, doorbell, porch_light_nice, door_knocker, porch_light_front
 
 ### Universal Item Structure
-**All 40 items use identical structure with typedNames arrays:**
 
 ```json
 {
   "includeInGame": true,
-  "typedNames": ["primary", "alias1", "alias2", "..."],  // 2-9 variations
+  "type": "scavenger" | "candy" | "fixed",        // ✨ NEW
+  "typedNames": ["primary", "alias1", "alias2"],
   "display": "Display Name",
   "description": "Brief description",
-  "location": "ROOM-NAME",       // Physical room or "INVENTORY"
-  "points": 1,                   // Score contribution (1 for treats, 10 for scavenger)
-  "health": 1,                   // Health value (for eating)
-  "eatable": true,               // Can be eaten (boolean)
-  "visible": true,               // Visibility control
-  "locked": false,               // Interaction control
-  "icon150": "assets/items/name150.png",  // Regular items only
+  "location": "ROOM-NAME",
+  "points": 0-10,
+  "health": -5 to 6,
+  "eatable": true/false,
+  "droppable": true/false,                        // ✨ NEW
+  "visible": true/false,
+  "locked": false,
+  "icon150": "assets/items/name150.png",          // candy items
+  "icon90x90": "assets/scavenger/name90x90.png",  // scavenger items
+  "icon250x250": "assets/scavenger/name250x250.png", // scavenger items
   "actions": {
     "examine": "examine text",
     "take": {
       "response": "pickup message",
       "addToInventory": true,
-      "markAsFound": true          // Scavenger items only
+      "markAsFound": true                         // scavenger only
     },
-    "eat": {                       // Optional - eatable items only
+    "eat": {                                      // candy only
       "response": "eat message",
-      "addHealth": 5,
+      "addHealth": -5 to 6,
       "removeItem": true
     }
   }
 }
 ```
 
-### Scavenger Items Additional Properties
+**Scavenger items additional:**
 ```json
 {
-  "found": false,                          // Tracking property
-  "isScavengerItem": true,                 // Runtime flag (added by code)
-  "icon90x90": "assets/scavenger/name90x90.png",
-  "icon250x250": "assets/scavenger/name250x250.png"
+  "found": false  // Tracks discovery status
 }
 ```
 
-### INVENTORY as Room Innovation
-**Revolutionary approach to inventory management:**
-- **INVENTORY room** - Virtual room in rooms-w-doors.json
-- **Unified location system** - All items always have location
-- **No separate arrays** - Inventory items are just items with location: "INVENTORY"
-- **Consistent filtering** - Same code handles room items and inventory items
+**Runtime properties (added by code):**
+```json
+{
+  "isScavengerItem": true,              // Added at load time
+  "originalLocation": "ROOM-NAME"       // Saves starting room for grid
+}
+```
 
-### Multi-Component Scoring System
+### Room DisplaySquare System ✨ NEW
 
-**Score Components:**
-1. **Treats Score** - Points from regular items (0-24 possible)
-2. **Scavenger Score** - Points from scavenger hunt items (0-110 possible)
-3. **Health Score** - Player's current health (starts at 100)
-4. **Total Score** - Sum of all three components
+**9 rooms map to grid squares (0-8):**
 
-**Display Format:**
+```json
+"ROOM-NAME": {
+  "special": {
+    "displaySquare": 0-8    // Grid position
+  }
+}
+```
+
+**Grid mapping:**
+```
+0: GAME-ROOM    1: KITCHEN       2: BEDROOM
+3: MUSIC-ROOM   4: DINING-ROOM   5: TV-ROOM
+6: LIBRARY      7: FOYER         8: STUDY
+```
+
+## Visual Scavenger Grid System ✨ NEW
+
+### Grid Specifications
+
+**Container:** `.scavenger` div
+- Size: 313px × 280px
+- Layout: CSS Grid 3×3
+- Gap: 2px
+- Padding: 2px
+- Overflow: hidden
+
+**Background:**
+- Image: `url('assets/scavenger/default250x250.png')`
+- Size: cover (fills entire container)
+- Position: center
+- Repeat: no-repeat
+- Fallback: black
+
+**Grid Squares:** `.scavenger-square`
+- Size: ~95×84px (1fr with gaps)
+- Background: transparent
+- Border: 1px solid transparent (no visual lines)
+- Display: flex, centered
+- Position: relative (for checkmark positioning)
+
+**Item Icons:**
+- Size: 90×90px
+- Fit: object-fit: contain
+- Effect: White glow/halo
+  - Inner: drop-shadow(0 0 2px rgba(255,255,255,0.8))
+  - Outer: drop-shadow(0 0 4px rgba(255,255,255,0.5))
+- Display: Only when item.found === true
+
+**Found Indicator:** `.scavenger-square.found::after`
+- Content: "✓"
+- Position: Absolute, top: 4px, left: 4px
+- Size: 20px circle
+- Background: #22c55e (green)
+- Color: white
+- Font: 14px bold
+- Shadow: 0 2px 4px rgba(0,0,0,0.3)
+
+### Grid Update Logic
+
+**Initial Load:**
+1. `initScavengerGrid()` called on game start
+2. Creates 9 squares (indexes 0-8)
+3. All squares transparent, background shows through
+
+**Item Discovery:**
+1. Player uses `take` command on scavenger item
+2. `handleTakeCommand()` sets `item.found = true`
+3. Calls `updateScavengerGrid()`
+4. Grid updates to show:
+   - Item's icon90x90 image in correct square
+   - Green checkmark overlay in top-left
+   - White glow around icon
+
+**Mapping Process:**
+1. Loop through squares 0-8
+2. Find room with `special.displaySquare === squareIndex`
+3. Find scavenger item with `originalLocation === roomName`
+4. If `item.found === true`: display icon + checkmark
+5. If not found: square remains empty/transparent
+
+## Enhanced Inventory System ✨ NEW
+
+### Display Format
+
+```
+You are carrying:
+SCAVENGER ITEMS (3/9)
+───────────────────── (underlined text)
+  NVidia 5090 Video Card
+  Cat Mug
+  Decorative Pumpkin
+
+TREATS (5/20)
+──────────── (underlined text)
+  Snickers mini-bar, Gummy Bears, Apple, Popcorn, Skittles
+```
+
+### Display Features
+
+**Categorization:**
+- Scavenger items shown first (type === "scavenger")
+- Treats shown second (type === "candy")
+- Blank line separator between categories
+- Fixed items not shown in inventory display
+
+**Scavenger Items:**
+- One item per line
+- Sorted by room displaySquare (0-8)
+- Maintains spatial relationship to grid
+- Progress: (current/total) e.g., (3/9)
+
+**Treats:**
+- Comma-separated on single line
+- No specific sorting
+- Progress: (current/max) e.g., (5/20)
+- Max hardcoded at 20
+
+**Headers:**
+- CSS underlined text (text-decoration: underline)
+- Progress counts included in header
+- Format: `CATEGORY (X/Total)`
+
+**No Point Values:**
+- Removed (+1) (+10) displays
+- Cleaner, simpler appearance
+
+### Implementation
+
+**Code location:** `showInventory()` function (textAdventure.js ~675-742)
+
+**Process:**
+1. Filter inventory items by type
+2. Count total scavenger items (all with type === "scavenger")
+3. Sort scavenger items by room.special.displaySquare
+4. Format headers with counts
+5. Display scavenger items (one per line)
+6. Display treats (comma-separated)
+
+## Simplified Status Box ✨ NEW
+
+### Current Display
+
 ```
 SCORE:
-Treats: 5/24     ← Current/Maximum
-Scavenger: 3/11  ← Found/Total
-Health: 100      ← Current health
-───────────
-Score: 138       ← Total
+Treats: 12 / 20
+
+COMMANDS:
+(h)elp (l)ook (i)nventory
+(n)orth (s)outh (e)ast (w)est
 ```
 
-**Score Separation Logic:**
-- Regular items: points 0-1, no isScavengerItem flag
-- Scavenger items: points 10, marked with `isScavengerItem: true` at runtime
-- Separation enables targeted score tracking and gameplay mechanics
+### Changes from Previous Version
 
-### Item Distribution Across 16 Rooms
+**Removed:**
+- INVENTORY section (now via 'i' command only)
+- Scavenger score display
+- Health score display
+- Total score display
+- Score divider line
 
-**Physical Rooms (15 total):**
+**Kept:**
+- Treats count with limit (X / 20)
+- COMMANDS reference section
+
+**Benefits:**
+- Cleaner, less cluttered
+- Focuses on treat collection limit
+- Inventory accessible via command
+- More screen space for scavenger grid
+
+## Droppable Property System ✨ NEW
+
+### Purpose
+Prevents players from accidentally dropping valuable scavenger items
+
+### Implementation
+
+**JSON Configuration:**
+- All items now have `"droppable": true | false`
+- Scavenger items: `"droppable": false`
+- Candy items: `"droppable": true`
+- Fixed items: `"droppable": true`
+
+**Code Enforcement:**
+```javascript
+// In handleDropCommand()
+if (item.droppable === false) {
+  addToBuffer([
+    { text: "You worked hard to find this treasure! You cannot drop it.",
+      type: "error" }
+  ]);
+  return;
+}
 ```
-STREET-01 ↔ STREET-02
-    ↑           ↑
-NICE-PORCH  FRONT-PORCH
-    ↑           ↑
-NICE-HOUSE   FOYER ← Central hub
-             ↑ ↑ ↑
-         LIBRARY DINING-ROOM STUDY
-             ↑       ↑          ↑
-      MUSIC-ROOM  KITCHEN   TV-ROOM
-             ↑                  ↑
-       GAME-ROOM            BEDROOM
-             ↑
-           HOME (end game)
-```
 
-**Virtual Room:**
-- **INVENTORY** - Container for carried items
+**Location:** textAdventure.js ~833-842
 
-**Regular Items (29 total):**
+## Game Mechanics
 
-*Fixed Items (5):*
-- candy_bag (0 pts) - MUSIC-ROOM - `["bag", "candybag", "pillowcase", "sack"]`
-- doorbell (0 pts) - NICE-PORCH - `["doorbell", "bell", "button", "ringer"]`
-- porch_light_nice (0 pts) - NICE-PORCH - `["nicelight", "warmlight", "welcominglight", "friendlylight"]`
-- door_knocker (0 pts) - FRONT-PORCH - `["knocker", "doorknocker", "gargoyle", "ironknocker"]`
-- porch_light_front (0 pts) - FRONT-PORCH - `["eerielight", "spookylight", "flickeringlight", "hauntedlight"]`
+### Complete Command System
 
-*Portable Candy/Food Items (24):*
-- **FOYER:** snickers (1 pt)
-- **LIBRARY:** whatchamacallit (1 pt)
-- **DINING-ROOM:** 100grand (1 pt), apple (1 pt), lemondrops (1 pt), smarties (1 pt)
-- **STUDY:** 3musketeers (1 pt), gummybears (1 pt), lifesavers (1 pt)
-- **KITCHEN:** butterfinger (1 pt), corn (1 pt), reesespieces (1 pt)
-- **MUSIC-ROOM:** candy_bag (0 pts) + smarties moved here
-- **GAME-ROOM:** mars (1 pt), hersheykisses (1 pt), popcorn (1 pt), twizzlers (1 pt)
-- **BEDROOM:** mounds (1 pt), jollyrancher (1 pt), rottentomato (1 pt), spicedrops (1 pt)
-- **TV-ROOM:** mrgoodbar (1 pt), hotdog (1 pt), skittles (1 pt), socks (1 pt, not eatable)
-
-**Scavenger Items (11 total):**
-- **GAME-ROOM:** nvidia (10 pts), gamingmouse (10 pts)
-- **MUSIC-ROOM:** beatles (10 pts)
-- **DINING-ROOM:** catmug (10 pts)
-- **LIBRARY:** cuponoodles (10 pts), frankenstein (10 pts)
-- **BEDROOM:** watch (10 pts)
-- **TV-ROOM:** bringingupbaby (10 pts)
-- **FOYER:** dog (10 pts)
-- **STUDY:** krugerrand (10 pts)
-- **FRONT-PORCH:** pumpkin (10 pts)
-
-**Total Points Available:**
-- **Treats:** 24 points (24 eatable candy/food items × 1 pt, excluding bag/fixed items)
-- **Scavenger:** 110 points (11 items × 10 pts)
-- **Health:** 100 points (starting value)
-- **Maximum Score:** 234 points
-
-## Game Mechanics Implementation
-
-### Complete Command System (10 total)
-
-**Movement Commands:**
-- **north** (n), **south** (s), **east** (e), **west** (w) - Room navigation
-
-**Information Commands:**
-- **help** (h) - Show available commands
-- **look** (l) - Examine current room and visible items
-- **inventory** (i) - List carried items with (+X) points
-
-**Interaction Commands:**
-- **take** (get, grab, pick) - Pick up items with full validation
-- **examine** (x, ex) - Examine items with smart rules
-- **drop** (put, place) - Drop items from inventory to current room
+**Movement:** north (n), south (s), east (e), west (w)
+**Information:** help (h), look (l), inventory (i)
+**Interaction:** take (get/grab/pick), examine (x/ex), drop (put/place)
 
 ### Natural Language Command Processing
 
-**Enhanced Multi-Word Parsing:**
+**Multi-Word Parsing:**
 ```
-User Input: "take gummy bears"
-↓
-1. Lowercase entire input → "take gummy bears"
-2. Find first space → extract command "take"
-3. Get remainder → "gummy bears"
-4. Strip ALL spaces → "gummybears"
-5. Check typedNames array → finds match!
+"take gummy bears" → strips spaces → matches "gummybears"
+"examine reeses pieces" → strips spaces → matches "reesespieces"
+"get mr goodbar" → strips spaces → matches "mrgoodbar"
 ```
 
-**Works with any spacing:**
-- `take gummy bears` → `gummybears` ✓
-- `take   gummy   bears` → `gummybears` ✓
-- `take gummybears` → `gummybears` ✓
-- `TAKE Gummy Bears` → `gummybears` ✓
+**All inputs:**
+- Converted to lowercase
+- Spaces stripped after command extraction
+- Matched against typedNames arrays
 
-**Examples that now work:**
-- `take reeses pieces` → matches "reesespieces"
-- `examine 100 grand` → matches "100grand"
-- `get mr goodbar` → matches "mrgoodbar"
-- `take cup o noodles` → matches "cuponoodles"
+### Item Interaction
 
-### Item Interaction System (COMPLETE)
+**Take Command:**
+- Validates: includeInGame, visible, locked, has take action
+- Moves to INVENTORY location
+- Sets found = true for scavenger items (markAsFound)
+- Updates scavenger grid if scavenger item
+- Updates status box
 
-#### Room Entry Behavior
-1. Load room data and show enterText
-2. List available exits
-3. **Show visible items automatically** - filtered by visible: true
-4. Items appear with display names for easy identification
+**Drop Command:**
+- Checks droppable property ✨ NEW
+- Prevents dropping scavenger items
+- Moves to current room location
+- Updates status box
 
-#### Take Command Validation (6-Step Process)
-1. **Item exists** with matching name in typedNames array
-2. **includeInGame** === true
-3. **visible** === true (item is discoverable)
-4. **locked** === false (item is not restricted)
-5. **Has actions.take** property (item is portable)
-6. **actions.take.addToInventory** === true (confirms pickup)
+**Examine Command:**
+- Portable items: Must be in inventory
+- Fixed items: Must be in current room
+- Shows item.actions.examine text
 
-#### Drop Command Validation
-1. **Item exists** with matching name in typedNames array in INVENTORY
-2. **includeInGame** === true
-3. **Has actions.take** property (confirms it's droppable)
-4. Move from INVENTORY to currentRoom
-5. Update score breakdown
+## Item Distribution
 
-#### Examine Command Intelligence
-**Portable Items (have take action):**
-- Must be in INVENTORY to examine closely
-- "You need to pick it up first to examine it closely"
+### Scavenger Items (11 total, 9 active)
 
-**Fixed Items (no take action):**
-- Can examine if visible in current room
-- Direct examination of doorbell, lights, knocker
+**Active in game (includeInGame: true):**
+1. nvidia - NVidia 5090 Video Card (GAME-ROOM, square 0)
+2. beatles - Beatles Revolver Music CD (MUSIC-ROOM, square 3)
+3. catmug - Cat Mug (DINING-ROOM, square 4)
+4. cuponoodles - Cup O' Noodles (KITCHEN, square 1)
+5. bringingupbaby - Bringing Up Baby DVD (TV-ROOM, square 5)
+6. dog - Odd Dog (STUDY, square 2)
+7. krugerrand - Krugerrand gold coin (BEDROOM, square 8)
+8. pumpkin - Decorative Pumpkin (FOYER, square 7)
+9. frankenstein - Frankenstein book (LIBRARY, square 6)
 
-#### Real-Time Score Updates
-- **Score components recalculated** after every take/drop
-- **player.core.score** updated with total
-- **Display breakdown** shows Treats/Scavenger/Health/Total
-- **Both text and visual displays** stay synchronized
+**Inactive (includeInGame: false):**
+10. watch - Fancy Watch (BEDROOM) - not currently in game
+11. gamingmouse - Razer Gaming Mouse (GAME-ROOM) - not currently in game
 
-## Code Architecture (UNIFIED SYSTEM)
+### Candy/Treats (24 total)
 
-### Core Functions (textAdventure.js - ~1450 lines)
-```javascript
-// Data Loading System
-loadItems()              // Load items.json (29 items)
-loadScavengerItems()     // Load scavengerItems.json (11 items), mark with isScavengerItem
-loadRoomsAndDoors()      // Load 16 rooms including INVENTORY
-loadCommands()           // Load 10 commands
+**Distribution across rooms:**
+- FOYER: snickers
+- LIBRARY: whatchamacallit
+- DINING-ROOM: 100grand, apple, lemondrops
+- STUDY: 3musketeers, gummybears, lifesavers
+- KITCHEN: butterfinger, cannedcorn, reesespieces
+- MUSIC-ROOM: smarties
+- GAME-ROOM: mars, hersheykisses, popcorn
+- BEDROOM: mounds, jollyrancher, rottentomato, spicedrops
+- TV-ROOM: mrgoodbar, hotdog, skittles, twizzlers
 
-// Enhanced Game Engine
-displayRoom()            // Show room + exits + visible items
-movePlayer()             // Handle movement with door validation
-processCommand()         // Parse and execute all commands
-findCommand()            // Extract first word for command matching
+**Special item:**
+- socks: Not eatable (eatable: false)
 
-// Item Interaction System (COMPLETE)
-handleTakeCommand()      // Complete pickup system with typedNames array matching
-handleDropCommand()      // Complete drop system with typedNames array matching
-handleExamineCommand()   // Smart examination with typedNames array matching
-lookAtRoom()             // Show room description + visible items
-showInventory()          // Display items from INVENTORY room with (+X) points
+### Fixed Items (5 total)
 
-// Multi-Component Scoring System
-updateGameStatus()       // Calculate score components, update player.core.score
-  ├─ Separate regular vs scavenger items by isScavengerItem flag
-  ├─ Sum points for Treats score
-  ├─ Sum points for Scavenger score
-  ├─ Read health for Health score
-  ├─ Calculate total = Treats + Scavenger + Health
-  └─ Display breakdown in SCORE panel
+1. candy_bag (MUSIC-ROOM) - Trick-or-treat bag, 0 points, takeable
+2. doorbell (NICE-PORCH) - Not visible, not takeable, ring action
+3. porch_light_nice (NICE-PORCH) - Not takeable, examine only
+4. door_knocker (FRONT-PORCH) - Not takeable, knock action
+5. porch_light_front (FRONT-PORCH) - Not visible, not takeable
 
-// Real-Time UI Management
-addToBuffer()            // Text output management with type formatting
+## Scoring System
+
+### Current Implementation
+
+**Status Box Display:**
+- Treats: X / 20 (count of candy items in inventory, max display 20)
+
+**Inventory Display:**
+- Scavenger: (X/9) - shows found/total active scavenger items
+- Treats: (X/20) - shows collected/limit candy items
+
+**Not Currently Used:**
+- Point values (items still have them but not displayed)
+- Health score (property exists but not tracked in UI)
+- Total score (not calculated in simplified system)
+
+**Available for Future:**
+- Item points still defined (candy: 1, scavenger: 10)
+- Health values on eatable items
+- Total score calculation possible if needed
+
+## CSS Styling Additions ✨ NEW
+
+### Grid Styles
+
+```css
+.scavenger {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 2px;
+  background-image: url('assets/scavenger/default250x250.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: black;
+  padding: 2px;
+  overflow: hidden;
+}
+
+.scavenger-square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  position: relative;
+}
+
+.scavenger-square.found::after {
+  content: "✓";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 20px;
+  height: 20px;
+  background: #22c55e;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.scavenger-square img {
+  max-width: 100%;
+  max-height: 100%;
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8))
+    drop-shadow(0 0 4px rgba(255, 255, 255, 0.5));
+}
+
+.underlined-text {
+  text-decoration: underline;
+}
 ```
 
-### Universal TypedNames Array System
-```javascript
-// All items loaded and merged
-items = { ...items, ...scavengerItems };
+## JavaScript Functions ✨ NEW
 
-// Runtime marking for scavenger items
-Object.values(scavengerItems).forEach(item => {
-  item.isScavengerItem = true;
-});
+### Scavenger Grid Functions
 
-// Unified matching pattern (same for take/drop/examine)
-const targetTypedName = remainder.replace(/\s+/g, ''); // Strip spaces
-const matchingItems = Object.entries(items).filter(([key, item]) =>
-  item.includeInGame && item.typedNames?.includes(targetTypedName)
-);
-```
+**initScavengerGrid()** (line ~1119)
+- Called on game initialization
+- Calls updateScavengerGrid()
 
-### Command System Enhancement
-**Dual command loading:**
-- Commands defined in both commands.json AND CONFIG_FALLBACKS
-- Handles browser caching and loading failures gracefully
-- Enhanced findCommand() parses multi-word inputs correctly
+**updateScavengerGrid()** (lines ~1124-1165)
+- Creates 9 div.scavenger-square elements
+- Maps squares to rooms via displaySquare
+- Finds items by originalLocation
+- Displays icon90x90 if item.found === true
+- Adds "found" class for checkmark overlay
 
-## Current Game Experience
+**Called from:**
+- Initial game load: initScavengerGrid() at startup
+- Item pickup: handleTakeCommand() after markAsFound
 
-### ✅ Complete Interactive Gameplay
-**Players can now:**
-1. **Navigate** through all 15 rooms with consistent descriptions
-2. **Discover items** automatically when entering rooms (29 regular + 11 scavenger)
-3. **Pick up items** using natural commands with aliases
-4. **Drop items** in any room using any alias
-5. **Examine items** with realistic rules (hold portable items, examine fixed items in place)
-6. **Track score** with detailed breakdown (Treats X/Total, Scavenger X/Total, Health, Total)
-7. **View inventory** with point values displayed (+X format)
-8. **Get help** with updated command list
+### Enhanced Inventory Function
 
-### ✅ Example Gameplay Session
-```
-> north
-You enter the Radley House foyer.
-Exits: south, north, east, west
-You see:
-  Snickers mini-bar
-  Odd Dog
+**showInventory()** (lines ~675-742)
+- Filters items by type
+- Counts total scavenger items
+- Sorts scavenger by displaySquare
+- Formats with underlined headers
+- Shows progress (X/Total)
+- Categorized display
 
-> take snickers
-You pick up the Snickers bar and put it in your trick or treat bag.
+**New text type:**
+- "underlined" type added to updateDisplay() switch
+- Maps to .underlined-text CSS class
 
-> get dog
-You pick up the oddly shaped ceramic dog and put it in your bag.
+## Technical Architecture
 
-> inventory
-You are carrying:
-  Snickers mini-bar (+1)
-  Odd Dog (+10)
+### Type System Benefits
 
-> north
-You enter the study.
-You see:
-  3 Musketeers bar
-  Gummy Bears
-  Life Savers
-  Krugerrand
+**Self-documenting:**
+- JSON clearly shows item purpose
+- No guessing about item category
+- Easy to understand at a glance
 
-> take gummy bears
-You pick up the bag of gummy bears.
+**Cleaner code:**
+- `item.type === "scavenger"` vs `item.isScavengerItem`
+- Consistent property names
+- Easier to filter and categorize
 
-> examine gummy
-You need to pick up the Gummy Bears first to examine it closely.
+**Future-proof:**
+- Easy to add new types (keys, quest items, tools)
+- Extensible without code changes
+- Supports complex item hierarchies
 
-> take gummy
-You pick up the bag of gummy bears.
+### Grid-Room Mapping
 
-> examine gummy bears
-Gummy Bears: Colorful, chewy gummy bears in all the fruit flavors!
+**Spatial relationship maintained:**
+- Grid layout matches house floor plan
+- Items appear in logical positions
+- Visual representation of physical space
 
-[SCORE panel shows:]
-SCORE:
-Treats: 2/24
-Scavenger: 1/11
-Health: 100
-───────────
-Score: 112
-```
+**Easy reconfiguration:**
+- Change displaySquare values to rearrange grid
+- No code changes needed
+- Self-contained in room definitions
 
-### ✅ Item Categories Working
-**Portable Items (require pickup to examine):**
-- Regular candy/food: 24 items (1 pt each, except candy_bag 0 pts)
-- Scavenger items: 11 items (10 pts each)
+### Runtime Property System
 
-**Fixed Items (examine in place):**
-- doorbell, door_knocker, porch lights (0 pts each)
-- Future: safes, paintings, furniture
+**Load-time additions:**
+- `isScavengerItem: true` - Backward compatibility
+- `originalLocation: "ROOM"` - Grid mapping support
 
-## Technical Achievements
+**Why not in JSON:**
+- Keeps JSON clean and minimal
+- Calculated values, not configuration
+- Added programmatically for consistency
 
-### Universal TypedNames Arrays
-- **Consistent structure** across all 40 items
-- **No special cases** in code (single pattern for all items)
-- **Natural language flexibility** with 2-9 aliases per item
-- **Unique naming** prevents conflicts between items
+## Future Development
 
-### Multi-Word Parsing
-- **Space-insensitive** matching works with any input format
-- **Case-insensitive** lowercasing for flexibility
-- **Handles all variations** of multi-word item names
+### Ready to Implement
 
-### Multi-Component Scoring Benefits
-- **Separate tracking** enables gameplay decisions
-- **Health as score** creates risk/reward for eating candy
-- **Scavenger hunt** has clear progress metric
-- **Total score** provides overall achievement measure
-- **X/Total format** shows progress clearly
-
-### Browser Compatibility Solved
-- **Fallback command system** prevents caching issues
-- **Multiple server ports** for development testing
-- **JSON validation** ensures all configuration files load correctly
-- **Command parsing fixes** resolve multi-word input problems
-
-### Performance Optimizations
-- **Unified item filtering** reduces code complexity
-- **Single source of truth** for item locations eliminates synchronization bugs
-- **Real-time updates** only when needed (item pickup/drop, score changes)
-- **Clean memory usage** with no duplicate item tracking
-- **Runtime flagging** keeps JSON files clean
-
-### Scalability Features
-- **Property-driven system** makes adding new items trivial
-- **Command framework** easily extensible for new interactions
-- **Room system** supports unlimited expansion
-- **Type-safe item validation** prevents runtime errors
-- **Score component system** can add new score types easily
-
-## Future Development Roadmap
-
-### Phase 1: Visual Scavenger Checklist (NEXT - 2-3 hours)
-**Goal:** Replace text-based scavenger tracking with visual display
-
-**Option A: Checkbox List (Simpler)**
-- Item name + checkbox/checkmark
-- Updates when item found
-- Shows X/11 progress
-- Minimal CSS changes
-
-**Option B: Icon Grid (More Complex)**
-- 3×3 or 3×4 grid of 90×90 icons
-- Grayscale when not found
-- Color when found
-- Uses icon90x90 images
-
-**Recommendation:** Start with Option A
-
-### Phase 2: Eating System (1-2 hours)
 **Eat Command:**
-- Add "eat" command to commands.json
-- Validate item.eatable property
-- Apply actions.eat effects (addHealth, removeItem)
-- Update health score in real-time
-- Implement health bounds (0-100)
+- Items have eat actions defined
+- Health values assigned
+- removeItem: true configured
+- Just needs command handler
 
-**Game Over Condition:**
-- Health reaches 0 → game over
-- Display final score
+**Image Display on Examine:**
+- icon150 property on all candy items
+- Images exist in assets/items/
+- Ready for inline or overlay display
 
-### Phase 3: Image Display During Examine (1-2 hours)
-**Use icon150 property:**
-- Inline display in text buffer (simplest)
-- Or temporary overlay on status box
-- Or dedicated image display area
+**Health System:**
+- Health property on all items
+- Health score tracking code exists
+- Just needs UI integration
 
-**All items ready:**
-- icon150 property already defined
-- 24 images in assets/items folder
+### Potential Enhancements
 
-### Phase 4: Use Command & Puzzles (2-3 sessions)
-**Use Command:**
-- Add "use" command for doorbell/knocker
-- Trigger special events
-- Door opens, NPC appears
-- Puzzle progression
+**Grid Interactivity:**
+- Click square for location hint
+- Hover for item name preview
+- Visual feedback on hover
 
-**Hidden Item System:**
-- Set items to visible: false initially
-- Reveal mechanics: "examine painting" → reveals safe
-- Progressive discovery gameplay
+**Inventory Options:**
+- Toggle compact/detailed view
+- Show item icons
+- Sorting options
 
-**Puzzle Implementation:**
-- Locked doors requiring keys
-- Password-protected items
-- "say friend" puzzle for secret passage
+**Additional Item Types:**
+- Keys for locked doors
+- Quest items for puzzles
+- Tools for special actions
 
-### Phase 5: Advanced Features (Future)
-**Enhanced Gameplay:**
-- Health degradation over time
-- Walking costs health
-- Different foods restore different amounts
-- Random item placement modes
-- Multiple difficulty levels
-- Hint system
-- Achievement tracking
+**Command Shortcuts:**
+- Add "g" for get
+- Add "d" for drop
+- Single-letter efficiency
 
-## Design Philosophy & Technical Innovation
+## Asset Requirements
 
-### Current Approach
-**Universal TypedNames System** - The unified array structure eliminates special cases and makes the codebase dramatically simpler and more maintainable. Every item can have multiple aliases, enabling natural language input.
+### Required Assets
 
-**Multi-Word Parsing** - Space-stripping algorithm allows players to type item names naturally without worrying about spacing, making the game more intuitive and accessible.
+**Grid Background:**
+- default250x250.png - Background image for scavenger grid
 
-### Key Innovations
-1. **INVENTORY as Room** - Revolutionary simplification of item management
-2. **Universal TypedNames Arrays** - Consistent structure eliminates special cases
-3. **Multi-Word Space-Stripping Parser** - Natural language flexibility
-4. **Property-Driven Items** - visible/locked/health/eatable properties enable fine-grained game control
-5. **Runtime Flagging** - isScavengerItem keeps JSON clean while enabling targeted logic
-6. **Component Scoring** - Separates scoring into meaningful categories
-7. **Icon System** - Prepared for visual display with icon150/icon90/icon250 properties
+**Scavenger Item Icons:**
+- [item]90x90.png - 9 active scavenger items
+- Used in grid display when found
+- Should have transparent backgrounds for proper display
 
-### Code Quality
-- **Clean separation** of concerns between data, logic, and display
-- **Consistent patterns** across all item interactions
-- **Comprehensive validation** prevents edge cases and errors
-- **Self-documenting** code with clear function names and logic flow
-- **Minimal properties** in JSON - only what's actually used
-- **Universal structure** - no special cases for different item types
+**Candy Item Icons:**
+- [item]150.png - 24 candy items
+- Ready for examine command image display
+- Currently loaded but not displayed
+
+### Asset Specifications
+
+**Grid background:**
+- Size: 250×250px or larger
+- Format: PNG (supports transparency if needed)
+- Location: assets/scavenger/default250x250.png
+- Display: Cover sizing (crops to fit 313×280 container)
+
+**Scavenger icons:**
+- Size: 90×90px
+- Format: PNG with transparency recommended
+- Effects: White glow added by CSS
+- Checkmark: Generated by CSS (not in image)
+
+**Candy icons:**
+- Size: ~150px (one dimension)
+- Format: PNG
+- Not currently displayed (future feature)
+
+## Version History
+
+### v0.24 (October 1, 2025 - Afternoon)
+- ✨ Added 3×3 visual scavenger grid
+- ✨ Implemented type property system (scavenger/candy/fixed)
+- ✨ Added droppable property to prevent item loss
+- ✨ Redesigned inventory with categories and progress
+- ✨ Simplified status box (removed complex scoring)
+- ✨ Added room displaySquare mapping
+- ✨ Added green checkmark overlay for found items
+- ✨ Added white glow effect to scavenger icons
+- ✨ Added underlined text CSS class
+
+### v0.23 (October 1, 2025 - Morning)
+- Universal typedNames array migration
+- 22 new candy/food items added (29 total)
+- icon150 property for image support
+- Enhanced multi-word command parsing
+- Space-stripping algorithm
+- Scavenger items property renamed typedName → typedNames
+
+### v0.22 (September 30, 2025)
+- Location property refactoring
+- INVENTORY as room concept
 
 ---
 
-*This specification documents the complete interactive item system with universal typedNames arrays, natural language multi-word parsing, 40 total items (29 regular + 11 scavenger), and comprehensive scoring system. The game has evolved into a robust text adventure with flexible input, diverse content, and clear progression tracking.*
+*This specification documents the complete visual scavenger hunt system with 3×3 grid display, type classification, droppable property enforcement, and enhanced categorized inventory with progress tracking.*

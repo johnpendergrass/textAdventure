@@ -37,36 +37,51 @@ let currentRoom = "STREET-01";
 // ========================================
 
 // Centralized error display function
-function displayConfigError(filename, location, error, isCritical = false, fallbackAvailable = true) {
-  const errorCode = error.status || error.message || 'Unknown error';
+function displayConfigError(
+  filename,
+  location,
+  error,
+  isCritical = false,
+  fallbackAvailable = true
+) {
+  const errorCode = error.status || error.message || "Unknown error";
   const fullPath = `${location}/${filename}`;
-  
+
   // Console logging with detailed information
   console.error(`Failed to load config file: ${filename}`);
-  console.error(`Location: ${location}`);  
+  console.error(`Location: ${location}`);
   console.error(`Full path: ${fullPath}`);
   console.error(`Error: ${errorCode}`);
   console.error(`Critical: ${isCritical}`);
   console.error(`Fallback available: ${fallbackAvailable}`);
-  
+
   // User-visible error message in game text area
   const errorMessages = [
     { text: `CONFIG ERROR: Failed to load ${filename}`, type: "error" },
     { text: `Location: ${fullPath}`, type: "error" },
-    { text: `Error: ${errorCode}`, type: "error" }
+    { text: `Error: ${errorCode}`, type: "error" },
   ];
-  
+
   if (!fallbackAvailable) {
-    errorMessages.push({ text: `No fallback available - game cannot continue`, type: "error" });
-    errorMessages.push({ text: `Game will exit after this error.`, type: "error" });
+    errorMessages.push({
+      text: `No fallback available - game cannot continue`,
+      type: "error",
+    });
+    errorMessages.push({
+      text: `Game will exit after this error.`,
+      type: "error",
+    });
   } else {
-    errorMessages.push({ text: `Using fallback defaults to continue`, type: "error" });
+    errorMessages.push({
+      text: `Using fallback defaults to continue`,
+      type: "error",
+    });
   }
-  
+
   errorMessages.push({ text: "", type: "flavor" }); // Add blank line
-  
+
   // Add to buffer if textBuffer exists (after initial load)
-  if (typeof addToBuffer !== 'undefined') {
+  if (typeof addToBuffer !== "undefined") {
     addToBuffer(errorMessages);
   }
 }
@@ -77,7 +92,6 @@ function displayConfigError(filename, location, error, isCritical = false, fallb
 
 // Fallback defaults for each config type
 const CONFIG_FALLBACKS = {
-  
   uiConfig: {
     statusPanel: {
       commands: {
@@ -85,132 +99,140 @@ const CONFIG_FALLBACKS = {
         list: [
           "(h)elp (l)ook (i)nventory",
           "(t)ake e(x)amine (d)rop",
-          "(n)orth (s)outh (e)ast (w)est"
-        ]
+          "(n)orth (s)outh (e)ast (w)est",
+        ],
       },
       inventory: { title: "INVENTORY:" },
-      status: { title: "STATUS:" }
+      status: { title: "STATUS:" },
     },
     fallbackText: {
-      noGameText: "Configuration error. Type HELP for available commands."
-    }
+      noGameText: "Configuration error. Type HELP for available commands.",
+    },
   },
-  
+
   commands: {
     help: {
       type: "system",
       shortcuts: ["h", "?"],
-      action: "show_help"
+      action: "show_help",
     },
     look: {
       type: "action",
       shortcuts: ["l"],
-      action: "examine_room"
+      action: "examine_room",
     },
     inventory: {
-      type: "system", 
+      type: "system",
       shortcuts: ["i"],
-      action: "show_inventory"
+      action: "show_inventory",
     },
     north: {
       type: "movement",
       shortcuts: ["n"],
-      action: "move_north"
+      action: "move_north",
     },
     south: {
       type: "movement",
       shortcuts: ["s"],
-      action: "move_south"
+      action: "move_south",
     },
     east: {
       type: "movement",
       shortcuts: ["e"],
-      action: "move_east"
+      action: "move_east",
     },
     west: {
       type: "movement",
       shortcuts: ["w"],
-      action: "move_west"
+      action: "move_west",
     },
     take: {
       type: "action",
       shortcuts: ["get", "grab", "pick"],
-      action: "take_item"
+      action: "take_item",
     },
     examine: {
       type: "action",
       shortcuts: ["x", "ex"],
-      action: "examine_item"
+      action: "examine_item",
     },
     drop: {
       type: "action",
       shortcuts: ["put", "place"],
-      action: "drop_item"
-    }
+      action: "drop_item",
+    },
   },
-  
+
   player: {
     core: {
       score: 0,
       health: 100,
       inventory: [],
       currentRoom: "STREET-01",
-      visitedRooms: []
+      visitedRooms: [],
     },
     gameStats: {
       treats: { current: 0, max: 40 },
-      houses: { current: 0, max: 12 }
-    }
+      houses: { current: 0, max: 12 },
+    },
   },
-  
+
   gameState: {
     currentRoom: "start",
     visitedRooms: ["start"],
-    gameFlags: {}
+    gameFlags: {},
   },
-  
+
   keyboardShortcuts: {
     navigation: [
       { key: "PageUp", action: "scrollUp", preventDefault: true },
-      { key: "PageDown", action: "scrollDown", preventDefault: true }
-    ]
+      { key: "PageDown", action: "scrollDown", preventDefault: true },
+    ],
   },
-  
+
   gameText: [
     "SYSTEM NOTICE: Configuration files could not be loaded.",
     "Using fallback game configuration.",
     "You may experience limited functionality.",
     "",
-    "Type HELP to see available commands."
+    "Type HELP to see available commands.",
   ],
-  
+
   initGame: {
     meta: {
       gameName: "Halloween Text Adventure (Fallback)",
       version: "1.0.0",
-      author: "System"
+      author: "System",
     },
     startup: {
       room: "STREET-01",
       welcomeText: [
-        {"text": "FALLBACK: initGame.json could not be loaded.", "type": "error"},
-        {"text": "Using system defaults.", "type": "error"},
-        {"text": "", "type": "flavor"},
-        {"text": "Type HELP or H for a list of commands.", "type": "command"}
+        { text: "FALLBACK: initGame.json could not be loaded.", type: "error" },
+        { text: "Using system defaults.", type: "error" },
+        { text: "", type: "flavor" },
+        { text: "Type HELP or H for a list of commands.", type: "command" },
       ],
-      availableCommands: ["help", "look", "inventory", "north", "south", "east", "west"]
-    }
+      availableCommands: [
+        "help",
+        "look",
+        "inventory",
+        "north",
+        "south",
+        "east",
+        "west",
+      ],
+    },
   },
-  
+
   gameData: {
     meta: {
       gameName: "Halloween Text Adventure (Fallback)",
       version: "0.2.0",
-      author: "System"
+      author: "System",
     },
     items: {},
-    globalCommands: {}
-  }
+    globalCommands: {},
+  },
 };
 
 // ========================================
@@ -223,54 +245,67 @@ function checkCriticalConfigs() {
 
   // Check uiConfig
   if (!uiConfig || Object.keys(uiConfig).length === 0) {
-    criticalErrors.push('uiConfig is empty or missing');
+    criticalErrors.push("uiConfig is empty or missing");
   } else {
     if (!uiConfig.statusPanel || !uiConfig.fallbackText) {
-      criticalErrors.push('uiConfig is missing required sections (statusPanel, fallbackText)');
+      criticalErrors.push(
+        "uiConfig is missing required sections (statusPanel, fallbackText)"
+      );
     }
   }
 
   // Check commands
   if (!commands || Object.keys(commands).length === 0) {
-    criticalErrors.push('commands is empty or missing');
+    criticalErrors.push("commands is empty or missing");
   } else {
-    const requiredCommands = ['help', 'look', 'inventory'];
-    const missingCommands = requiredCommands.filter(cmd => !commands[cmd]);
+    const requiredCommands = ["help", "look", "inventory"];
+    const missingCommands = requiredCommands.filter((cmd) => !commands[cmd]);
     if (missingCommands.length > 0) {
-      criticalErrors.push(`commands is missing required commands: ${missingCommands.join(', ')}`);
+      criticalErrors.push(
+        `commands is missing required commands: ${missingCommands.join(", ")}`
+      );
     }
   }
-  
+
   if (criticalErrors.length > 0) {
-    console.error('CRITICAL CONFIG ERRORS DETECTED:');
-    criticalErrors.forEach(error => console.error(`- ${error}`));
-    
+    console.error("CRITICAL CONFIG ERRORS DETECTED:");
+    criticalErrors.forEach((error) => console.error(`- ${error}`));
+
     // Display critical error message to user
     const criticalErrorMessages = [
       { text: "CRITICAL CONFIGURATION ERROR", type: "error" },
-      { text: "One or more essential configuration files failed to load:", type: "error" },
-      { text: "", type: "error" }
+      {
+        text: "One or more essential configuration files failed to load:",
+        type: "error",
+      },
+      { text: "", type: "error" },
     ];
-    
-    criticalErrors.forEach(error => {
+
+    criticalErrors.forEach((error) => {
       criticalErrorMessages.push({ text: `• ${error}`, type: "error" });
     });
-    
+
     criticalErrorMessages.push(
       { text: "", type: "error" },
-      { text: "The game cannot start properly with these errors.", type: "error" },
-      { text: "Please check the console for detailed error information.", type: "error" },
+      {
+        text: "The game cannot start properly with these errors.",
+        type: "error",
+      },
+      {
+        text: "Please check the console for detailed error information.",
+        type: "error",
+      },
       { text: "Input has been disabled.", type: "error" }
     );
-    
-    if (typeof addToBuffer !== 'undefined') {
+
+    if (typeof addToBuffer !== "undefined") {
       addToBuffer(criticalErrorMessages);
     }
-    
+
     return false;
   }
-  
-  console.log('All critical configurations validated successfully');
+
+  console.log("All critical configurations validated successfully");
   return true;
 }
 
@@ -280,7 +315,7 @@ function checkCriticalConfigs() {
 
 // Load game text from JSON file
 async function loadGameText() {
-  const filename = 'startGameText.json';
+  const filename = "startGameText.json";
   try {
     const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
     if (!response.ok) {
@@ -298,7 +333,7 @@ async function loadGameText() {
 
 // Load commands from JSON file
 async function loadCommands() {
-  const filename = 'commands.json';
+  const filename = "commands.json";
   try {
     const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
     if (!response.ok) {
@@ -314,30 +349,28 @@ async function loadCommands() {
   }
 }
 
-
-
 // Load player data from JSON file
 async function loadPlayer() {
-  const filename = 'player.json';
+  const filename = "player.json";
   try {
     const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    
+
     // Check if player.json is empty (new game scenario)
     if (Object.keys(data).length === 0) {
-      console.log('player.json is empty - initializing from initGame');
+      console.log("player.json is empty - initializing from initGame");
       if (initGame && initGame.player) {
-        console.log('Using player data from initGame.json');
+        console.log("Using player data from initGame.json");
         return initGame.player;
       } else {
-        console.log('initGame.player not available - using fallback');
+        console.log("initGame.player not available - using fallback");
         return CONFIG_FALLBACKS.player;
       }
     }
-    
+
     console.log(`Successfully loaded ${filename} from ${CONFIG_LOCATION}`);
     return data;
   } catch (error) {
@@ -349,7 +382,7 @@ async function loadPlayer() {
 
 // Load game state from JSON file
 async function loadGameState() {
-  const filename = 'gameState.json';
+  const filename = "gameState.json";
   try {
     const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
     if (!response.ok) {
@@ -367,7 +400,7 @@ async function loadGameState() {
 
 // Load UI configuration from JSON file
 async function loadUIConfig() {
-  const filename = 'uiConfig.json';
+  const filename = "uiConfig.json";
   try {
     const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
     if (!response.ok) {
@@ -385,7 +418,7 @@ async function loadUIConfig() {
 
 // Load keyboard shortcuts from JSON file
 async function loadKeyboardShortcuts() {
-  const filename = 'keyboardShortcuts.json';
+  const filename = "keyboardShortcuts.json";
   try {
     const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
     if (!response.ok) {
@@ -403,7 +436,7 @@ async function loadKeyboardShortcuts() {
 
 // Load initial game configuration from JSON file
 async function loadInitGame() {
-  const filename = 'initGame.json';
+  const filename = "initGame.json";
   try {
     const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
     if (!response.ok) {
@@ -421,7 +454,7 @@ async function loadInitGame() {
 
 // Load unified game data from JSON file
 async function loadGameData() {
-  const filename = 'gameData.json';
+  const filename = "gameData.json";
   try {
     const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
     if (!response.ok) {
@@ -439,7 +472,7 @@ async function loadGameData() {
 
 // Load rooms and doors data from JSON file
 async function loadRoomsAndDoors() {
-  const filename = 'rooms-w-doors.json';
+  const filename = "rooms-w-doors.json";
   try {
     const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
     if (!response.ok) {
@@ -457,7 +490,7 @@ async function loadRoomsAndDoors() {
 
 // Load items data from JSON file
 async function loadItems() {
-  const filename = 'items.json';
+  const filename = "items.json";
   try {
     const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
     if (!response.ok) {
@@ -475,7 +508,7 @@ async function loadItems() {
 
 // Load scavenger items data from JSON file
 async function loadScavengerItems() {
-  const filename = 'scavengerItems.json';
+  const filename = "scavengerItems.json";
   try {
     const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
     if (!response.ok) {
@@ -485,7 +518,9 @@ async function loadScavengerItems() {
     console.log(`Successfully loaded ${filename} from ${CONFIG_LOCATION}`);
     return data;
   } catch (error) {
-    console.log(`No scavengerItems.json found - continuing without scavenger items`);
+    console.log(
+      `No scavengerItems.json found - continuing without scavenger items`
+    );
     return { scavengerItems: {} };
   }
 }
@@ -497,15 +532,15 @@ function processGameData(gameData) {
     activeCommands: {},
     activeNPCs: {},
     playerInventory: [],
-    startupData: gameData.startup || {}
+    startupData: gameData.startup || {},
   };
-  
+
   // Filter active items
   if (gameData.items) {
     Object.entries(gameData.items).forEach(([itemId, item]) => {
       if (item.includeInGame === true) {
         processed.activeItems[itemId] = item;
-        
+
         // Build player inventory from items with location: "player"
         if (item.location === "player") {
           processed.playerInventory.push(itemId);
@@ -513,7 +548,7 @@ function processGameData(gameData) {
       }
     });
   }
-  
+
   // Filter active NPCs
   if (gameData.npcs) {
     Object.entries(gameData.npcs).forEach(([npcId, npc]) => {
@@ -522,7 +557,7 @@ function processGameData(gameData) {
       }
     });
   }
-  
+
   // Filter active commands (now from gameData.commands instead of globalCommands)
   if (gameData.commands) {
     Object.entries(gameData.commands).forEach(([commandId, command]) => {
@@ -531,17 +566,25 @@ function processGameData(gameData) {
       }
     });
   }
-  
-  console.log(`Processed gameData: ${Object.keys(processed.activeItems).length} active items, ${Object.keys(processed.activeNPCs).length} active NPCs, ${Object.keys(processed.activeCommands).length} active commands`);
-  console.log(`Built player inventory: ${processed.playerInventory.join(', ')}`);
-  
+
+  console.log(
+    `Processed gameData: ${
+      Object.keys(processed.activeItems).length
+    } active items, ${Object.keys(processed.activeNPCs).length} active NPCs, ${
+      Object.keys(processed.activeCommands).length
+    } active commands`
+  );
+  console.log(
+    `Built player inventory: ${processed.playerInventory.join(", ")}`
+  );
+
   return processed;
 }
 
 // Validate gameData references
 function validateGameData(gameData, processed) {
   const errors = [];
-  
+
   // Check for items with invalid location
   Object.entries(processed.activeItems).forEach(([itemId, item]) => {
     if (item.location && item.location !== "player") {
@@ -550,7 +593,7 @@ function validateGameData(gameData, processed) {
       console.log(`Item ${itemId} starts in location: ${item.location}`);
     }
   });
-  
+
   return errors;
 }
 
@@ -561,56 +604,48 @@ function validateGameData(gameData, processed) {
 // Display current room description
 function displayRoom(roomId = currentRoom) {
   if (!rooms[roomId]) {
-    addToBuffer([
-      { text: "ERROR: Room not found!", type: "error" }
-    ]);
+    addToBuffer([{ text: "ERROR: Room not found!", type: "error" }]);
     return;
   }
 
   const room = rooms[roomId];
 
   // Always use first enterText for Phase 1 (ignore visit tracking)
-  const enterText = room.enterText?.first || room.lookText || `You are in ${room.name}`;
+  const enterText =
+    room.enterText?.first || room.lookText || `You are in ${room.name}`;
 
-  addToBuffer([
-    { text: enterText, type: "flavor" }
-  ]);
+  addToBuffer([{ text: enterText, type: "flavor" }]);
 
   // Show available exits
   const exits = Object.keys(room.exits || {});
   if (exits.length > 0) {
-    addToBuffer([
-      { text: `Exits: ${exits.join(", ")}`, type: "command" }
-    ]);
+    addToBuffer([{ text: `Exits: ${exits.join(", ")}`, type: "command" }]);
   } else {
-    addToBuffer([
-      { text: "No obvious exits.", type: "command" }
-    ]);
+    addToBuffer([{ text: "No obvious exits.", type: "command" }]);
   }
 
   // Show items in room (if any)
-  const roomItems = Object.values(items).filter(item =>
-    item.includeInGame && item.location === currentRoom && item.visible
+  const roomItems = Object.values(items).filter(
+    (item) =>
+      item.includeInGame && item.location === currentRoom && item.visible
   );
 
   if (roomItems.length > 0) {
-    addToBuffer([
-      { text: "You see:", type: "command" }
-    ]);
-    roomItems.forEach(item => {
-      addToBuffer([
-        { text: `  ${item.display}`, type: "flavor" }
-      ]);
+    addToBuffer([{ text: "You see:", type: "command" }]);
+    roomItems.forEach((item) => {
+      addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
     });
   }
 }
 
 // Check if movement through a door is allowed
 function canMoveThrough(door) {
-  if (!door) return { allowed: false, message: "There is no exit in that direction." };
+  if (!door)
+    return { allowed: false, message: "There is no exit in that direction." };
 
   const doorData = doors[door.door];
-  if (!doorData) return { allowed: false, message: "There is no exit in that direction." };
+  if (!doorData)
+    return { allowed: false, message: "There is no exit in that direction." };
 
   // Check visibility
   if (!doorData.visible) {
@@ -634,9 +669,7 @@ function canMoveThrough(door) {
 function movePlayer(direction) {
   const room = rooms[currentRoom];
   if (!room || !room.exits) {
-    addToBuffer([
-      { text: "You can't move from here.", type: "error" }
-    ]);
+    addToBuffer([{ text: "You can't move from here.", type: "error" }]);
     return;
   }
 
@@ -644,16 +677,14 @@ function movePlayer(direction) {
   const moveResult = canMoveThrough(exit);
 
   if (!moveResult.allowed) {
-    addToBuffer([
-      { text: moveResult.message, type: "error" }
-    ]);
+    addToBuffer([{ text: moveResult.message, type: "error" }]);
     return;
   }
 
   // Move to new room
   currentRoom = exit.to;
   addToBuffer([
-    { text: "", type: "flavor" }  // Blank line before room description
+    { text: "", type: "flavor" }, // Blank line before room description
   ]);
   displayRoom(currentRoom);
 }
@@ -663,77 +694,85 @@ function showHelp() {
   addToBuffer([
     { text: "Available commands:", type: "command" },
     { text: "", type: "flavor" },
-    { text: "Movement: north (n), south (s), east (e), west (w)", type: "flavor" },
-    { text: "Actions: look (l), inventory (i), help (h), take (get), examine (x), drop (put)", type: "flavor" },
-    { text: "", type: "flavor" }
+    {
+      text: "Movement: north (n), south (s), east (e), west (w)",
+      type: "flavor",
+    },
+    {
+      text: "Actions: look (l), inventory (i), help (h), take (get), examine (x), drop (put)",
+      type: "flavor",
+    },
+    { text: "", type: "flavor" },
   ]);
 }
 
 // Show inventory
 function showInventory() {
   // Get items from INVENTORY room
-  const inventoryItems = Object.values(items).filter(item =>
-    item.includeInGame && item.location === "INVENTORY"
+  const inventoryItems = Object.values(items).filter(
+    (item) => item.includeInGame && item.location === "INVENTORY"
   );
 
   if (inventoryItems.length === 0) {
-    addToBuffer([
-      { text: "Your inventory is empty.", type: "flavor" }
-    ]);
+    addToBuffer([{ text: "Your inventory is empty.", type: "flavor" }]);
     return;
   }
 
   // Separate by type
-  const scavengerItems = inventoryItems.filter(item => item.type === "scavenger");
-  const candyItems = inventoryItems.filter(item => item.type === "candy");
+  const scavengerItems = inventoryItems.filter(
+    (item) => item.type === "scavenger"
+  );
+  const candyItems = inventoryItems.filter((item) => item.type === "candy");
+
+  // Count total available scavenger items
+  const totalScavenger = Object.values(items).filter(
+    (item) => item.includeInGame && item.type === "scavenger"
+  ).length;
 
   // Sort scavenger items by room displaySquare (0-8)
   scavengerItems.sort((a, b) => {
-    const roomA = Object.values(rooms).find(r =>
-      Object.keys(rooms).find(key => rooms[key] === r) === a.originalLocation
+    const roomA = Object.values(rooms).find(
+      (r) =>
+        Object.keys(rooms).find((key) => rooms[key] === r) ===
+        a.originalLocation
     );
-    const roomB = Object.values(rooms).find(r =>
-      Object.keys(rooms).find(key => rooms[key] === r) === b.originalLocation
+    const roomB = Object.values(rooms).find(
+      (r) =>
+        Object.keys(rooms).find((key) => rooms[key] === r) ===
+        b.originalLocation
     );
     const squareA = roomA?.special?.displaySquare ?? 999;
     const squareB = roomB?.special?.displaySquare ?? 999;
     return squareA - squareB;
   });
 
-  addToBuffer([
-    { text: "You are carrying:", type: "command" }
-  ]);
+  addToBuffer([{ text: "You are carrying:", type: "command" }]);
 
   // Display scavenger items first, each on own line
   if (scavengerItems.length > 0) {
     addToBuffer([
-      { text: "SCAVENGER ITEMS:", type: "flavor" },
-      { text: "-----------------", type: "flavor" }
+      {
+        text: `SCAVENGER ITEMS (${scavengerItems.length}/${totalScavenger})`,
+        type: "underlined",
+      },
     ]);
-    scavengerItems.forEach(item => {
-      addToBuffer([
-        { text: `  ${item.display}`, type: "flavor" }
-      ]);
+    scavengerItems.forEach((item) => {
+      addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
     });
   }
 
   // Blank line between sections
   if (scavengerItems.length > 0 && candyItems.length > 0) {
-    addToBuffer([
-      { text: "", type: "flavor" }
-    ]);
+    addToBuffer([{ text: "", type: "flavor" }]);
   }
 
   // Display candy items, comma-separated
   if (candyItems.length > 0) {
     addToBuffer([
-      { text: "TREATS:", type: "flavor" },
-      { text: "--------", type: "flavor" }
+      { text: `TREATS (${candyItems.length}/20)`, type: "underlined" },
     ]);
-    const candyList = candyItems.map(item => item.display).join(", ");
-    addToBuffer([
-      { text: `  ${candyList}`, type: "flavor" }
-    ]);
+    const candyList = candyItems.map((item) => item.display).join(", ");
+    addToBuffer([{ text: `  ${candyList}`, type: "flavor" }]);
   }
 }
 
@@ -741,31 +780,33 @@ function showInventory() {
 function handleTakeCommand(command) {
   // Extract the item name - get everything after the command, lowercase, strip spaces
   const input = command.toLowerCase().trim();
-  const firstSpace = input.indexOf(' ');
+  const firstSpace = input.indexOf(" ");
 
   if (firstSpace === -1) {
-    addToBuffer([
-      { text: "Take what?", type: "error" }
-    ]);
+    addToBuffer([{ text: "Take what?", type: "error" }]);
     return;
   }
 
   const remainder = input.substring(firstSpace + 1).trim();
-  const targetTypedName = remainder.replace(/\s+/g, ''); // Strip all spaces
+  const targetTypedName = remainder.replace(/\s+/g, ""); // Strip all spaces
 
   // Find item in current room with matching typedNames
-  const roomItems = Object.entries(items).filter(([key, item]) =>
-    item.includeInGame &&
-    item.location === currentRoom &&
-    item.visible &&
-    !item.locked &&
-    item.typedNames?.includes(targetTypedName) &&
-    item.actions?.take?.addToInventory === true
+  const roomItems = Object.entries(items).filter(
+    ([key, item]) =>
+      item.includeInGame &&
+      item.location === currentRoom &&
+      item.visible &&
+      !item.locked &&
+      item.typedNames?.includes(targetTypedName) &&
+      item.actions?.take?.addToInventory === true
   );
 
   if (roomItems.length === 0) {
     addToBuffer([
-      { text: `You don't see any "${targetTypedName}" here that you can take.`, type: "error" }
+      {
+        text: `You don't see any "${targetTypedName}" here that you can take.`,
+        type: "error",
+      },
     ]);
     return;
   }
@@ -776,7 +817,10 @@ function handleTakeCommand(command) {
 
   // Show response message
   addToBuffer([
-    { text: takeAction.response || `You pick up the ${item.display}.`, type: "flavor" }
+    {
+      text: takeAction.response || `You pick up the ${item.display}.`,
+      type: "flavor",
+    },
   ]);
 
   // Move item to inventory
@@ -798,29 +842,28 @@ function handleTakeCommand(command) {
 function handleDropCommand(command) {
   // Extract the item name - get everything after the command, lowercase, strip spaces
   const input = command.toLowerCase().trim();
-  const firstSpace = input.indexOf(' ');
+  const firstSpace = input.indexOf(" ");
 
   if (firstSpace === -1) {
-    addToBuffer([
-      { text: "Drop what?", type: "error" }
-    ]);
+    addToBuffer([{ text: "Drop what?", type: "error" }]);
     return;
   }
 
   const remainder = input.substring(firstSpace + 1).trim();
-  const targetTypedName = remainder.replace(/\s+/g, ''); // Strip all spaces
+  const targetTypedName = remainder.replace(/\s+/g, ""); // Strip all spaces
 
   // Find item in inventory with matching typedNames
-  const inventoryItems = Object.entries(items).filter(([key, item]) =>
-    item.includeInGame &&
-    item.location === "INVENTORY" &&
-    item.typedNames?.includes(targetTypedName) &&
-    item.actions?.take  // Can only drop items that are portable (have take action)
+  const inventoryItems = Object.entries(items).filter(
+    ([key, item]) =>
+      item.includeInGame &&
+      item.location === "INVENTORY" &&
+      item.typedNames?.includes(targetTypedName) &&
+      item.actions?.take // Can only drop items that are portable (have take action)
   );
 
   if (inventoryItems.length === 0) {
     addToBuffer([
-      { text: `You're not carrying any "${targetTypedName}".`, type: "error" }
+      { text: `You're not carrying any "${targetTypedName}".`, type: "error" },
     ]);
     return;
   }
@@ -831,15 +874,16 @@ function handleDropCommand(command) {
   // Check if item is droppable
   if (item.droppable === false) {
     addToBuffer([
-      { text: "You worked hard to find this treasure! You cannot drop it.", type: "error" }
+      {
+        text: "You worked hard to find this treasure! You cannot drop it.",
+        type: "error",
+      },
     ]);
     return;
   }
 
   // Show response message
-  addToBuffer([
-    { text: `You drop the ${item.display}.`, type: "flavor" }
-  ]);
+  addToBuffer([{ text: `You drop the ${item.display}.`, type: "flavor" }]);
 
   // Move item from inventory to current room
   item.location = currentRoom;
@@ -852,26 +896,25 @@ function handleDropCommand(command) {
 function handleExamineCommand(command) {
   // Extract the item name - get everything after the command, lowercase, strip spaces
   const input = command.toLowerCase().trim();
-  const firstSpace = input.indexOf(' ');
+  const firstSpace = input.indexOf(" ");
 
   if (firstSpace === -1) {
-    addToBuffer([
-      { text: "Examine what?", type: "error" }
-    ]);
+    addToBuffer([{ text: "Examine what?", type: "error" }]);
     return;
   }
 
   const remainder = input.substring(firstSpace + 1).trim();
-  const targetTypedName = remainder.replace(/\s+/g, ''); // Strip all spaces
+  const targetTypedName = remainder.replace(/\s+/g, ""); // Strip all spaces
 
   // Find item by typedNames in either inventory or current room
-  const allItems = Object.entries(items).filter(([key, item]) =>
-    item.includeInGame && item.typedNames?.includes(targetTypedName)
+  const allItems = Object.entries(items).filter(
+    ([key, item]) =>
+      item.includeInGame && item.typedNames?.includes(targetTypedName)
   );
 
   if (allItems.length === 0) {
     addToBuffer([
-      { text: `You don't see any "${targetTypedName}" here.`, type: "error" }
+      { text: `You don't see any "${targetTypedName}" here.`, type: "error" },
     ]);
     return;
   }
@@ -881,7 +924,7 @@ function handleExamineCommand(command) {
   // Check if item has examine action
   if (!item.actions || !item.actions.examine) {
     addToBuffer([
-      { text: `You can't examine the ${item.display}.`, type: "error" }
+      { text: `You can't examine the ${item.display}.`, type: "error" },
     ]);
     return;
   }
@@ -891,22 +934,25 @@ function handleExamineCommand(command) {
     // Item has take action - must be in inventory to examine
     if (item.location === "INVENTORY") {
       addToBuffer([
-        { text: `${item.display}: ${item.actions.examine}`, type: "flavor" }
+        { text: `${item.display}: ${item.actions.examine}`, type: "flavor" },
       ]);
     } else {
       addToBuffer([
-        { text: `You need to pick up the ${item.display} first to examine it closely.`, type: "error" }
+        {
+          text: `You need to pick up the ${item.display} first to examine it closely.`,
+          type: "error",
+        },
       ]);
     }
   } else {
     // Item doesn't have take action - can examine if visible in current room
     if (item.location === currentRoom && item.visible && !item.locked) {
       addToBuffer([
-        { text: `${item.display}: ${item.actions.examine}`, type: "flavor" }
+        { text: `${item.display}: ${item.actions.examine}`, type: "flavor" },
       ]);
     } else {
       addToBuffer([
-        { text: `You don't see any "${targetTypedName}" here.`, type: "error" }
+        { text: `You don't see any "${targetTypedName}" here.`, type: "error" },
       ]);
     }
   }
@@ -916,38 +962,30 @@ function handleExamineCommand(command) {
 function lookAtRoom() {
   const room = rooms[currentRoom];
   if (!room) {
-    addToBuffer([
-      { text: "You can't see anything here.", type: "error" }
-    ]);
+    addToBuffer([{ text: "You can't see anything here.", type: "error" }]);
     return;
   }
 
-  const lookText = room.lookText || room.enterText?.first || `You are in ${room.name}`;
-  addToBuffer([
-    { text: lookText, type: "flavor" }
-  ]);
+  const lookText =
+    room.lookText || room.enterText?.first || `You are in ${room.name}`;
+  addToBuffer([{ text: lookText, type: "flavor" }]);
 
   // Show available exits
   const exits = Object.keys(room.exits || {});
   if (exits.length > 0) {
-    addToBuffer([
-      { text: `Exits: ${exits.join(", ")}`, type: "command" }
-    ]);
+    addToBuffer([{ text: `Exits: ${exits.join(", ")}`, type: "command" }]);
   }
 
   // Show items in room (if any)
-  const roomItems = Object.values(items).filter(item =>
-    item.includeInGame && item.location === currentRoom && item.visible
+  const roomItems = Object.values(items).filter(
+    (item) =>
+      item.includeInGame && item.location === currentRoom && item.visible
   );
 
   if (roomItems.length > 0) {
-    addToBuffer([
-      { text: "You see:", type: "command" }
-    ]);
-    roomItems.forEach(item => {
-      addToBuffer([
-        { text: `  ${item.display}`, type: "flavor" }
-      ]);
+    addToBuffer([{ text: "You see:", type: "command" }]);
+    roomItems.forEach((item) => {
+      addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
     });
   }
 }
@@ -956,18 +994,22 @@ function lookAtRoom() {
 // === TEXT BUFFER MANAGEMENT ===
 // ========================================
 
-// Initialize the buffer with game text  
+// Initialize the buffer with game text
 async function initializeBuffer(processedGameData) {
   // Use gameData.startup.welcomeText if available, otherwise fallback to loadGameText()
-  if (processedGameData && processedGameData.startupData && processedGameData.startupData.welcomeText) {
+  if (
+    processedGameData &&
+    processedGameData.startupData &&
+    processedGameData.startupData.welcomeText
+  ) {
     textBuffer = processedGameData.startupData.welcomeText;
-    console.log('Using welcomeText from gameData.json');
+    console.log("Using welcomeText from gameData.json");
   } else if (gameData && gameData.startup && gameData.startup.welcomeText) {
     textBuffer = gameData.startup.welcomeText;
-    console.log('Using welcomeText from gameData.json (direct)');
+    console.log("Using welcomeText from gameData.json (direct)");
   } else {
     textBuffer = await loadGameText();
-    console.log('Fallback to loadGameText()');
+    console.log("Fallback to loadGameText()");
   }
   updateDisplay();
 }
@@ -993,6 +1035,9 @@ function updateDisplay() {
         break;
       case "error":
         className = "error-text";
+        break;
+      case "underlined":
+        className = "underlined-text";
         break;
       case "flavor":
       default:
@@ -1070,7 +1115,6 @@ function echoCommand(command) {
 // === STATUS FUNCTIONS ===
 // ========================================
 
-
 function updateGameStatus() {
   const statusDiv = document.querySelector(".status");
 
@@ -1082,12 +1126,12 @@ function updateGameStatus() {
   ];
 
   // Get inventory items from INVENTORY room
-  const inventory = Object.values(items).filter(item =>
-    item.includeInGame && item.location === "INVENTORY"
+  const inventory = Object.values(items).filter(
+    (item) => item.includeInGame && item.location === "INVENTORY"
   );
 
   // Count treats (non-scavenger items) - limit display to 20
-  const treatsCount = inventory.filter(item => !item.isScavengerItem).length;
+  const treatsCount = inventory.filter((item) => !item.isScavengerItem).length;
   const displayCount = Math.min(treatsCount, 20);
 
   // Generate status section
@@ -1123,19 +1167,22 @@ function updateScavengerGrid() {
 
   for (let squareIndex = 0; squareIndex < 9; squareIndex++) {
     // Find room with this displaySquare number
-    const room = Object.values(rooms).find(r => r.special?.displaySquare === squareIndex);
+    const room = Object.values(rooms).find(
+      (r) => r.special?.displaySquare === squareIndex
+    );
 
     let imgSrc = ""; // Default image commented out: "assets/scavenger/default90x90.png"
     let isFound = false;
 
     if (room) {
-      const roomName = Object.keys(rooms).find(key => rooms[key] === room);
+      const roomName = Object.keys(rooms).find((key) => rooms[key] === room);
 
       // Find scavenger item that was originally in this room with includeInGame: true
-      const item = Object.values(items).find(item =>
-        item.includeInGame &&
-        item.isScavengerItem &&
-        item.originalLocation === roomName
+      const item = Object.values(items).find(
+        (item) =>
+          item.includeInGame &&
+          item.isScavengerItem &&
+          item.originalLocation === roomName
       );
 
       // If item found, use its icon
@@ -1146,8 +1193,8 @@ function updateScavengerGrid() {
     }
 
     gridHTML += `
-      <div class="scavenger-square${isFound ? ' found' : ''}">
-        ${imgSrc ? `<img src="${imgSrc}" alt="Square ${squareIndex}">` : ''}
+      <div class="scavenger-square${isFound ? " found" : ""}">
+        ${imgSrc ? `<img src="${imgSrc}" alt="Square ${squareIndex}">` : ""}
       </div>
     `;
   }
@@ -1237,7 +1284,7 @@ function processCommand(command) {
           break;
         default:
           addToBuffer([
-            { text: `Unknown action: ${cmd.action}`, type: "error" }
+            { text: `Unknown action: ${cmd.action}`, type: "error" },
           ]);
       }
       isValid = true;
@@ -1362,7 +1409,6 @@ function handleInput(event) {
 // === INITIALIZATION FUNCTIONS ===
 // ========================================
 
-
 // Initialize status information display
 function initializeStatusInfo() {
   updateGameStatus();
@@ -1379,11 +1425,13 @@ function initializeInput() {
 
 // Initialize when page loads
 document.addEventListener("DOMContentLoaded", async function () {
-  console.log(`Starting game initialization with CONFIG_LOCATION: ${CONFIG_LOCATION}`);
+  console.log(
+    `Starting game initialization with CONFIG_LOCATION: ${CONFIG_LOCATION}`
+  );
 
   try {
     // Load all configuration files first
-    console.log('Loading configuration files...');
+    console.log("Loading configuration files...");
     gameData = await loadGameData();
     uiConfig = await loadUIConfig();
 
@@ -1404,14 +1452,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     const scavengerItems = scavengerData.scavengerItems || {};
 
     // Mark scavenger items for scoring purposes and save original location
-    Object.values(scavengerItems).forEach(item => {
+    Object.values(scavengerItems).forEach((item) => {
       item.isScavengerItem = true;
       item.originalLocation = item.location; // Save original location for grid display
     });
 
     // Merge scavenger items into main items object
     items = { ...items, ...scavengerItems };
-    console.log(`Merged ${Object.keys(scavengerItems).length} scavenger items into main items list`);
+    console.log(
+      `Merged ${
+        Object.keys(scavengerItems).length
+      } scavenger items into main items list`
+    );
 
     // Set starting room from gameData
     currentRoom = gameData.startup?.room || "STREET-01";
@@ -1420,10 +1472,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     const savedPlayer = await loadPlayer();
     gameState = await loadGameState();
     keyboardShortcuts = await loadKeyboardShortcuts();
-    
+
     // Process gameData to get active items and commands
     const processedGameData = processGameData(gameData);
-    
+
     // Create runtime player data from gameData.startup.playerStats and items
     const runtimePlayerData = {
       core: {
@@ -1431,31 +1483,42 @@ document.addEventListener("DOMContentLoaded", async function () {
         health: gameData.startup?.playerStats?.health || 100,
         inventory: processedGameData.playerInventory,
         currentRoom: gameData.startup?.playerStats?.currentRoom || "STREET-01",
-        visitedRooms: gameData.startup?.playerStats?.visitedRooms || []
+        visitedRooms: gameData.startup?.playerStats?.visitedRooms || [],
       },
       gameStats: {
-        treats: gameData.startup?.playerStats?.treats || {current: 0, max: 40},
-        houses: gameData.startup?.playerStats?.houses || {current: 0, max: 12}
-      }
+        treats: gameData.startup?.playerStats?.treats || {
+          current: 0,
+          max: 40,
+        },
+        houses: gameData.startup?.playerStats?.houses || {
+          current: 0,
+          max: 12,
+        },
+      },
     };
-    
+
     // Use runtime data if player.json is empty (new game) or use saved data (continue game)
     if (Object.keys(savedPlayer).length === 0) {
       player = runtimePlayerData;
-      console.log('New game: Built player data from gameData.startup:', processedGameData.playerInventory);
+      console.log(
+        "New game: Built player data from gameData.startup:",
+        processedGameData.playerInventory
+      );
     } else {
       player = savedPlayer;
-      console.log('Continue game: Using saved player data');
+      console.log("Continue game: Using saved player data");
     }
 
     // Validate critical configurations
     const configsValid = checkCriticalConfigs();
-    
+
     if (!configsValid) {
-      console.error('Critical configuration validation failed - game cannot start');
+      console.error(
+        "Critical configuration validation failed - game cannot start"
+      );
       // Initialize buffer to show error messages, but disable input
       await initializeBuffer();
-      
+
       // Disable the input field
       const commandInput = document.getElementById("commandInput");
       if (commandInput) {
@@ -1465,21 +1528,17 @@ document.addEventListener("DOMContentLoaded", async function () {
       return; // Exit early - do not continue initialization
     }
 
-
-
-    console.log('Initializing game systems...');
+    console.log("Initializing game systems...");
     await initializeBuffer(processedGameData);
     initializeStatusInfo();
     initScavengerGrid();
     initializeInput();
 
     // Show starting room after welcome text
-    addToBuffer([
-      { text: "", type: "flavor" }
-    ]);
+    addToBuffer([{ text: "", type: "flavor" }]);
     displayRoom(currentRoom);
 
-    console.log('Game initialization completed successfully');
+    console.log("Game initialization completed successfully");
 
     // Add keyboard event listener using config-based shortcuts
     document.addEventListener("keydown", async function (e) {
@@ -1493,22 +1552,23 @@ document.addEventListener("DOMContentLoaded", async function () {
           return;
         }
       }
-
     });
-    
   } catch (error) {
-    console.error('Fatal error during game initialization:', error);
-    
+    console.error("Fatal error during game initialization:", error);
+
     // Try to show error in game if possible
-    if (typeof addToBuffer !== 'undefined') {
+    if (typeof addToBuffer !== "undefined") {
       addToBuffer([
         { text: "FATAL INITIALIZATION ERROR", type: "error" },
         { text: `Error: ${error.message}`, type: "error" },
         { text: "The game could not start properly.", type: "error" },
-        { text: "Please check the console for detailed error information.", type: "error" }
+        {
+          text: "Please check the console for detailed error information.",
+          type: "error",
+        },
       ]);
     }
-    
+
     // Disable input
     const commandInput = document.getElementById("commandInput");
     if (commandInput) {
