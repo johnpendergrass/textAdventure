@@ -636,6 +636,14 @@ function displayRoom(roomId = currentRoom) {
       addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
     });
   }
+
+  // Auto-take Mrs. McGillicutty's list when entering NICE-HOUSE
+  if (roomId === "NICE-HOUSE" && items.mrsmcgillicuttyslist) {
+    if (items.mrsmcgillicuttyslist.location === "NICE-HOUSE") {
+      items.mrsmcgillicuttyslist.location = "INVENTORY";
+      updateGameStatus();
+    }
+  }
 }
 
 // Check if movement through a door is allowed
@@ -723,6 +731,7 @@ function showInventory() {
   const scavengerItems = inventoryItems.filter(
     (item) => item.type === "scavenger"
   );
+  const noteItems = inventoryItems.filter((item) => item.type === "notes");
   const candyItems = inventoryItems.filter((item) => item.type === "candy");
 
   // Count total available scavenger items
@@ -763,7 +772,22 @@ function showInventory() {
   }
 
   // Blank line between sections
-  if (scavengerItems.length > 0 && candyItems.length > 0) {
+  if (scavengerItems.length > 0 && noteItems.length > 0) {
+    addToBuffer([{ text: "", type: "flavor" }]);
+  }
+
+  // Display note items (keys, notes, etc), each on own line
+  if (noteItems.length > 0) {
+    addToBuffer([
+      { text: `ITEMS`, type: "underlined" },
+    ]);
+    noteItems.forEach((item) => {
+      addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
+    });
+  }
+
+  // Blank line between sections
+  if ((scavengerItems.length > 0 || noteItems.length > 0) && candyItems.length > 0) {
     addToBuffer([{ text: "", type: "flavor" }]);
   }
 

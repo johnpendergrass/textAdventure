@@ -126,6 +126,36 @@
         "examine": "The porch light flickers eerily, casting dancing shadows."
       }
     },
+    "mrsmcgillicuttyslist": {
+      "includeInGame": true,
+      "type": "notes",
+      "typedNames": [
+        "list",
+        "note",
+        "paper",
+        "mrsmcgillicuttyslist",
+        "mcgillicuttylist",
+        "clues",
+        "scavengerlist",
+        "hints"
+      ],
+      "display": "Mrs. McGillicutty's List",
+      "description": "A handwritten note with clues",
+      "location": "NICE-HOUSE",
+      "points": 0,
+      "health": 0,
+      "eatable": false,
+      "droppable": false,
+      "visible": true,
+      "locked": false,
+      "actions": {
+        "examine": "*** SECRET ***\n\nThese clues may help you locate the items!\n\n1. Video game hardware helper\n2. Food from the sea\n3. Atomic 79\n4. Fab Four\n5. Scary Feline\n6. Playful tiger\n7. Not a monster\n8. gourd\n9. Odd pup\n\nGood luck!\n\nMrs. M",
+        "take": {
+          "response": "You carefully fold the note and put it in your pocket.",
+          "addToInventory": true
+        }
+      }
+    },
     "snickers": {
       "includeInGame": true,
       "type": "candy",

@@ -63,7 +63,7 @@
     "NICE-HOUSE": {
       "name": "Nice House",
         "enterText": {
-          "first": "The door to the nice house swings open.  Mrs. McGillicutty answers, dressed in her best witch'es costume, and holds out a skull shaped candy dish, saying 'Take two, dear.'  After you have taken the candy she bends over and whispers '... oh, and Mr. Radley and his son Aurthur are having a scavenger hunt next door.  You might find this item useful during that game!  She hands you a piece of paper and you put it in your pocket.  'Good luck, dear!', and shuts the door.",
+          "first": "The door to the nice house swings open.  Mrs. McGillicutty answers, dressed in her best witch'es costume, and holds out a skull shaped candy dish, saying 'Take two, dear.'  After you have taken the candy she bends over and whispers '... oh, and Mr. Radley and his son Aurthur are having a scavenger hunt next door.  You might find this note useful during that game!  She hands you a piece of paper and you put it in your pocket.  'Good luck, dear!', and shuts the door.",
         "repeat": "You ring and ring, but no one answers."
       },
       "lookText": "You are still on the porch.",
