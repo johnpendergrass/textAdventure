@@ -65,6 +65,18 @@
       "type": "system",
       "shortcuts": ["home"],
       "action": "quit_game"
+    },
+    "use": {
+      "includeInGame": true,
+      "type": "action",
+      "shortcuts": ["u", "ring"],
+      "action": "use_item"
+    },
+    "eat": {
+      "includeInGame": true,
+      "type": "action",
+      "shortcuts": [],
+      "action": "eat_item"
     }
   }
 }

@@ -262,10 +262,12 @@
       "found": false,
       "visible": true,
       "locked": false,
+      "revealsItem": "oldnote",
+      "hasBeenSearched": false,
       "icon90x90": "assets/scavenger/frankenstein90x90.png",
       "icon250x250": "assets/scavenger/frankenstein250x250.png",
       "actions": {
-        "examine": "A well worn copy of Mary Shelley's tale of the misunderstood monster and it's creator, Victor Frankenstein.",
+        "examine": "The book is a First Edition of the classic 'Frankenstein' novel by Mary Shelley. It looks like it might fall apart if not handled gently. As you riffle through the pages you notice an old yellowed bookmark inside the cover. You take the bookmark.",
         "take": {
           "response": "You put the book in your bag to read later.",
           "addToInventory": true,

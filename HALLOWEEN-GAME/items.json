@@ -1,7 +1,7 @@
 {
   "items": {
     "candy_bag": {
-      "includeInGame": true,
+      "includeInGame": false,
       "type": "fixed",
       "typedNames": [
         "bag",
@@ -42,8 +42,9 @@
       "health": 0,
       "eatable": false,
       "droppable": true,
-      "visible": false,
+      "visible": true,
       "locked": false,
+      "hasBeenUsed": false,
       "actions": {
         "ring": {
           "response": "Ding-dong! You hear footsteps approaching from inside."
@@ -51,6 +52,9 @@
         "examine": "A brass doorbell button, slightly tarnished with age.",
         "push": {
           "response": "Ding-dong! You hear footsteps approaching from inside."
+        },
+        "use": {
+          "response": "The door to the nice house swings open. Mrs. McGillicutty answers, dressed in a sexy witch costume. She holds a small candy dish, and tells you to take two candies.\n\nAfter you take the candies she leans over and whispers 'Mr. Radley and his son Aurhur next door are having a scavenger hunt. You might find this note useful during that game!' She hands you a handwritten note and you put it in your pocket. 'Good luck dear!' she says, and closes the door."
         }
       }
     },
@@ -83,7 +87,8 @@
         "knocker",
         "doorknocker",
         "gargoyle",
-        "ironknocker"
+        "ironknocker",
+        "door"
       ],
       "display": "door knocker",
       "description": "A heavy iron door knocker",
@@ -94,12 +99,13 @@
       "droppable": true,
       "visible": true,
       "locked": false,
+      "hasBeenUsed": false,
       "actions": {
         "knock": {
           "response": "KNOCK KNOCK! The sound echoes ominously through the house."
         },
         "use": {
-          "response": "KNOCK KNOCK! The sound echoes ominously through the house."
+          "response": "KNOCK KNOCK! The sound echoes ominously through the house. You hear a loud CLICK as the door unlatches. The heavy door creaks open."
         },
         "examine": "A heavy iron door knocker shaped like a snarling gargoyle."
       }
@@ -126,12 +132,59 @@
         "examine": "The porch light flickers eerily, casting dancing shadows."
       }
     },
+    "brass_key": {
+      "includeInGame": true,
+      "type": "tools",
+      "typedNames": [
+        "key",
+        "brasskey",
+        "brass",
+        "metalkey",
+        "oldkey"
+      ],
+      "display": "brass key",
+      "description": "An old brass key",
+      "location": "LIBRARY",
+      "points": 0,
+      "health": 0,
+      "eatable": false,
+      "droppable": false,
+      "visible": true,
+      "locked": false,
+      "actions": {
+        "examine": "An old brass key. It looks like it might fit an old lock.",
+        "take": {
+          "response": "You pick up the brass key.",
+          "addToInventory": true
+        }
+      }
+    },
+    "oldnote": {
+      "includeInGame": true,
+      "type": "notes",
+      "typedNames": [
+        "bookmark",
+        "oldbookmark",
+        "frankensteinbookmark"
+      ],
+      "display": "old bookmark",
+      "description": "An old bookmark from the Frankenstein book",
+      "location": "HIDDEN",
+      "points": 0,
+      "health": 0,
+      "eatable": false,
+      "droppable": false,
+      "visible": false,
+      "locked": false,
+      "actions": {
+        "examine": "An old yellowed bookmark with faded writing on it. [Generic text for now - can add password/clue later]"
+      }
+    },
     "mrsmcgillicuttyslist": {
       "includeInGame": true,
       "type": "notes",
       "typedNames": [
         "list",
-        "note",
         "paper",
         "mrsmcgillicuttyslist",
         "mcgillicuttylist",
@@ -206,7 +259,7 @@
       "locked": false,
       "icon150": "assets/items/Whatchamacallit150.png",
       "actions": {
-        "examine": "Crispy rice and caramel covered in chocolate. An unusual but tasty choice.",
+        "examine": "Crispy rice and chewy caramel covered in chocolate. An unusual but tasty choice.",
         "take": {
           "response": "You pick up the Whatchamacallit bar and put it in your trick or treat bag.",
           "addToInventory": true

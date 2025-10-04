@@ -31,7 +31,7 @@
     "STREET-02": {
       "name": "Street",
       "enterText": {
-        "first": "You walk down the sidewalk to the Radley House.",
+        "first": "You walk down the street to the Radley House.  To the north is the Radley front porch. You could walk south back to Mrs. McGillicutty's house.",
         "repeat": "You are in front of the Radley House."
       },
       "lookText": "You are in front of the Radley House.",
@@ -53,8 +53,7 @@
       },
       "lookText": "You are on Mrs. McGillicutty's porch.",
       "exits": {
-        "south": { "to": "STREET-01",  "door": "street-012nice-porch" },
-        "north": { "to": "NICE-HOUSE", "door": "nice-porch2nice-house" }
+        "south": { "to": "STREET-01",  "door": "street-012nice-porch" }
       },
       "special": {
         "backgroundPic": "assets/background/McGillicuttyHouse250x250.png"
@@ -98,7 +97,7 @@
     "FOYER": {
       "name": "Foyer",
       "enterText": {
-        "first": "You enter the Radley House foyer.",
+        "first": "You enter the Radley House foyer. It reminds you of a scene from that Downton Abbey show...  there are doors everywhere!",
         "repeat": "You are in the foyer."
       },
       "lookText": "You are in the foyer.",
@@ -117,7 +116,7 @@
     "LIBRARY": {
       "name": "Library",
       "enterText": {
-        "first": "You enter the library.",
+        "first": "You enter the library. Wow! Tall bookshelves line the walls, and the floor is covered in a thick carpet.  There are several armchairs scattered around the room.  An open book lies on a table near the window.",
         "repeat": "You are in the library."
       },
       "lookText": "You are in the library.",
@@ -301,9 +300,8 @@
         "between": ["FRONT-PORCH", "FOYER"],
         "description": "It is a heavy front door.",
         "visible": true,
-        "locked": false,
-        "open": true,
-        "requiresItem": "gold-key"
+        "locked": true,
+        "open": false
       },
   
       "foyer2library": {

@@ -634,26 +634,23 @@ function displayRoom(roomId = currentRoom) {
   // Add blank line before exits
   addToBuffer([{ text: "", type: "flavor" }]);
 
-  // Show available exits
-  const exits = Object.keys(room.exits || {});
-  if (exits.length > 0) {
-    addToBuffer([{ text: `Exits: ${exits.join(", ")}`, type: "command" }]);
+  // Show available exits (only unlocked/open doors)
+  const allExits = Object.keys(room.exits || {});
+  const availableExits = allExits.filter(direction => {
+    const exit = room.exits[direction];
+    if (!exit || !exit.door) return true; // No door, always available
+
+    const doorData = doors[exit.door];
+    if (!doorData) return true; // Door data missing, show it
+
+    // Only show if door is visible AND (unlocked OR open)
+    return doorData.visible && (!doorData.locked || doorData.open);
+  });
+
+  if (availableExits.length > 0) {
+    addToBuffer([{ text: `Exits: ${availableExits.join(", ")}`, type: "command" }]);
   } else {
     addToBuffer([{ text: "No obvious exits.", type: "command" }]);
-  }
-
-  // Auto-take Mrs. McGillicutty's list when entering NICE-HOUSE (before showing items)
-  if (roomId === "NICE-HOUSE" && items.mrsmcgillicuttyslist) {
-    if (items.mrsmcgillicuttyslist.location === "NICE-HOUSE") {
-      items.mrsmcgillicuttyslist.location = "INVENTORY";
-
-      // Turn off the porch light at NICE-PORCH
-      if (items.porch_light_nice) {
-        items.porch_light_nice.visible = false;
-      }
-
-      updateGameStatus();
-    }
   }
 
   // Show items in room (if any)
@@ -686,7 +683,8 @@ function canMoveThrough(door) {
 
   // Check if door is locked
   if (doorData.locked) {
-    return { allowed: false, message: "The door is locked." };
+    const message = doorData.lockedMessage || "The door is locked.";
+    return { allowed: false, message: message };
   }
 
   // Check if door is closed
@@ -755,8 +753,12 @@ function showInventory() {
   const scavengerItems = inventoryItems.filter(
     (item) => item.type === "scavenger"
   );
+  const toolItems = inventoryItems.filter((item) => item.type === "tools");
   const noteItems = inventoryItems.filter((item) => item.type === "notes");
   const candyItems = inventoryItems.filter((item) => item.type === "candy");
+
+  // Combine tools and notes for ITEMS section
+  const questItems = [...toolItems, ...noteItems];
 
   // Count total available scavenger items
   const totalScavenger = Object.values(items).filter(
@@ -782,7 +784,22 @@ function showInventory() {
 
   addToBuffer([{ text: "You are carrying:", type: "command" }]);
 
-  // Display scavenger items first, each on own line
+  // Display quest items (tools and notes) first, each on own line
+  if (questItems.length > 0) {
+    addToBuffer([
+      { text: `ITEMS`, type: "underlined" },
+    ]);
+    questItems.forEach((item) => {
+      addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
+    });
+  }
+
+  // Blank line between sections
+  if (questItems.length > 0 && scavengerItems.length > 0) {
+    addToBuffer([{ text: "", type: "flavor" }]);
+  }
+
+  // Display scavenger items second, each on own line
   if (scavengerItems.length > 0) {
     addToBuffer([
       {
@@ -796,22 +813,7 @@ function showInventory() {
   }
 
   // Blank line between sections
-  if (scavengerItems.length > 0 && noteItems.length > 0) {
-    addToBuffer([{ text: "", type: "flavor" }]);
-  }
-
-  // Display note items (keys, notes, etc), each on own line
-  if (noteItems.length > 0) {
-    addToBuffer([
-      { text: `ITEMS`, type: "underlined" },
-    ]);
-    noteItems.forEach((item) => {
-      addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
-    });
-  }
-
-  // Blank line between sections
-  if ((scavengerItems.length > 0 || noteItems.length > 0) && candyItems.length > 0) {
+  if ((questItems.length > 0 || scavengerItems.length > 0) && candyItems.length > 0) {
     addToBuffer([{ text: "", type: "flavor" }]);
   }
 
@@ -941,6 +943,67 @@ function handleDropCommand(command) {
   updateGameStatus();
 }
 
+// Handle eat command
+function handleEatCommand(command) {
+  // Extract the item name - get everything after the command, lowercase, strip spaces
+  const input = command.toLowerCase().trim();
+  const firstSpace = input.indexOf(" ");
+
+  if (firstSpace === -1) {
+    addToBuffer([{ text: "Eat what?", type: "error" }]);
+    return;
+  }
+
+  const remainder = input.substring(firstSpace + 1).trim();
+  const targetTypedName = remainder.replace(/\s+/g, ""); // Strip all spaces
+
+  // Find item in inventory with matching typedNames
+  const inventoryItems = Object.entries(items).filter(
+    ([key, item]) =>
+      item.includeInGame &&
+      item.location === "INVENTORY" &&
+      item.typedNames?.includes(targetTypedName)
+  );
+
+  if (inventoryItems.length === 0) {
+    addToBuffer([
+      { text: `You don't have any "${targetTypedName}".`, type: "error" }
+    ]);
+    return;
+  }
+
+  const [itemKey, item] = inventoryItems[0];
+
+  // Check if item is eatable
+  if (!item.eatable) {
+    addToBuffer([
+      { text: `You can't eat the ${item.display}.`, type: "error" }
+    ]);
+    return;
+  }
+
+  // Check if item has eat action
+  if (!item.actions?.eat) {
+    addToBuffer([
+      { text: `You can't eat the ${item.display}.`, type: "error" }
+    ]);
+    return;
+  }
+
+  // Show response message
+  addToBuffer([
+    { text: item.actions.eat.response, type: "flavor" }
+  ]);
+
+  // Remove item from game if specified
+  if (item.actions.eat.removeItem) {
+    delete items[itemKey];
+  }
+
+  // Update the status panel to show new inventory
+  updateGameStatus();
+}
+
 // Handle QUIT/HOME command - moves player to HOME room
 function handleQuitCommand() {
   // Move to HOME room
@@ -1002,6 +1065,17 @@ function handleExamineCommand(command) {
       addToBuffer([
         { text: item.actions.examine, type: textType },
       ]);
+
+      // Check if examining this item reveals a hidden item (first time only)
+      if (item.revealsItem && !item.hasBeenSearched) {
+        const revealedItem = items[item.revealsItem];
+        if (revealedItem && revealedItem.location === "HIDDEN") {
+          revealedItem.location = "INVENTORY";
+          revealedItem.visible = true;
+          item.hasBeenSearched = true;
+          updateGameStatus();
+        }
+      }
     } else {
       addToBuffer([
         {
@@ -1011,8 +1085,8 @@ function handleExamineCommand(command) {
       ]);
     }
   } else {
-    // Item doesn't have take action - can examine if visible in current room
-    if (item.location === currentRoom && item.visible && !item.locked) {
+    // Item doesn't have take action - can examine if visible in current room OR in inventory
+    if ((item.location === currentRoom || item.location === "INVENTORY") && item.visible && !item.locked) {
       // Use notes type for notes items, flavor for others
       const textType = item.type === "notes" ? "notes" : "flavor";
       addToBuffer([
@@ -1026,6 +1100,117 @@ function handleExamineCommand(command) {
   }
 }
 
+// Handle use command
+function handleUseCommand(command) {
+  // Extract the item name - get everything after the command, lowercase, strip spaces
+  const input = command.toLowerCase().trim();
+  const firstSpace = input.indexOf(" ");
+
+  if (firstSpace === -1) {
+    addToBuffer([{ text: "Use what?", type: "error" }]);
+    return;
+  }
+
+  const remainder = input.substring(firstSpace + 1).trim();
+  const targetTypedName = remainder.replace(/\s+/g, ""); // Strip all spaces
+
+  // Find item by typedNames in either inventory or current room
+  const allItems = Object.entries(items).filter(
+    ([key, item]) =>
+      item.includeInGame && item.typedNames?.includes(targetTypedName)
+  );
+
+  if (allItems.length === 0) {
+    addToBuffer([
+      { text: `You don't see any "${targetTypedName}" here.`, type: "error" },
+    ]);
+    return;
+  }
+
+  const [itemKey, item] = allItems[0];
+
+  // Check if item has use action
+  if (!item.actions || !item.actions.use) {
+    addToBuffer([
+      { text: `You can't use the ${item.display}.`, type: "error" },
+    ]);
+    return;
+  }
+
+  // Check if item is in current room or inventory
+  if (item.location !== currentRoom && item.location !== "INVENTORY") {
+    addToBuffer([
+      { text: `You don't see any "${targetTypedName}" here.`, type: "error" },
+    ]);
+    return;
+  }
+
+  // Special handling for doorbell
+  if (itemKey === "doorbell") {
+    if (item.hasBeenUsed) {
+      // Subsequent uses
+      addToBuffer([
+        { text: "You ring and ring, but no one answers.", type: "flavor" }
+      ]);
+    } else {
+      // First use - Mrs. McGillicutty interaction
+      addToBuffer([
+        { text: item.actions.use.response, type: "flavor" },
+        { text: "", type: "flavor" } // Blank line after speech
+      ]);
+
+      // Give the note to player
+      if (items.mrsmcgillicuttyslist) {
+        items.mrsmcgillicuttyslist.location = "INVENTORY";
+      }
+
+      // Turn off the porch light
+      if (items.porch_light_nice) {
+        items.porch_light_nice.visible = false;
+      }
+
+      // Mark doorbell as used
+      item.hasBeenUsed = true;
+
+      updateGameStatus();
+
+      // Redisplay current room to show exits and updated items
+      lookAtRoom();
+    }
+  } else if (itemKey === "door_knocker") {
+    // Special handling for door knocker
+    if (item.hasBeenUsed) {
+      // Door is already unlocked
+      addToBuffer([
+        { text: "The door is already unlocked.", type: "flavor" }
+      ]);
+    } else {
+      // First use - unlock the door
+      addToBuffer([
+        { text: item.actions.use.response, type: "flavor" }
+      ]);
+
+      // Unlock and open the door
+      if (doors["front-porch2foyer"]) {
+        doors["front-porch2foyer"].locked = false;
+        doors["front-porch2foyer"].open = true;
+      }
+
+      // Mark door knocker as used
+      item.hasBeenUsed = true;
+
+      // Redisplay current room to show the north exit is now available
+      lookAtRoom();
+    }
+  } else {
+    // Generic use action for other items
+    const response = item.actions.use.response || `You use the ${item.display}.`;
+    addToBuffer([
+      { text: response, type: "flavor" }
+    ]);
+  }
+}
+
 // Show room description (look command)
 function lookAtRoom() {
   const room = rooms[currentRoom];
@@ -1034,14 +1219,38 @@ function lookAtRoom() {
     return;
   }
 
-  const lookText =
-    room.lookText || room.enterText?.first || `You are in ${room.name}`;
+  // Special handling for NICE-PORCH based on porch light state
+  let lookText;
+  if (currentRoom === "NICE-PORCH") {
+    if (items.porch_light_nice && items.porch_light_nice.visible === false) {
+      // Light is off - gloomy description
+      lookText = "You are standing on Mrs. McGillicutty's porch. The porch light is now off; the porch is gloomy and sort of scary.";
+    } else {
+      // Light is on - normal description
+      lookText = "You are standing on Mrs. McGillicutty's porch. The porch light is on, casting a warm welcoming glow.";
+    }
+  } else {
+    // All other rooms use standard lookText
+    lookText = room.lookText || room.enterText?.first || `You are in ${room.name}`;
+  }
+
   addToBuffer([{ text: lookText, type: "flavor" }]);
 
-  // Show available exits
-  const exits = Object.keys(room.exits || {});
-  if (exits.length > 0) {
-    addToBuffer([{ text: `Exits: ${exits.join(", ")}`, type: "command" }]);
+  // Show available exits (only unlocked/open doors)
+  const allExits = Object.keys(room.exits || {});
+  const availableExits = allExits.filter(direction => {
+    const exit = room.exits[direction];
+    if (!exit || !exit.door) return true; // No door, always available
+
+    const doorData = doors[exit.door];
+    if (!doorData) return true; // Door data missing, show it
+
+    // Only show if door is visible AND (unlocked OR open)
+    return doorData.visible && (!doorData.locked || doorData.open);
+  });
+
+  if (availableExits.length > 0) {
+    addToBuffer([{ text: `Exits: ${availableExits.join(", ")}`, type: "command" }]);
   }
 
   // Show items in room (if any)
@@ -1195,8 +1404,8 @@ function updateGameStatus() {
   );
 
   // Count scavenger items and treats separately
-  const scavengerCount = inventory.filter((item) => item.isScavengerItem).length;
-  const treatsCount = inventory.filter((item) => !item.isScavengerItem).length;
+  const scavengerCount = inventory.filter((item) => item.type === "scavenger").length;
+  const treatsCount = inventory.filter((item) => item.type === "candy").length;
   const displayTreatsCount = Math.min(treatsCount, 20);
 
   // Generate status section with aligned columns
@@ -1345,6 +1554,12 @@ function findCommand(input) {
 
 // Command processing with smart matching
 function processCommand(command) {
+  // Strip "go" prefix if present (support "go north", "go take apple", etc.)
+  const words = command.trim().split(/\s+/);
+  if (words.length > 1 && words[0].toLowerCase() === 'go') {
+    command = words.slice(1).join(' ');
+  }
+
   // Check for QUIT/HOME uppercase requirement
   const firstWord = command.trim().split(/\s+/)[0];
   const lowerFirst = firstWord.toLowerCase();
@@ -1399,6 +1614,12 @@ function processCommand(command) {
           break;
         case "quit_game":
           handleQuitCommand();
+          break;
+        case "use_item":
+          handleUseCommand(command);
+          break;
+        case "eat_item":
+          handleEatCommand(command);
           break;
         default:
           addToBuffer([
