@@ -363,18 +363,19 @@
       "music-room2game-room": {
         "between": ["MUSIC-ROOM", "GAME-ROOM"],
         "description": "It is a secret door.",
-        "visible": true,
-        "locked": false,
-        "open": true,
+        "visible": false,
+        "locked": true,
+        "open": false,
         "requiresPuzzle": "say-friend"
       },
   
       "bedroom2tv-room": {
         "between": ["BEDROOM", "TV-ROOM"],
-        "description": "It is a door.",
+        "description": "It is a heavy wooden door.",
         "visible": true,
-        "locked": false,
-        "open": true
+        "locked": true,
+        "open": false,
+        "lockedMessage": "The bedroom door is locked. You'll need a key to open it."
       },
 
       "game-room2home": {

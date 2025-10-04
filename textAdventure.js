@@ -634,7 +634,7 @@ function displayRoom(roomId = currentRoom) {
   // Add blank line before exits
   addToBuffer([{ text: "", type: "flavor" }]);
 
-  // Show available exits (only unlocked/open doors)
+  // Show available exits (all visible doors)
   const allExits = Object.keys(room.exits || {});
   const availableExits = allExits.filter(direction => {
     const exit = room.exits[direction];
@@ -643,12 +643,20 @@ function displayRoom(roomId = currentRoom) {
     const doorData = doors[exit.door];
     if (!doorData) return true; // Door data missing, show it
 
-    // Only show if door is visible AND (unlocked OR open)
-    return doorData.visible && (!doorData.locked || doorData.open);
+    // Only show if door is visible
+    return doorData.visible;
   });
 
   if (availableExits.length > 0) {
-    addToBuffer([{ text: `Exits: ${availableExits.join(", ")}`, type: "command" }]);
+    // Interior rooms show "SOUTH door, NORTH door" format
+    const interiorRooms = ["FOYER", "LIBRARY", "MUSIC-ROOM", "GAME-ROOM", "KITCHEN", "BEDROOM", "STUDY", "DINING-ROOM", "TV-ROOM"];
+    let exitsText;
+    if (interiorRooms.includes(currentRoom)) {
+      exitsText = availableExits.map(dir => `${dir.toUpperCase()} door`).join(", ");
+    } else {
+      exitsText = availableExits.join(", ");
+    }
+    addToBuffer([{ text: `Exits: ${exitsText}`, type: "command" }]);
   } else {
     addToBuffer([{ text: "No obvious exits.", type: "command" }]);
   }
@@ -1074,6 +1082,10 @@ function handleExamineCommand(command) {
           revealedItem.visible = true;
           item.hasBeenSearched = true;
           updateGameStatus();
+
+          // Show current room state after revealing item
+          addToBuffer([{ text: "", type: "flavor" }]);
+          lookAtRoom();
         }
       }
     } else {
@@ -1202,6 +1214,35 @@ function handleUseCommand(command) {
       // Redisplay current room to show the north exit is now available
       lookAtRoom();
     }
+  } else if (itemKey === "brass_key") {
+    // Special handling for brass key
+    if (item.hasBeenUsed) {
+      // Door is already unlocked
+      addToBuffer([
+        { text: "The bedroom door is already unlocked.", type: "flavor" }
+      ]);
+    } else {
+      // Check if player is at TV-ROOM (where bedroom door is)
+      if (currentRoom !== "TV-ROOM") {
+        addToBuffer([
+          { text: "There's nothing to unlock here.", type: "error" }
+        ]);
+        return;
+      }
+
+      // Unlock the door
+      addToBuffer([
+        { text: item.actions.use.response, type: "flavor" }
+      ]);
+
+      if (doors["bedroom2tv-room"]) {
+        doors["bedroom2tv-room"].locked = false;
+        doors["bedroom2tv-room"].open = true;
+      }
+
+      item.hasBeenUsed = true;
+      lookAtRoom();
+    }
   } else {
     // Generic use action for other items
     const response = item.actions.use.response || `You use the ${item.display}.`;
@@ -1236,7 +1277,7 @@ function lookAtRoom() {
 
   addToBuffer([{ text: lookText, type: "flavor" }]);
 
-  // Show available exits (only unlocked/open doors)
+  // Show available exits (all visible doors)
   const allExits = Object.keys(room.exits || {});
   const availableExits = allExits.filter(direction => {
     const exit = room.exits[direction];
@@ -1245,12 +1286,20 @@ function lookAtRoom() {
     const doorData = doors[exit.door];
     if (!doorData) return true; // Door data missing, show it
 
-    // Only show if door is visible AND (unlocked OR open)
-    return doorData.visible && (!doorData.locked || doorData.open);
+    // Only show if door is visible
+    return doorData.visible;
   });
 
   if (availableExits.length > 0) {
-    addToBuffer([{ text: `Exits: ${availableExits.join(", ")}`, type: "command" }]);
+    // Interior rooms show "SOUTH door, NORTH door" format
+    const interiorRooms = ["FOYER", "LIBRARY", "MUSIC-ROOM", "GAME-ROOM", "KITCHEN", "BEDROOM", "STUDY", "DINING-ROOM", "TV-ROOM"];
+    let exitsText;
+    if (interiorRooms.includes(currentRoom)) {
+      exitsText = availableExits.map(dir => `${dir.toUpperCase()} door`).join(", ");
+    } else {
+      exitsText = availableExits.join(", ");
+    }
+    addToBuffer([{ text: `Exits: ${exitsText}`, type: "command" }]);
   }
 
   // Show items in room (if any)

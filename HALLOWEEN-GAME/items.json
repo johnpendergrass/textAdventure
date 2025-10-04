@@ -151,11 +151,15 @@
       "droppable": false,
       "visible": true,
       "locked": false,
+      "hasBeenUsed": false,
       "actions": {
         "examine": "An old brass key. It looks like it might fit an old lock.",
         "take": {
           "response": "You pick up the brass key.",
           "addToInventory": true
+        },
+        "use": {
+          "response": "You insert the brass key into the bedroom door lock and turn it. CLICK! The door unlocks."
         }
       }
     },
@@ -539,6 +543,8 @@
       "type": "candy",
       "typedNames": [
         "gummybears",
+        "gummy",
+        "gummys",
         "gummies",
         "bears",
         "chewybears"
@@ -702,8 +708,11 @@
       "typedNames": [
         "lifesavers",
         "lifesaver",
+        "savers",
+        "life",
         "mints",
-        "ringcandy"
+        "rolled",
+        "rolledcandy"
       ],
       "display": "Life Savers",
       "description": "A roll of Butter Rum Life Savers candy",
@@ -735,8 +744,7 @@
         "popcorn",
         "poppedcorn",
         "kernels",
-        "snack",
-        "moviebuttered",
+        "moviepopcorn",
         "butteredpopcorn"
       ],
       "display": "Popcorn",
@@ -768,6 +776,7 @@
       "typedNames": [
         "reesespieces",
         "reeses",
+        "peanutbutter",
         "pieces"
       ],
       "display": "Reese's Pieces",
@@ -830,6 +839,7 @@
       "type": "candy",
       "typedNames": [
         "skittles",
+        "skitles",
         "rainbowcandy",
         "fruitchews",
         "colorfulcandy"

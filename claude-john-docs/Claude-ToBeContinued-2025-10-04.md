@@ -1,376 +1,439 @@
 # Claude ToBeContinued - 2025-10-04
-# Major UI Redesign & Interaction System Overhaul
+# Major Gameplay Enhancements & Command System Expansion
 
 ## Current State of Project
 
-Today's session involved significant improvements to the user interface, command system, and game interaction mechanics. We implemented a handwritten notes display system, redesigned the status panel with a visual compass, added room visit tracking, implemented the HOME/QUIT command, and completely refactored the Mrs. McGillicutty interaction to use a USE command system instead of room navigation.
+Today's session involved significant enhancements to the command system, locked door mechanics, hidden item discovery, inventory management, and quality-of-life improvements. We implemented GO command support, EAT command, brass key door unlocking, hidden bookmark discovery in the Frankenstein book, interior room exit formatting, and fixed several bugs.
 
 ## Major Accomplishments Completed (October 4, 2025)
 
-### ✅ Handwritten Notes Display System
+### ✅ GO Command Prefix Support
 
-**Problem solved:** Notes and quest items needed a distinct visual style to feel like physical items in the game world.
-
-**Implementation:**
-
-**Google Font Integration:**
-- Added Caveat font via Google Fonts import in CSS
-- Provides consistent handwritten appearance across all platforms
-- Font weights 400 & 700 available
-
-**New CSS Class (.notes-text):**
-```css
-.notes-text {
-  background: #fffef0; /* Cream/ivory paper color */
-  color: #2d2d2d; /* Dark gray/black for text */
-  font-family: 'Caveat', cursive;
-  font-size: 20px;
-  padding: 15px 20px;
-  margin: 10px 0;
-  display: inline-block;
-  border: 1px solid #bbb;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-  line-height: 1.6;
-  white-space: pre-line; /* Preserves line breaks */
-  max-width: 90%;
-}
-```
-
-**Text Type System Enhancement:**
-- Added "notes" type to updateDisplay() switch
-- When item.type === "notes", examine command uses notes type instead of flavor
-- Wraps text in `<div>` instead of `<span>` to preserve formatting
-- Line breaks (\n) in JSON render properly
-
-**Mrs. McGillicutty's List:**
-- Displays in handwritten style when examined
-- Shows all 9 scavenger hunt clues
-- Paper-like background with subtle shadow
-- Easy to read despite handwriting appearance
-
-**Files modified:**
-- textAdventure.css - Added @import and .notes-text class
-- textAdventure.js - Added "notes" case to updateDisplay(), modified handleExamineCommand()
-- items.json - Formatted list content with proper line breaks
-
-### ✅ Status Panel Redesign with Visual Compass
-
-**Problem solved:** Status panel was cluttered and commands weren't easy to scan.
-
-**New Layout:**
-```
-SCORE:
-Scavenger Items: # / 9
-Treats:          # / 20
-
-COMMANDS:
-(h)elp       (l)ook       (i)nventory
-(t)ake       (d)rop       e(x)amine
-(u)se        (e)at        HOME
-
-          (n)orth
-             |
-   (w)est ------ (e)ast
-             |
-          (s)outh
-```
+**Problem solved:** Players expect to type "GO NORTH" in text adventures, not just "NORTH".
 
 **Implementation:**
+- Added command preprocessing in `processCommand()` before any other checks
+- Strips "go" prefix if present and followed by another word
+- Works with all commands, not just directions
 
-**CSS Grid for Commands:**
-```css
-.command-grid {
-  display: grid;
-  grid-template-columns: auto auto auto;
-  column-gap: 10px;
-  row-gap: 1px;
-  line-height: 1.1;
-}
-```
-
-**ASCII Compass:**
-```css
-.compass {
-  white-space: pre;
-  margin-top: 8px;
-  line-height: 1.2;
-}
-```
-
-**updateGameStatus() Function Changes:**
-- Counts both scavenger items and treats separately
-- Displays aligned score lines with proper spacing
-- Three-column command grid using CSS Grid (auto-sized columns)
-- ASCII compass rendered with preserved whitespace
-
-**Benefits:**
-- Commands organized in visual columns
-- Compass provides intuitive direction reference
-- Cleaner, more scannable layout
-- Score tracking shows progress for both collection types
-
-**Files modified:**
-- textAdventure.js - Complete rewrite of updateGameStatus()
-- textAdventure.css - Added .command-grid and .compass classes
-
-### ✅ Room Visit Tracking System
-
-**Problem solved:** Rooms needed different text on first visit vs. repeat visits, but the system always showed "first" text.
-
-**Implementation:**
-
-**Visit Tracking in displayRoom():**
+**Code (textAdventure.js ~line 1485):**
 ```javascript
-// Count how many times this room has been visited
-const visitCount = player.core.visitedRooms.filter(r => r === roomId).length;
-
-// Select appropriate enterText based on visit count
-if (visitCount === 0) {
-  enterText = room.enterText?.first || ...;
-} else if (visitCount === 1) {
-  enterText = room.enterText?.second || room.enterText?.repeat || ...;
-} else {
-  enterText = room.enterText?.repeat || ...;
-}
-
-// Add room to visited rooms tracking
-player.core.visitedRooms.push(roomId);
-```
-
-**enterText Structure:**
-```json
-"enterText": {
-  "first": "Text for first visit",
-  "second": "Text for second visit (optional)",
-  "repeat": "Text for third+ visits"
+// Strip "go" prefix if present (support "go north", "go take apple", etc.)
+const words = command.trim().split(/\s+/);
+if (words.length > 1 && words[0].toLowerCase() === 'go') {
+  command = words.slice(1).join(' ');
 }
 ```
 
-**NICE-PORCH Example:**
-- First visit: "You are standing on Mrs. McGillicutty's porch. The porch light is on, casting a warm welcoming glow."
-- Second visit: "The porch light is off, but you try the bell anyway. No one answers."
-- Third+ visits: "The porch light is off. No one answers the door."
-
-**Dynamic Look Command:**
-- lookAtRoom() function checks porch light state for NICE-PORCH
-- If light is off: "The porch light is now off; the porch is gloomy and sort of scary."
-- If light is on: "The porch light is on, casting a warm welcoming glow."
+**Examples:**
+- "go north" → processes as "north"
+- "go take apple" → processes as "take apple"
+- "GO USE KEY" → processes as "USE KEY"
+- "go" alone → error message (expected behavior)
 
 **Files modified:**
-- textAdventure.js - displayRoom() and lookAtRoom() functions
-- rooms-w-doors.json - Added second/repeat enterText to NICE-PORCH
+- textAdventure.js - Added GO prefix stripping
 
-### ✅ HOME/QUIT Command Implementation
+### ✅ RING as Synonym for USE
 
-**Problem solved:** Players needed a way to end the game and return home.
-
-**Requirements:**
-- QUIT and HOME are synonyms
-- Must be typed in UPPERCASE
-- No confirmation needed (typing uppercase IS the confirmation)
-- Moves to HOME room with appropriate background
+**Problem solved:** "RING DOORBELL" is more intuitive than "USE DOORBELL".
 
 **Implementation:**
+- Added "ring" to shortcuts array for USE command
+- No functionality changes needed - ring maps to use_item action
 
-**Command Definition:**
-```json
-"quit": {
-  "includeInGame": true,
-  "type": "system",
-  "shortcuts": ["home"],
-  "action": "quit_game"
-}
-```
-
-**Uppercase Validation in processCommand():**
-```javascript
-// Check for QUIT/HOME uppercase requirement
-const firstWord = command.trim().split(/\s+/)[0];
-const lowerFirst = firstWord.toLowerCase();
-
-if ((lowerFirst === "quit" || lowerFirst === "home") &&
-    firstWord !== firstWord.toUpperCase()) {
-  addToBuffer([
-    { text: "QUIT and HOME must be typed in uppercase.", type: "error" }
-  ]);
-  return false;
-}
-```
-
-**handleQuitCommand() Function:**
-```javascript
-function handleQuitCommand() {
-  currentRoom = "HOME";
-  updateScavengerBackground("HOME");
-  addToBuffer([{ text: "", type: "flavor" }]);
-  displayRoom("HOME");
-}
-```
-
-**HOME Room:**
-- Background: assets/background/HOME250x250.png
-- enterText.first: "You walk home. It's great to be able to rest after all that trick-or-treating..."
-- No exits (game end)
-- Special property: "end-game-location": true
-
-**Files modified:**
-- commands.json - Added quit command
-- textAdventure.js - Added uppercase validation and handleQuitCommand()
-- rooms-w-doors.json - Updated HOME room background path
-
-### ✅ USE Command System & Mrs. McGillicutty Refactor
-
-**Problem solved:** Original design had player entering NICE-HOUSE room, but narrative said door closes. Also needed generic USE command for items.
-
-**New Design:**
-- Player stays on NICE-PORCH at all times
-- Uses doorbell to trigger interaction
-- NICE-HOUSE room preserved but inaccessible (for future use)
-
-**USE Command Implementation:**
-
-**Command Definition:**
+**Code (commands.json):**
 ```json
 "use": {
-  "includeInGame": true,
-  "type": "action",
-  "shortcuts": ["u"],
-  "action": "use_item"
+  "shortcuts": ["u", "ring"]
 }
 ```
 
-**handleUseCommand() Function:**
-- Parses item name from "use doorbell" → "doorbell"
-- Finds item by typedNames in room or inventory
-- Validates item has use action
-- Special handling for doorbell (first use vs. repeat)
-- Generic handler for other items
+**Files modified:**
+- commands.json - Added "ring" shortcut
 
-**Doorbell First Use:**
-1. Display Mrs. McGillicutty's dialogue
-2. Add note to inventory
-3. Turn off porch light (visible = false)
-4. Mark doorbell as used (hasBeenUsed = true)
-5. Update status
-6. Call lookAtRoom() to show updated room state
+### ✅ Door Knocker & Front Door Unlocking
 
-**Doorbell Subsequent Uses:**
-- "You ring and ring, but no one answers."
+**Problem solved:** Radley House front door needed to start locked, unlock with door knocker.
 
-**Doorbell Item Updates:**
+**Implementation:**
+
+**Door Setup (rooms-w-doors.json):**
 ```json
-"doorbell": {
-  "visible": true,  // Changed from false
-  "hasBeenUsed": false,  // New property
+"front-porch2foyer": {
+  "locked": true,
+  "open": false
+}
+```
+
+**Door Knocker Item (items.json):**
+```json
+"door_knocker": {
+  "visible": true,
+  "hasBeenUsed": false,
+  "typedNames": ["knocker", "doorknocker", "door", ...],
   "actions": {
     "use": {
-      "response": "The door to the nice house swings open..."
+      "response": "KNOCK KNOCK! ... You hear a loud CLICK as the door unlatches. The heavy door creaks open."
     }
   }
 }
 ```
 
-**Room Changes:**
-- Removed north exit from NICE-PORCH
-- NICE-HOUSE room kept intact but unreachable
-- No door locking needed (no door to lock!)
+**Handler Logic (textAdventure.js ~line 1180):**
+- First use: Shows message, unlocks door, marks as used, calls lookAtRoom()
+- Subsequent uses: "The door is already unlocked."
 
-**Removed Code:**
-- Auto-take logic from displayRoom()
-- Door-locking logic from movePlayer()
-- All NICE-HOUSE entrance handling
+**Player Experience:**
+1. Arrive at FRONT-PORCH → sees only "south" exit (north hidden because locked)
+2. USE KNOCKER → door unlocks and opens
+3. North exit appears, can enter Radley House
 
 **Files modified:**
-- commands.json - Added use command
-- textAdventure.js - Added handleUseCommand(), processCommand() case
-- items.json - Updated doorbell with visible: true, hasBeenUsed: false, use action
-- rooms-w-doors.json - Removed north exit from NICE-PORCH
+- rooms-w-doors.json - Locked front-porch2foyer door
+- items.json - Added use action to door_knocker, added "door" to typedNames
+- textAdventure.js - Added door_knocker special handling in handleUseCommand()
 
-### ✅ Blank Line Spacing Improvements
+### ✅ Locked Doors Visible in Exits List
 
-**Problem solved:** Room descriptions ran directly into exits with no visual separation.
+**Problem solved:** Locked doors should appear in exits list but block movement when tried.
+
+**Previous behavior:** Locked doors were hidden from exits list
+**New behavior:** Locked doors shown in exits, movement blocked with message
 
 **Implementation:**
-- Added blank line after enterText/lookText and before "Exits:" line
-- Improves readability of room descriptions
-- Consistent spacing throughout game
+
+**Exit Filtering Logic Change (textAdventure.js ~line 647, 1290):**
+```javascript
+// OLD: Only show if door is visible AND (unlocked OR open)
+return doorData.visible && (!doorData.locked || doorData.open);
+
+// NEW: Only show if door is visible
+return doorData.visible;
+```
+
+**Result:**
+- Locked doors appear: "Exits: NORTH door, SOUTH door, WEST door"
+- Player types "n" → "The bedroom door is locked. You'll need a key to open it."
+- After unlocking → player can proceed north
 
 **Files modified:**
-- textAdventure.js - displayRoom() function
+- textAdventure.js - Simplified door visibility filtering in displayRoom() and lookAtRoom()
 
-## Technical Architecture Updates
+### ✅ Brass Key & Locked Bedroom Door
 
-### Item Type System (Enhanced)
+**Problem solved:** Needed quest item (key) to unlock a door, teaching USE mechanic.
 
-**Current types:**
-- `"scavenger"` - 11 scavenger hunt items (9 active)
-- `"candy"` - 24 candy/treat items
-- `"fixed"` - 5 environmental items
-- `"notes"` - 1 quest item (with special rendering)
+**Implementation:**
 
-**Type-based rendering:**
-- Notes type uses .notes-text CSS class
-- Scavenger items display in grid with icons
-- Candy items use standard flavor text
-- Fixed items stay in rooms (not portable)
+**Bedroom Door (rooms-w-doors.json):**
+```json
+"bedroom2tv-room": {
+  "description": "It is a heavy wooden door.",
+  "locked": true,
+  "open": false,
+  "lockedMessage": "The bedroom door is locked. You'll need a key to open it."
+}
+```
 
-### Command Action System (Expanded)
+**Brass Key Item (items.json):**
+```json
+"brass_key": {
+  "type": "tools",
+  "location": "LIBRARY",
+  "hasBeenUsed": false,
+  "actions": {
+    "use": {
+      "response": "You insert the brass key into the bedroom door lock and turn it. CLICK! The door unlocks."
+    }
+  }
+}
+```
 
-**Action types:**
-- Movement: move_north, move_south, move_east, move_west
-- System: show_help, show_inventory, quit_game
-- Interaction: take_item, drop_item, examine_item, examine_room, use_item
+**Handler Logic (textAdventure.js ~line 1205):**
+- Checks if at TV-ROOM (where bedroom door is located)
+- If elsewhere: "There's nothing to unlock here."
+- First use: Unlocks bedroom2tv-room door, marks key as used
+- Subsequent uses: "The bedroom door is already unlocked."
 
-**New: use_item action:**
-- Generic handler for item interactions
-- Special case handling (doorbell)
-- Extensible for future use actions
+**Player Experience:**
+1. TV-ROOM shows: "Exits: NORTH door, SOUTH door, WEST door"
+2. Try north → "The bedroom door is locked. You'll need a key to open it."
+3. Find brass key in LIBRARY
+4. Return to TV-ROOM, "use key"
+5. Door unlocks, can now enter BEDROOM
 
-### Text Type System (Expanded)
+**Files modified:**
+- rooms-w-doors.json - Locked bedroom2tv-room door with custom message
+- items.json - Added hasBeenUsed, use action to brass_key
+- textAdventure.js - Added brass_key special handling in handleUseCommand()
 
-**Display types in updateDisplay():**
-- prompt - Yellow text for echoed commands
-- command - Cyan text for system messages
-- flavor - Green text for descriptions
-- error - Red text for invalid actions
-- underlined - Underlined text for headers
-- **notes - NEW** - Handwritten paper style for notes
+### ✅ Hidden Bookmark Discovery in Frankenstein Book
 
-### Player Data Structure
+**Problem solved:** Need quest items that are discovered when examining other items.
 
-**player.core.visitedRooms:**
-- Array of room IDs
-- Appended each time player enters room
-- Used to count visits for enterText selection
-- Example: ["STREET-01", "NICE-PORCH", "NICE-PORCH", "STREET-01"]
+**Implementation:**
 
-### Room State Management
+**Frankenstein Book (scavengerItems.json):**
+```json
+"frankenstein": {
+  "revealsItem": "oldnote",
+  "hasBeenSearched": false,
+  "actions": {
+    "examine": "The book is a First Edition... As you riffle through the pages you notice an old yellowed bookmark inside the cover. You take the bookmark."
+  }
+}
+```
 
-**Dynamic item visibility:**
-- Porch light visible property toggled based on doorbell use
-- lookAtRoom() checks current state for conditional descriptions
-- Items can be shown/hidden without changing location
+**Bookmark Item (items.json):**
+```json
+"oldnote": {
+  "type": "notes",
+  "typedNames": ["bookmark", "oldbookmark", "frankensteinbookmark"],
+  "display": "old bookmark",
+  "location": "HIDDEN",
+  "visible": false,
+  "actions": {
+    "examine": "An old yellowed bookmark with faded writing on it. [Generic text for now - can add password/clue later]"
+  }
+}
+```
 
-**Room visit states:**
-- Tracked via player.core.visitedRooms array
-- Count occurrences of room ID for visit number
-- Supports first/second/repeat text variations
+**Reveal Logic (textAdventure.js ~line 1069):**
+```javascript
+if (item.revealsItem && !item.hasBeenSearched) {
+  const revealedItem = items[item.revealsItem];
+  if (revealedItem && revealedItem.location === "HIDDEN") {
+    revealedItem.location = "INVENTORY";
+    revealedItem.visible = true;
+    item.hasBeenSearched = true;
+    updateGameStatus();
+    // Show current room state after revealing item
+    addToBuffer([{ text: "", type: "flavor" }]);
+    lookAtRoom();
+  }
+}
+```
+
+**Player Experience:**
+1. Take Frankenstein book
+2. Examine book → see text about finding bookmark
+3. Bookmark auto-added to inventory
+4. Room state displayed (exits, items)
+5. Can examine bookmark separately for clues/password
+
+**Files modified:**
+- scavengerItems.json - Added revealsItem, hasBeenSearched to frankenstein
+- items.json - Created oldnote (bookmark) item with HIDDEN location
+- textAdventure.js - Added reveal item logic in handleExamineCommand(), fixed examine for inventory items without take action
+
+### ✅ Item Type System & Inventory Reordering
+
+**Problem solved:** Needed clear item categories and proper inventory display order.
+
+**Item Types:**
+- **tools** - Quest items like brass key (normal text styling)
+- **notes** - Quest items like bookmark, Mrs. McGillicutty's list (handwritten styling)
+- **candy** - Treats to collect (type: "candy")
+- **scavenger** - Scavenger hunt items (type: "scavenger")
+- **fixed** - Environmental items like doorbell, porch lights
+
+**Inventory Display Order (changed):**
+1. **ITEMS** - tools and notes combined
+2. **SCAVENGER ITEMS (X/9)**
+3. **TREATS (X/20)**
+
+**Implementation (textAdventure.js ~line 756):**
+```javascript
+const toolItems = inventoryItems.filter((item) => item.type === "tools");
+const noteItems = inventoryItems.filter((item) => item.type === "notes");
+const questItems = [...toolItems, ...noteItems];
+```
+
+**Display Format:**
+```
+You are carrying:
+ITEMS
+  brass key
+  old bookmark
+  Mrs. McGillicutty's List
+
+SCAVENGER ITEMS (2/9)
+  Frankenstein book
+  Decorative Pumpkin
+
+TREATS (2/20)
+  Snickers mini-bar, Whatchamacallit bar
+```
+
+**Files modified:**
+- items.json - Changed brass_key type from "fixed" to "tools"
+- textAdventure.js - Added toolItems filter, created questItems, reordered display sections
+
+### ✅ Treats Counting Fix
+
+**Problem solved:** Non-candy items (brass key, notes) were being counted as treats.
+
+**Bug:**
+```javascript
+// OLD: Counted everything that wasn't a scavenger item
+const treatsCount = inventory.filter((item) => !item.isScavengerItem).length;
+```
+
+**Fix:**
+```javascript
+// NEW: Only count actual candy items
+const scavengerCount = inventory.filter((item) => item.type === "scavenger").length;
+const treatsCount = inventory.filter((item) => item.type === "candy").length;
+```
+
+**Result:** Status panel now correctly shows treats count without including tools/notes.
+
+**Files modified:**
+- textAdventure.js - Fixed treats counting in updateGameStatus()
+
+### ✅ EAT Command Implementation
+
+**Problem solved:** Candy items have eat actions defined but no command to use them.
+
+**Command Definition (commands.json):**
+```json
+"eat": {
+  "includeInGame": true,
+  "type": "action",
+  "shortcuts": [],
+  "action": "eat_item"
+}
+```
+
+**Handler Function (textAdventure.js ~line 946):**
+- Validates item is in inventory
+- Checks `eatable === true`
+- Checks `actions.eat` exists
+- Shows eat response message
+- Removes item from game via `delete items[itemKey]`
+- Updates status panel (treats count decreases)
+
+**Player Experience:**
+- "eat snickers" → "Delicious! You feel slightly healthier."
+- Item removed from inventory
+- Treats count decreases
+
+**Files modified:**
+- commands.json - Added eat command
+- textAdventure.js - Added eat_item case in processCommand(), created handleEatCommand()
+
+### ✅ Note/Bookmark Naming to Avoid Confusion
+
+**Problem solved:** Two items both responded to "note" - confusing for player.
+
+**Changes:**
+
+**Mrs. McGillicutty's List:**
+- Removed "note" from typedNames
+- Display: "Mrs. McGillicutty's List"
+- Player types: "x list"
+
+**Frankenstein Bookmark:**
+- Changed from "old note" to "old bookmark"
+- typedNames: ["bookmark", "oldbookmark", "frankensteinbookmark"]
+- Display: "old bookmark"
+- Player types: "x bookmark"
+
+**Files modified:**
+- items.json - Updated both items' typedNames and display names
+- scavengerItems.json - Updated frankenstein examine text to say "bookmark"
+
+### ✅ Interior Room Exit Format
+
+**Problem solved:** Interior house rooms needed clearer exit descriptions.
+
+**Implementation:**
+
+**Format:**
+- **Interior rooms** (9 house rooms): "Exits: SOUTH door, NORTH door, EAST door"
+- **Exterior rooms** (streets, porches): "Exits: north, south"
+
+**Code (textAdventure.js ~line 652, 1295):**
+```javascript
+const interiorRooms = ["FOYER", "LIBRARY", "MUSIC-ROOM", "GAME-ROOM", "KITCHEN", "BEDROOM", "STUDY", "DINING-ROOM", "TV-ROOM"];
+let exitsText;
+if (interiorRooms.includes(currentRoom)) {
+  exitsText = availableExits.map(dir => `${dir.toUpperCase()} door`).join(", ");
+} else {
+  exitsText = availableExits.join(", ");
+}
+```
+
+**Examples:**
+- FOYER: "Exits: SOUTH door, NORTH door, EAST door, WEST door"
+- LIBRARY: "Exits: EAST door, NORTH door"
+- STREET-01: "Exits: north, east" (unchanged)
+
+**Files modified:**
+- textAdventure.js - Updated both displayRoom() and lookAtRoom() exit display logic
+
+### ✅ Secret Door Setup (Music-Room to Game-Room)
+
+**Problem solved:** Secret door should be invisible until discovered, then locked until puzzle solved.
+
+**Door Configuration (rooms-w-doors.json):**
+```json
+"music-room2game-room": {
+  "description": "It is a secret door.",
+  "visible": false,    // Hidden until button pressed
+  "locked": true,      // Locked until puzzle solved
+  "open": false,
+  "requiresPuzzle": "say-friend"
+}
+```
+
+**Player Experience (planned):**
+1. MUSIC-ROOM initially: "Exits: SOUTH door"
+2. Press button → `doors["music-room2game-room"].visible = true`
+3. MUSIC-ROOM: "Exits: SOUTH door, NORTH door" (now visible)
+4. Try north → puzzle prompt or locked message
+5. Solve puzzle → door unlocks
+6. Enter GAME-ROOM
+
+**Files modified:**
+- rooms-w-doors.json - Set music-room2game-room to invisible and locked
+
+### ✅ Fixed Examine Logic for Items Without Take Actions
+
+**Bug:** Items without take actions could only be examined in current room, not in inventory.
+
+**Fix (textAdventure.js ~line 1088):**
+```javascript
+// OLD: Can only examine in current room
+if (item.location === currentRoom && item.visible && !item.locked)
+
+// NEW: Can examine in current room OR inventory
+if ((item.location === currentRoom || item.location === "INVENTORY") && item.visible && !item.locked)
+```
+
+**Also:** Set revealed items as visible when adding to inventory.
+
+**Files modified:**
+- textAdventure.js - Updated examine logic, added visible flag when revealing items
 
 ## Current Game Statistics
 
-### Items (41 total)
+### Items (42 total)
+- **Tools**: 1 item (brass_key)
+- **Notes**: 2 items (oldnote/bookmark, mrsmcgillicuttyslist)
 - **Scavenger**: 11 items (9 active, 2 inactive)
-- **Candy**: 24 items (all active)
-- **Fixed**: 5 items (doorbell, candy_bag, 2 porch lights, door_knocker)
-- **Notes**: 1 item (Mrs. McGillicutty's List)
+- **Candy**: 23 items (all active, eatable)
+- **Fixed**: 5 items (doorbell, door_knocker, 2 porch lights, candy_bag-inactive)
 
 ### Rooms (16 total)
 - **Starting**: STREET-01
 - **Mrs. McGillicutty**: NICE-PORCH (active), NICE-HOUSE (preserved but inaccessible)
-- **Radley House**: FRONT-PORCH, FOYER, 9 interior rooms with scavenger items
-- **Special**: HOME (end-game), INVENTORY (meta-room for items)
+- **Radley Exterior**: FRONT-PORCH, STREET-02
+- **Radley Interior**: FOYER, LIBRARY, STUDY, DINING-ROOM, KITCHEN, MUSIC-ROOM, GAME-ROOM, TV-ROOM, BEDROOM (9 rooms)
+- **Special**: HOME (end-game), INVENTORY (meta-room)
 
-### Commands (11 total)
+### Commands (12 total)
 - help (h, ?)
 - look (l)
 - inventory (i)
@@ -378,179 +441,205 @@ function handleQuitCommand() {
 - take (get, grab, pick)
 - examine (x, ex)
 - drop (put, place)
-- **use (u)** - NEW
-- **quit (home)** - NEW (uppercase required)
+- use (u, ring)
+- eat
+- quit (home) - uppercase required
+
+### Doors (12 total)
+- **Unlocked**: 9 doors (most interior doors, street connections)
+- **Locked (requires knocker)**: front-porch2foyer
+- **Locked (requires key)**: bedroom2tv-room
+- **Secret (invisible)**: music-room2game-room
 
 ## Files Modified This Session
 
 ### JSON Files:
 1. **commands.json**
-   - Added use command (action: use_item, shortcut: u)
-   - Added quit command (action: quit_game, shortcuts: home)
+   - Added "ring" to use shortcuts
+   - Added eat command
 
 2. **items.json**
-   - Updated doorbell: visible: true, hasBeenUsed: false, added use action
-   - Updated mrsmcgillicuttyslist: reformatted examine text for better display
+   - Changed brass_key type to "tools", added hasBeenUsed, use action
+   - Created oldnote (bookmark) item with HIDDEN location
+   - Updated mrsmcgillicuttyslist typedNames (removed "note")
+   - Updated door_knocker with use action, added "door" to typedNames
 
-3. **rooms-w-doors.json**
-   - NICE-PORCH: Removed north exit, updated enterText (first/second/repeat)
-   - HOME: Updated backgroundPic path, enhanced enterText
-   - NICE-HOUSE: Updated enterText (kept for future use)
-   - STREET-01: Updated enterText (first/repeat variations)
+3. **scavengerItems.json**
+   - Added revealsItem, hasBeenSearched to frankenstein
+   - Updated examine text to mention bookmark
+
+4. **rooms-w-doors.json**
+   - Locked front-porch2foyer door
+   - Locked bedroom2tv-room door with custom lockedMessage
+   - Set music-room2game-room to invisible and locked
 
 ### JavaScript Files:
-4. **textAdventure.js**
-   - **displayRoom()**: Added visit tracking, blank line before exits, removed auto-take logic
-   - **lookAtRoom()**: Added dynamic NICE-PORCH description based on light state
-   - **updateDisplay()**: Added "notes" case for handwritten text rendering
-   - **handleExamineCommand()**: Added notes type detection for rendering
-   - **updateGameStatus()**: Complete rewrite with new layout, scavenger count, command grid, compass
-   - **processCommand()**: Added uppercase validation for QUIT/HOME, use_item case, quit_game case
-   - **handleUseCommand()**: NEW - Generic use handler with special doorbell logic
-   - **handleQuitCommand()**: NEW - Moves player to HOME room
-   - **movePlayer()**: Removed door-locking logic (no longer needed)
-   - **canMoveThrough()**: Added support for custom lockedMessage on doors
+5. **textAdventure.js**
+   - **processCommand()**: Added GO prefix stripping, eat_item case
+   - **displayRoom()**: Simplified door filtering, added interior room exit formatting
+   - **lookAtRoom()**: Added interior room exit formatting
+   - **handleUseCommand()**: Added door_knocker handler, brass_key handler
+   - **handleExamineCommand()**: Added reveal item logic, fixed examine for inventory items without take
+   - **handleEatCommand()**: NEW - Complete eat command implementation
+   - **updateGameStatus()**: Fixed treats counting to only count candy items
 
-### CSS Files:
-5. **textAdventure.css**
-   - Added Google Fonts import for Caveat
-   - Added .notes-text class (handwritten paper style)
-   - Added .command-grid class (3-column command layout)
-   - Updated .compass class (ASCII direction display)
-   - Adjusted .command-grid > div (removed margins/padding)
+## Technical Architecture Updates
 
-## User Preferences & Design Decisions
+### Command Processing Flow
+1. Strip "GO" prefix if present
+2. Check QUIT/HOME uppercase requirement
+3. Find command via exact/shortcut/prefix matching
+4. Execute action handler
 
-### Design Choices Made:
+### Item Reveal System
+- Items can have `revealsItem` property pointing to another item key
+- Revealed items start with `location: "HIDDEN"` and `visible: false`
+- When examined, revealed item moves to INVENTORY and becomes visible
+- Parent item marked with `hasBeenSearched: true` to prevent re-revealing
 
-1. **Notes Display**: Caveat font chosen for readability while maintaining handwritten feel
-2. **Status Panel**: Compass added for visual direction reference, commands in aligned grid
-3. **Visit Tracking**: Implemented to support narrative progression (light on → light off)
-4. **USE Command**: Chosen over auto-actions for player agency and consistency
-5. **QUIT/HOME Uppercase**: Intentional typing requirement serves as confirmation
-6. **NICE-HOUSE Preservation**: Room kept in JSON but inaccessible for potential future features
-7. **Doorbell Interaction**: Replaced room entry with item use for more intuitive gameplay
-8. **Blank Line Spacing**: Added between description and exits for readability
+### Door Visibility & Locking
+- **visible: false** → Door doesn't appear in exits list at all
+- **visible: true, locked: true** → Door appears in exits, blocks movement with message
+- **visible: true, locked: false, open: true** → Door appears and allows movement
+
+### Interior Room Detection
+- Nine rooms defined as "interior": FOYER, LIBRARY, MUSIC-ROOM, GAME-ROOM, KITCHEN, BEDROOM, STUDY, DINING-ROOM, TV-ROOM
+- These rooms use "DIRECTION door" format for exits
+- All other rooms use standard "direction" format
 
 ## Known Issues & Future Enhancements
 
 ### Working Perfectly:
-- ✅ Handwritten notes display with Caveat font
-- ✅ Status panel with compass and aligned commands
-- ✅ Room visit tracking with first/second/repeat text
-- ✅ HOME/QUIT command with uppercase validation
-- ✅ USE DOORBELL interaction with Mrs. McGillicutty
-- ✅ Porch light state changes based on doorbell use
-- ✅ Dynamic lookAtRoom() descriptions
-- ✅ Note automatically added to inventory on first doorbell use
+- ✅ GO command prefix stripping
+- ✅ RING as USE synonym
+- ✅ Door knocker unlocking front door
+- ✅ Brass key unlocking bedroom door
+- ✅ Hidden bookmark discovery in Frankenstein book
+- ✅ Locked doors visible in exits but blocking movement
+- ✅ EAT command removing candy from inventory
+- ✅ Proper item type categorization
+- ✅ Inventory display order (ITEMS, SCAVENGER, TREATS)
+- ✅ Interior room exit formatting
+- ✅ Treats counting (only candy items)
 
 ### Not Yet Implemented:
-- EAT command (items have eat actions but command not active)
-- Image display during examine command (icon150 ready but not displayed)
-- Health system (health property exists but not enforced)
-- Watch and gamingmouse items (includeInGame: false)
-- Generic USE actions for other items (system in place, items need use actions)
+- Secret door button in MUSIC-ROOM (needs implementation)
+- Puzzle system for music-room2game-room door
+- Password/clue text in old bookmark (placeholder text currently)
+- Health system (property exists but not displayed/used)
+- Image display during examine (icon150, icon90x90 ready but not shown)
 
 ### Future Enhancements:
 
-**USE Command Expansion:**
-1. **Candy Bag** - Use to organize collected candy
-2. **Door Knocker** - Use to knock on Radley House door
-3. **Scavenger Items** - Special use actions for puzzle solving
-4. **Keys** - Use to unlock doors (if we add locked doors)
+**Secret Door Mechanism:**
+1. Add button item to MUSIC-ROOM
+2. USE BUTTON → sets doors["music-room2game-room"].visible = true
+3. North exit appears but door is locked
+4. Puzzle prompt: "An inscription reads: 'Speak, friend, and enter.'"
+5. SAY FRIEND → unlocks door
+6. Can enter GAME-ROOM
 
-**Additional Quest Items:**
-1. **Keys system** - Add locked doors in Radley House
-2. **Maps** - Floor plan showing room layout
-3. **More notes** - Additional clues or lore items
-4. **Tools** - Items needed to solve puzzles
+**Additional USE Actions:**
+1. More items with use actions (tools, keys, etc.)
+2. Combination items (use A with B)
+3. Context-sensitive uses
 
-**Visit Tracking Enhancements:**
-1. **Time-based text** - Different messages based on game progress
-2. **Conditional text** - Messages based on inventory or flags
-3. **NPC interactions** - Characters remember previous visits
+**Quest Item Expansion:**
+1. Add password/clue to old bookmark
+2. More hidden items in other scavenger items
+3. Maps, keys, tools as quest items
 
-**UI Improvements:**
-1. **Scavenger progress** - Visual indicator in status panel
-2. **Command hints** - Context-sensitive command suggestions
-3. **Achievement display** - Show collected items/milestones
+**Health System:**
+1. Display health in status panel
+2. Track health changes from eating
+3. Game over at 0 health?
 
-**Gameplay Features:**
-1. **EAT command** - Consume candy, affect health
-2. **Health system** - Track player health, game over state
-3. **Puzzle rooms** - Rooms requiring item combinations
-4. **Multiple endings** - Different outcomes based on choices
+**Visual Enhancements:**
+1. Show item images when examining (icon150, icon90x90, icon250x250)
+2. Inline or overlay image display
+3. Item icons in inventory
 
 ## Testing Notes
 
 ### Verified Working:
-- ✅ Handwritten note displays in Caveat font with paper styling
-- ✅ Status panel shows compass and aligned commands
-- ✅ First visit to NICE-PORCH shows light on message
-- ✅ USE DOORBELL shows Mrs. McGillicutty's dialogue
-- ✅ Note added to ITEMS category in inventory
-- ✅ Porch light turns off after doorbell use
-- ✅ Second visit to NICE-PORCH shows light off message
-- ✅ LOOK command shows dynamic light state
-- ✅ Subsequent doorbell uses show "no answer" message
-- ✅ Room state (exits, items) displays after doorbell interaction
-- ✅ QUIT and HOME require uppercase
-- ✅ Lowercase quit/home shows error message
-- ✅ QUIT/HOME moves to HOME room with correct background
-- ✅ Visit tracking works for all rooms
-- ✅ Blank line appears between description and exits
+- ✅ "go north" processes as "north"
+- ✅ "ring doorbell" works same as "use doorbell"
+- ✅ Door knocker unlocks front door on FRONT-PORCH
+- ✅ Front door creaks open message
+- ✅ North exit appears after using knocker
+- ✅ Brass key unlocks bedroom door at TV-ROOM
+- ✅ Locked doors appear in exits list
+- ✅ Locked door messages displayed when trying to pass
+- ✅ Examining Frankenstein book reveals bookmark
+- ✅ Bookmark added to ITEMS in inventory
+- ✅ Bookmark can be examined separately
+- ✅ Room state displays after discovering bookmark
+- ✅ EAT command removes candy and updates treats count
+- ✅ "x list" shows Mrs. McGillicutty's list
+- ✅ "x bookmark" shows old bookmark
+- ✅ Interior rooms show "SOUTH door, NORTH door" format
+- ✅ Exterior rooms show "north, south" format
+- ✅ Secret door hidden from MUSIC-ROOM exits initially
+- ✅ Treats count excludes tools and notes
 
 ### Test Sequence:
 1. Start at STREET-01
-2. Go north to NICE-PORCH
-3. See light on message, doorbell visible
-4. USE DOORBELL
-5. See Mrs. McGillicutty's dialogue
-6. See room state with exits
-7. Check inventory - see note in ITEMS category
-8. EXAMINE LIST - see handwritten clues
-9. LOOK - see light off message
-10. USE DOORBELL again - see "no answer" message
-11. Go south to street, north to porch again
-12. See second visit message (light off)
-13. Type quit - see uppercase error
-14. Type QUIT - move to HOME room
+2. "go north" to NICE-PORCH → GO prefix works
+3. "ring doorbell" → RING synonym works
+4. Go to FRONT-PORCH
+5. "use knocker" → door unlocks and opens
+6. Enter FOYER → see "Exits: SOUTH door, NORTH door, EAST door, WEST door"
+7. Navigate to LIBRARY
+8. "take key" → get brass key
+9. "take book" → get Frankenstein book
+10. "x book" → discover bookmark, see room state
+11. "i" → see brass key and bookmark in ITEMS section
+12. Navigate to TV-ROOM → see "Exits: SOUTH door, NORTH door, WEST door"
+13. "n" → "The bedroom door is locked. You'll need a key to open it."
+14. "use key" → door unlocks
+15. "n" → enter BEDROOM
+16. Take some candy
+17. "eat snickers" → candy removed, treats count decreases
+18. Check MUSIC-ROOM → see only "Exits: SOUTH door" (secret north door hidden)
 
 ## Context for Next Claude Code Session
 
-**MAJOR REFACTOR COMPLETE**: Mrs. McGillicutty interaction now uses USE DOORBELL instead of entering NICE-HOUSE room. Player stays on porch, uses doorbell to trigger dialogue and receive note.
+**MAJOR GAMEPLAY ENHANCEMENTS COMPLETE**: This session added significant quality-of-life improvements and gameplay mechanics including GO prefix, locked doors, hidden items, key-based unlocking, and proper inventory management.
 
-**NEW COMMAND SYSTEM**: USE command implemented with generic handler and special doorbell logic. Extensible for future item interactions.
+**COMMAND SYSTEM EXPANDED**: GO prefix support, RING synonym, and fully functional EAT command implemented.
 
-**UI OVERHAUL**: Status panel redesigned with visual compass, aligned command grid, and scavenger/treats scoring. Much cleaner and easier to scan.
+**DOOR MECHANICS REFINED**: Locked doors now visible in exits but block movement. Players can see all exits and get appropriate messages when doors are locked.
 
-**NOTES RENDERING**: Handwritten notes display system using Caveat Google Font with paper-like styling. All notes/quest items render distinctly from regular text.
+**KEY & DOOR PUZZLE IMPLEMENTED**: Brass key in LIBRARY unlocks bedroom door at TV-ROOM, demonstrating USE mechanic for quest progression.
 
-**VISIT TRACKING ACTIVE**: Rooms support first/second/repeat enterText variations. Porch light state changes based on doorbell use, with dynamic LOOK descriptions.
+**HIDDEN ITEM DISCOVERY**: Frankenstein book reveals hidden bookmark when examined, establishing system for items-within-items.
 
-**HOME/QUIT WORKING**: Players can end game by typing QUIT or HOME (uppercase required). Moves to HOME room with appropriate ending message.
+**INVENTORY IMPROVEMENTS**: Proper type system (tools, notes, candy, scavenger), correct display order, accurate treats counting.
 
-**NICE-HOUSE PRESERVED**: Room kept in JSON but made inaccessible (no exits lead to it). Available for future features if needed.
+**INTERIOR ROOM POLISH**: Nine house rooms now show clearer exit format ("SOUTH door, NORTH door" vs "north, south").
+
+**SECRET DOOR READY**: music-room2game-room door set up as invisible and locked, ready for button/puzzle implementation.
 
 **IMMEDIATE NEXT STEPS:**
-1. Test complete game flow from start to HOME
-2. Consider implementing EAT command (system ready, just needs handler)
-3. Add USE actions to other items (door knocker, candy bag, etc.)
-4. Consider adding more quest items with handwritten rendering
-5. Evaluate implementing health system with candy consumption
+1. Implement button in MUSIC-ROOM to reveal secret door
+2. Implement puzzle system for secret door ("Speak, friend, and enter")
+3. Add password/clue text to old bookmark
+4. Consider implementing health system display
+5. Consider adding image display on examine
 
 **Key architectural achievements:**
-- USE command system established and working
-- Visit tracking enables narrative progression
-- Notes rendering provides distinct visual style
-- Status panel provides better information hierarchy
-- Player agency increased (USE instead of auto-actions)
-- Uppercase requirement pattern for critical commands
+- GO command preprocessing
+- Item reveal system (revealsItem, hasBeenSearched)
+- Door visibility vs. locked states properly separated
+- Item type system with proper filtering
+- Interior vs. exterior room detection for formatting
+- Location-based USE validation (brass_key only works at TV-ROOM)
 
-**Current version**: v0.27 - USE Command & UI Redesign
+**Current version**: v0.28 - Command Expansion & Locked Door Mechanics
 
-**Total items**: 41 (11 scavenger + 24 candy + 5 fixed + 1 notes)
-**Total commands**: 11 (including new USE and QUIT)
-**Total rooms**: 16 (including preserved NICE-HOUSE)
+**Total items**: 42 (1 tools + 2 notes + 11 scavenger + 23 candy + 5 fixed)
+**Total commands**: 12 (including EAT)
+**Total rooms**: 16
+**Total doors**: 12 (2 locked, 1 secret invisible)
 
-The game now has a robust USE command system, beautiful handwritten notes, an improved status panel, and much better narrative flow through visit tracking!
+The game now has robust locked door mechanics, hidden item discovery, proper inventory categorization, and intuitive command aliases!
