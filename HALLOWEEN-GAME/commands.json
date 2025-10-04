@@ -59,6 +59,12 @@
       "type": "action",
       "shortcuts": ["put", "place"],
       "action": "drop_item"
+    },
+    "quit": {
+      "includeInGame": true,
+      "type": "system",
+      "shortcuts": ["home"],
+      "action": "quit_game"
     }
   }
 }

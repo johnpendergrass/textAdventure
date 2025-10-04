@@ -12,7 +12,7 @@
       {"text": "", "type": "flavor"},
       {"text": "It is nearly 8:00 PM, Trick or Treat nearly over. You are tired from hauling around this heavy bag of candy all night.", "type": "flavor"},
       {"text": "", "type": "flavor"},
-      {"text": "Your last house is Mrs. McGillicutty's. Nice house. Good, the porch light is still on. Probably has some candy left.", "type": "flavor"},
+      {"text": "Your last house is Mrs. McGillicutty's. Nice house. Good, the porch light is still on. Probably has some candy left.  (to the north is a short walkway to her front porch. To the east the sidewalk continues.)", "type": "flavor"},
       {"text": "", "type": "flavor"},
       {"text": "Type HELP or H for a list of commands.", "type": "command"},
       {"text": "", "type": "flavor"}

@@ -14,10 +14,10 @@
     "STREET-01": {
       "name": "Street",
       "enterText": {
-        "first": "You are standing on the street.",
-        "repeat": "You are on the street."
+        "first": "You are on the street. The walkway to Mrs. McGillicutty's house is to the north.  The sidewalk continues to the east.",
+        "repeat": "You are on the street. The path to Mrs. McGillicutty's house is to the north.  The sidewalk continues to the east."
       },
-      "lookText": "You are on the street.",
+      "lookText": "You are on the street. The path to Mrs. McGillicutty's house is to the north.  The sidewalk continues to the east.",
       "exits": {
         "north": { "to": "NICE-PORCH", "door": "street-012nice-porch" },
         "east":  { "to": "STREET-02",  "door": "street-012street-02" }
@@ -47,8 +47,9 @@
     "NICE-PORCH": {
       "name": "Nice Porch",
       "enterText": {
-        "first": "You are standing on Mrs. McGillicutty's porch.",
-        "repeat": "You are on the porch."
+        "first": "You are standing on Mrs. McGillicutty's porch. The porch light is on, casting a warm welcoming glow.",
+        "second": "The porch light is off, but you try the bell anyway. No one answers.",
+        "repeat": "The porch light is off. No one answers the door."
       },
       "lookText": "You are on Mrs. McGillicutty's porch.",
       "exits": {
@@ -63,8 +64,11 @@
     "NICE-HOUSE": {
       "name": "Nice House",
         "enterText": {
-          "first": "The door to the nice house swings open.  Mrs. McGillicutty answers, dressed in her best witch'es costume, and holds out a skull shaped candy dish, saying 'Take two, dear.'  After you have taken the candy she bends over and whispers '... oh, and Mr. Radley and his son Aurthur are having a scavenger hunt next door.  You might find this note useful during that game!  She hands you a piece of paper and you put it in your pocket.  'Good luck, dear!', and shuts the door.",
-        "repeat": "You ring and ring, but no one answers."
+          "first": "The door to the nice house swings open.  Mrs. McGillicutty answers, dressed in a sexy witch costume. She holds a small candy dish, and tells you to take two candies.\n\nAfter you take the candies she leans over and whispers 'Mr. Radley and his son Aurhur next door are having a scavenger hunt. You might find this note useful during that game!'  She hands you a handwritten note and you put it in your pocket.  'Good luck dear!' she says, and closes the door.",
+
+
+          "second": "You ring and ring, but no one answers.",
+          "repeat": "You ring and ring, but no one answers."
       },
       "lookText": "You are still on the porch.",
       "exits": {
@@ -78,7 +82,7 @@
     "FRONT-PORCH": {
       "name": "Front Porch",
       "enterText": {
-"first": "You go up the walkway to the front porch.",
+"first": "You go up the walkway to the front porch of the Radley House.",
         "repeat": "You are on the Radley's front porch."
       },
       "lookText": "You are on the Radley's front porch.",
@@ -248,14 +252,14 @@
     "HOME": {
       "name": "Home",
       "enterText": {
-        "first": "You are home.",
-        "repeat": "You are home."
+        "first": "You walk home. It's great to be able to rest after all that trick-or-treating.  You pour all your candy out on the dining room table.  What a great haul!  .........  That's about it for this game.  Nothing more to do here.  You might as well choose another mini-game and go have some fun!",
+        "repeat": "You are home.  The game is over.  Choose another mini-game."
       },
-      "lookText": "You are home.",
+      "lookText": "You are home.  The game is over.  Choose another mini-game.",
       "exits": {},
       "special": {
         "end-game-location": true,
-        "backgroundPic": "assets/background/homeAfterTrickorTreat205x250.png"
+        "backgroundPic": "assets/background/HOME250x250.png"
       }
     }
   },

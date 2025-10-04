@@ -149,7 +149,7 @@
       "visible": true,
       "locked": false,
       "actions": {
-        "examine": "*** SECRET ***\n\nThese clues may help you locate the items!\n\n1. Video game hardware helper\n2. Food from the sea\n3. Atomic 79\n4. Fab Four\n5. Scary Feline\n6. Playful tiger\n7. Not a monster\n8. gourd\n9. Odd pup\n\nGood luck!\n\nMrs. M",
+        "examine": "Mrs. McGillicutty's Scavenger Hunt Clues\n\nDear Trick-or-Treater,\n\nHere are the clues to find the hidden treasures:\n\n1. Video game hardware helper\n2. Food from the sea\n3. Atomic 79\n4. Fab Four\n5. Scary Feline\n6. Playful tiger\n7. Not a monster\n8. gourd\n9. Odd pup\n\nGood luck on your hunt!\n\n- Mrs. M",
         "take": {
           "response": "You carefully fold the note and put it in your pocket.",
           "addToInventory": true

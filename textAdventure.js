@@ -610,11 +610,29 @@ function displayRoom(roomId = currentRoom) {
 
   const room = rooms[roomId];
 
-  // Always use first enterText for Phase 1 (ignore visit tracking)
-  const enterText =
-    room.enterText?.first || room.lookText || `You are in ${room.name}`;
+  // Count how many times this room has been visited
+  const visitCount = player.core.visitedRooms.filter(r => r === roomId).length;
+
+  // Select appropriate enterText based on visit count
+  let enterText;
+  if (visitCount === 0) {
+    // First visit
+    enterText = room.enterText?.first || room.lookText || `You are in ${room.name}`;
+  } else if (visitCount === 1) {
+    // Second visit - use second if available, otherwise repeat
+    enterText = room.enterText?.second || room.enterText?.repeat || room.lookText || `You are in ${room.name}`;
+  } else {
+    // Third+ visit - use repeat
+    enterText = room.enterText?.repeat || room.lookText || `You are in ${room.name}`;
+  }
 
   addToBuffer([{ text: enterText, type: "flavor" }]);
+
+  // Add room to visited rooms tracking
+  player.core.visitedRooms.push(roomId);
+
+  // Add blank line before exits
+  addToBuffer([{ text: "", type: "flavor" }]);
 
   // Show available exits
   const exits = Object.keys(room.exits || {});
@@ -622,6 +640,20 @@ function displayRoom(roomId = currentRoom) {
     addToBuffer([{ text: `Exits: ${exits.join(", ")}`, type: "command" }]);
   } else {
     addToBuffer([{ text: "No obvious exits.", type: "command" }]);
+  }
+
+  // Auto-take Mrs. McGillicutty's list when entering NICE-HOUSE (before showing items)
+  if (roomId === "NICE-HOUSE" && items.mrsmcgillicuttyslist) {
+    if (items.mrsmcgillicuttyslist.location === "NICE-HOUSE") {
+      items.mrsmcgillicuttyslist.location = "INVENTORY";
+
+      // Turn off the porch light at NICE-PORCH
+      if (items.porch_light_nice) {
+        items.porch_light_nice.visible = false;
+      }
+
+      updateGameStatus();
+    }
   }
 
   // Show items in room (if any)
@@ -635,14 +667,6 @@ function displayRoom(roomId = currentRoom) {
     roomItems.forEach((item) => {
       addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
     });
-  }
-
-  // Auto-take Mrs. McGillicutty's list when entering NICE-HOUSE
-  if (roomId === "NICE-HOUSE" && items.mrsmcgillicuttyslist) {
-    if (items.mrsmcgillicuttyslist.location === "NICE-HOUSE") {
-      items.mrsmcgillicuttyslist.location = "INVENTORY";
-      updateGameStatus();
-    }
   }
 }
 
@@ -917,6 +941,21 @@ function handleDropCommand(command) {
   updateGameStatus();
 }
 
+// Handle QUIT/HOME command - moves player to HOME room
+function handleQuitCommand() {
+  // Move to HOME room
+  currentRoom = "HOME";
+
+  // Update background image for scavenger box
+  updateScavengerBackground("HOME");
+
+  // Display the HOME room
+  addToBuffer([
+    { text: "", type: "flavor" }, // Blank line before room description
+  ]);
+  displayRoom("HOME");
+}
+
 // Handle examine command
 function handleExamineCommand(command) {
   // Extract the item name - get everything after the command, lowercase, strip spaces
@@ -958,8 +997,10 @@ function handleExamineCommand(command) {
   if (item.actions.take) {
     // Item has take action - must be in inventory to examine
     if (item.location === "INVENTORY") {
+      // Use notes type for notes items, flavor for others
+      const textType = item.type === "notes" ? "notes" : "flavor";
       addToBuffer([
-        { text: `${item.display}: ${item.actions.examine}`, type: "flavor" },
+        { text: item.actions.examine, type: textType },
       ]);
     } else {
       addToBuffer([
@@ -972,8 +1013,10 @@ function handleExamineCommand(command) {
   } else {
     // Item doesn't have take action - can examine if visible in current room
     if (item.location === currentRoom && item.visible && !item.locked) {
+      // Use notes type for notes items, flavor for others
+      const textType = item.type === "notes" ? "notes" : "flavor";
       addToBuffer([
-        { text: `${item.display}: ${item.actions.examine}`, type: "flavor" },
+        { text: item.actions.examine, type: textType },
       ]);
     } else {
       addToBuffer([
@@ -1064,6 +1107,9 @@ function updateDisplay() {
       case "underlined":
         className = "underlined-text";
         break;
+      case "notes":
+        // Special handling for notes - use div instead of span and preserve line breaks
+        return `<div class="notes-text">${entry.text}</div>`;
       case "flavor":
       default:
         className = "flavor-text";
@@ -1143,29 +1189,46 @@ function echoCommand(command) {
 function updateGameStatus() {
   const statusDiv = document.querySelector(".status");
 
-  // Generate commands section from UI config
-  const commandsTitle = uiConfig?.statusPanel?.commands?.title || "COMMANDS:";
-  const commandsList = uiConfig?.statusPanel?.commands?.list || [
-    "(h)elp (l)ook (i)nventory",
-    "(n)orth (s)outh (e)ast (w)est",
-  ];
-
   // Get inventory items from INVENTORY room
   const inventory = Object.values(items).filter(
     (item) => item.includeInGame && item.location === "INVENTORY"
   );
 
-  // Count treats (non-scavenger items) - limit display to 20
+  // Count scavenger items and treats separately
+  const scavengerCount = inventory.filter((item) => item.isScavengerItem).length;
   const treatsCount = inventory.filter((item) => !item.isScavengerItem).length;
-  const displayCount = Math.min(treatsCount, 20);
+  const displayTreatsCount = Math.min(treatsCount, 20);
 
-  // Generate status section
+  // Generate status section with aligned columns
   const statusTitle = uiConfig?.statusPanel?.status?.title || "SCORE:";
 
   let statsHTML = "";
-  statsHTML += `<div>Treats: ${displayCount} / 20</div>`;
+  statsHTML += `<div>Scavenger Items: ${scavengerCount} / 9</div>`;
+  statsHTML += `<div>Treats:          ${displayTreatsCount} / 20</div>`;
+
+  // Commands section with 3-column alignment
+  const commandsTitle = uiConfig?.statusPanel?.commands?.title || "COMMANDS:";
+  const commandsHTML = `<div class="command-grid">
+  <div>(h)elp</div>
+  <div>(l)ook</div>
+  <div>(i)nventory</div>
+  <div>(t)ake</div>
+  <div>(d)rop</div>
+  <div>e(x)amine</div>
+  <div>(u)se</div>
+  <div>(e)at</div>
+  <div>HOME</div>
+</div>`;
+
+  // ASCII compass
+  const compassHTML = `<div class="compass">          (n)orth
+             |
+   (w)est ------ (e)ast
+             |
+          (s)outh</div>`;
 
   statusDiv.innerHTML = `
+    <div>&nbsp;</div>
     <div class="status-section">
       <div class="status-title">${statusTitle}</div>
       ${statsHTML}
@@ -1173,7 +1236,8 @@ function updateGameStatus() {
 
     <div class="status-section">
       <div class="status-title">${commandsTitle}</div>
-      ${commandsList.map((cmd) => `<div>${cmd}</div>`).join("")}
+      ${commandsHTML}
+      ${compassHTML}
     </div>
   `;
 }
@@ -1281,6 +1345,17 @@ function findCommand(input) {
 
 // Command processing with smart matching
 function processCommand(command) {
+  // Check for QUIT/HOME uppercase requirement
+  const firstWord = command.trim().split(/\s+/)[0];
+  const lowerFirst = firstWord.toLowerCase();
+
+  if ((lowerFirst === "quit" || lowerFirst === "home") && firstWord !== firstWord.toUpperCase()) {
+    addToBuffer([
+      { text: "QUIT and HOME must be typed in uppercase.", type: "error" }
+    ]);
+    return false;
+  }
+
   const result = findCommand(command);
   let isValid = false;
 
@@ -1321,6 +1396,9 @@ function processCommand(command) {
           break;
         case "drop_item":
           handleDropCommand(command);
+          break;
+        case "quit_game":
+          handleQuitCommand();
           break;
         default:
           addToBuffer([

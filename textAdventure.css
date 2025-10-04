@@ -1,3 +1,6 @@
+/* Import Google Font for handwritten notes */
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap");
+
 /* ========================================
    === BASE STYLES ===
    ======================================== */
@@ -128,6 +131,21 @@ body {
   text-decoration: underline;
 }
 
+.notes-text {
+  background: #fffef0; /* Cream/ivory paper color */
+  color: #2d2d2d; /* Dark gray/black for text */
+  font-family: "Caveat", cursive;
+  font-size: 20px;
+  padding: 15px 20px;
+  margin: 10px 0;
+  display: inline-block;
+  border: 1px solid #bbb;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  line-height: 1.6;
+  white-space: pre-line; /* Preserves line breaks */
+  max-width: 90%;
+}
+
 .prompt {
   grid-area: prompt;
   border: 2px solid white;
@@ -239,4 +257,23 @@ body {
   color: #ffcc00;
   font-weight: bold;
   margin-bottom: 2px;
+}
+
+.command-grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  column-gap: 10px;
+  row-gap: 1px;
+  line-height: 1.1;
+}
+
+.command-grid > div {
+  margin: 0;
+  padding: 0;
+}
+
+.compass {
+  white-space: pre;
+  margin-top: 8px;
+  line-height: 1.2;
 }
