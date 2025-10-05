@@ -77,6 +77,12 @@
       "type": "action",
       "shortcuts": [],
       "action": "eat_item"
+    },
+    "say": {
+      "includeInGame": true,
+      "type": "action",
+      "shortcuts": ["speak"],
+      "action": "say_phrase"
     }
   }
 }

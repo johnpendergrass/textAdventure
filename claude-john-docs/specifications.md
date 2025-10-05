@@ -1,16 +1,45 @@
 # Halloween Text Adventure - Complete Specifications
-# v0.28 - Command Expansion & Locked Door Mechanics
+# v0.29 - SAY Command & Interactive Puzzle System
 
 ## Project Overview
 
-**Version:** 0.28
-**Total Project Size:** ~225KB (with grid assets and fonts)
-**Source Files:** 8 core files + 42 items + documentation
-**Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking, handwritten notes, locked doors, hidden items, and expanded command system
+**Version:** 0.29
+**Total Project Size:** ~230KB (with grid assets and fonts)
+**Source Files:** 8 core files + 44 items + documentation
+**Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking, handwritten notes, locked doors, hidden items, interactive puzzles, and SAY command system
 **Target Platform:** Web browsers (GitHub Pages compatible)
-**Current State:** Fully interactive text adventure with GO command prefix, locked door mechanics, brass key puzzle, hidden bookmark discovery, EAT command, proper item categorization, and interior room exit formatting
+**Current State:** Fully interactive text adventure with GO command prefix, locked door mechanics, brass key puzzle, hidden bookmark discovery, EAT command, SAY command with safe combination and secret door password puzzles, proper item categorization, bold keyword inventory display, and interior room exit formatting
 
 ## Major Features
+
+### SAY Command & Interactive Puzzles ✨ NEW in v0.29
+- **SAY command** - Type actual combinations and passwords
+- **Safe combination puzzle** - Find bookmark → say combination → open safe
+- **Secret door password** - Read password paper → say password → unlock door
+- Flexible input normalization ("13-97-55", "139755", "13 97 55" all work)
+- Context-sensitive responses (only works at specific locations)
+- Shortcuts: "say" or "speak"
+
+### Bold Keyword Highlighting ✨ NEW in v0.29
+- Quest items show **bold keywords** in inventory
+- brass **key**, old **bookmark**, Mrs. McGillicutty's **list**, **password** paper
+- Makes it clear what words to use in commands
+- Uses inventoryDisplay property with HTML bold tags
+- Automatic fallback to regular display if not defined
+
+### Safe & Combination Puzzle ✨ NEW in v0.29
+- Metal safe in STUDY with combination lock
+- Bookmark reveals combination: 13-97-55
+- SAY 13-97-55 → safe opens
+- Reveals krugerrand (scavenger item) and password paper
+- Safe shows "The safe door is open" after opening
+
+### Secret Door Password System ✨ NEW in v0.29
+- Password paper in safe: "Speak, friend, and enter."
+- Secret door in MUSIC-ROOM (initially invisible and locked)
+- SAY FRIEND → door reveals and unlocks
+- North exit appears to GAME-ROOM
+- Supports flexible phrasing ("friend", "speak friend and enter")
 
 ### GO Command Prefix Support ✨ NEW in v0.28
 - Accept "GO NORTH" in addition to "NORTH"
@@ -393,19 +422,19 @@ COMMANDS:
 
 ## Game Mechanics
 
-### Complete Command System ✨ ENHANCED in v0.28
+### Complete Command System ✨ ENHANCED in v0.29
 
 **Movement Commands:**
 - north (n) - Move north
 - south (s) - Move south
 - east (e) - Move east
 - west (w) - Move west
-- **GO prefix supported** ✨ NEW - "go north", "go take apple", etc.
+- **GO prefix supported** - "go north", "go take apple", etc.
 
 **Information Commands:**
 - help (h, ?) - Show command list
 - look (l) - Describe current room
-- inventory (i) - Show categorized inventory
+- inventory (i) - Show categorized inventory with bold keywords ✨ v0.29
 
 **Interaction Commands:**
 - take (get, grab, pick) - Pick up items
@@ -413,11 +442,16 @@ COMMANDS:
 - drop (put, place) - Drop items
 - **use (u, ring) - Use items**
   - Generic handler for item interactions
-  - Doorbell (Mrs. McGillicutty) ✨ v0.27
-  - Door knocker (Radley front door) ✨ NEW
-  - Brass key (bedroom door) ✨ NEW
+  - Doorbell (Mrs. McGillicutty)
+  - Door knocker (Radley front door)
+  - Brass key (bedroom door)
   - Extensible for future use actions
-- **eat - Consume candy items** ✨ NEW
+- **eat - Consume candy items**
+- **say (speak) - Say combinations/passwords** ✨ NEW in v0.29
+  - Safe combination at STUDY
+  - Secret door password at MUSIC-ROOM
+  - Context-sensitive responses
+  - Flexible input normalization
 
 **System Commands:**
 - **quit (home) - End game**
@@ -425,7 +459,7 @@ COMMANDS:
   - Moves to HOME room
   - Both QUIT and HOME work identically
 
-### Command Processing Flow ✨ NEW in v0.28
+### Command Processing Flow ✨ UPDATED in v0.29
 
 1. **Strip GO prefix** - Remove "go" if followed by another word
 2. **Check QUIT/HOME uppercase** - Validate uppercase requirement
@@ -583,28 +617,36 @@ COMMANDS:
 
 ## Item Distribution
 
-### Tools/Quest Items (1 total) ✨ NEW in v0.28
+### Tools/Quest Items (1 total)
 
 1. **brass_key (LIBRARY)** - Unlocks bedroom door at TV-ROOM
    - Type: tools
-   - Display: brass key
+   - Display: brass key (brass **key** in inventory) ✨ v0.29
    - Use action: Location-based (TV-ROOM only)
    - Not droppable (quest item)
 
-### Notes/Messages (2 total)
+### Notes/Messages (3 total) ✨ UPDATED in v0.29
 
-1. **oldnote (HIDDEN → revealed by frankenstein)** ✨ NEW in v0.28
+1. **oldnote (HIDDEN → revealed by frankenstein)**
    - Type: notes
-   - Display: old bookmark
+   - Display: old bookmark (old **bookmark** in inventory) ✨ v0.29
    - Found inside Frankenstein book when examined
    - Handwritten style rendering
-   - Placeholder for future password/clue
+   - Contains safe combination: 13-97-55 ✨ v0.29
 
 2. **mrsmcgillicuttyslist (NICE-HOUSE → auto-moved to INVENTORY)**
    - Type: notes
+   - Display: Mrs. McGillicutty's List (Mrs. McGillicutty's **list** in inventory) ✨ v0.29
    - 9 clues matching the 9 active scavenger items
    - Displays in handwritten style when examined
    - Auto-given when doorbell is used first time
+
+3. **passwordpaper (HIDDEN → revealed by safe)** ✨ NEW in v0.29
+   - Type: notes
+   - Display: password paper (**password** paper in inventory) ✨ v0.29
+   - Found inside safe in STUDY
+   - Contains secret door password: "Speak, friend, and enter."
+   - Unlocks secret door in MUSIC-ROOM
 
 ### Scavenger Items (11 total, 9 active)
 
@@ -614,8 +656,8 @@ COMMANDS:
 3. catmug - Cat Mug (DINING-ROOM, square 4)
 4. cuponoodles - Cup O' Noodles (KITCHEN, square 1)
 5. bringingupbaby - Bringing Up Baby DVD (TV-ROOM, square 5)
-6. dog - Odd Dog (STUDY, square 2)
-7. krugerrand - Krugerrand gold coin (BEDROOM, square 8)
+6. dog - Odd Dog (BEDROOM, square 2) ✨ v0.29 - moved from STUDY
+7. krugerrand - Krugerrand gold coin (HIDDEN→STUDY, square 8) ✨ v0.29 - revealed by safe
 8. pumpkin - Decorative Pumpkin (FOYER, square 7)
 9. **frankenstein - Frankenstein book (LIBRARY, square 6)** ✨ ENHANCED
    - Has revealsItem property
@@ -649,13 +691,19 @@ COMMANDS:
 - Health values
 - removeItem: true
 
-### Fixed Items (5 total)
+### Fixed Items (6 total) ✨ UPDATED in v0.29
 
 1. **doorbell (NICE-PORCH)** - Has use action, triggers Mrs. McGillicutty interaction
 2. **candy_bag (MUSIC-ROOM)** - Trick-or-treat bag, includeInGame: false (inactive)
 3. porch_light_nice (NICE-PORCH) - Not takeable, visible changes based on doorbell use
-4. **door_knocker (FRONT-PORCH)** - Has use action, unlocks front door ✨ ENHANCED
+4. **door_knocker (FRONT-PORCH)** - Has use action, unlocks front door
 5. porch_light_front (FRONT-PORCH) - Not visible, not takeable
+6. **safe (STUDY)** ✨ NEW in v0.29
+   - Old cast iron safe with combination lock
+   - Opens with SAY 13-97-55
+   - Reveals krugerrand and password paper
+   - hasBeenOpened flag tracks state
+   - Shows "The safe door is open" after opening
 
 ## Scoring System
 
@@ -858,7 +906,21 @@ COMMANDS:
 
 ## Version History
 
-### v0.28 (October 4, 2025) ✨ CURRENT
+### v0.29 (October 4, 2025 - Evening) ✨ CURRENT
+- ✨ Added SAY command for interactive puzzles (say combinations/passwords)
+- ✨ Implemented safe combination puzzle (bookmark → 13-97-55 → open safe)
+- ✨ Created safe item in STUDY with hasBeenOpened state tracking
+- ✨ Updated bookmark with decorative combination display
+- ✨ Added password paper item (revealed by safe)
+- ✨ Implemented secret door password system (SAY FRIEND to unlock)
+- ✨ Added bold keyword highlighting in inventory (inventoryDisplay property)
+- ✨ Swapped krugerrand (BEDROOM→HIDDEN) and dog (STUDY→BEDROOM) locations
+- ✨ Fixed originalLocation preservation for hidden scavenger items
+- ✨ Updated command grid layout (added SAY, moved HOME to corner)
+- ✨ Added safe state check in examine (shows "door is open" after opening)
+- ✨ Total items: 44 (added safe, password paper)
+
+### v0.28 (October 4, 2025 - Morning)
 - ✨ Added GO command prefix support (go north, go take, etc.)
 - ✨ Implemented locked door system (visible but blocks movement)
 - ✨ Added door knocker unlock mechanism for Radley front door

@@ -132,6 +132,30 @@
         "examine": "The porch light flickers eerily, casting dancing shadows."
       }
     },
+    "safe": {
+      "includeInGame": true,
+      "type": "fixed",
+      "typedNames": [
+        "safe",
+        "metalsafe",
+        "vault",
+        "strongbox",
+        "lockbox"
+      ],
+      "display": "metal safe",
+      "description": "A heavy metal safe with a combination lock",
+      "location": "STUDY",
+      "points": 0,
+      "health": 0,
+      "eatable": false,
+      "droppable": false,
+      "visible": true,
+      "locked": false,
+      "hasBeenOpened": false,
+      "actions": {
+        "examine": "An old cast iron safe, used for valuables. It has an old fashioned rotary combination lock next to the handle. The dial shows numbers from 0 to 99."
+      }
+    },
     "brass_key": {
       "includeInGame": true,
       "type": "tools",
@@ -143,6 +167,7 @@
         "oldkey"
       ],
       "display": "brass key",
+      "inventoryDisplay": "brass <b>key</b>",
       "description": "An old brass key",
       "location": "LIBRARY",
       "points": 0,
@@ -172,6 +197,7 @@
         "frankensteinbookmark"
       ],
       "display": "old bookmark",
+      "inventoryDisplay": "old <b>bookmark</b>",
       "description": "An old bookmark from the Frankenstein book",
       "location": "HIDDEN",
       "points": 0,
@@ -181,7 +207,7 @@
       "visible": false,
       "locked": false,
       "actions": {
-        "examine": "An old yellowed bookmark with faded writing on it. [Generic text for now - can add password/clue later]"
+        "examine": "-----------------------------------------------------------------\n|\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/| 13-97-55 |\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/|\n-----------------------------------------------------------------"
       }
     },
     "mrsmcgillicuttyslist": {
@@ -197,6 +223,7 @@
         "hints"
       ],
       "display": "Mrs. McGillicutty's List",
+      "inventoryDisplay": "Mrs. McGillicutty's <b>list</b>",
       "description": "A handwritten note with clues",
       "location": "NICE-HOUSE",
       "points": 0,
@@ -209,6 +236,34 @@
         "examine": "Mrs. McGillicutty's Scavenger Hunt Clues\n\nDear Trick-or-Treater,\n\nHere are the clues to find the hidden treasures:\n\n1. Video game hardware helper\n2. Food from the sea\n3. Atomic 79\n4. Fab Four\n5. Scary Feline\n6. Playful tiger\n7. Not a monster\n8. gourd\n9. Odd pup\n\nGood luck on your hunt!\n\n- Mrs. M",
         "take": {
           "response": "You carefully fold the note and put it in your pocket.",
+          "addToInventory": true
+        }
+      }
+    },
+    "passwordpaper": {
+      "includeInGame": true,
+      "type": "notes",
+      "typedNames": [
+        "passwordpaper",
+        "password",
+        "secretpaper",
+        "note",
+        "secretnote"
+      ],
+      "display": "password paper",
+      "inventoryDisplay": "<b>password</b> paper",
+      "description": "A small paper with hastily scrawled text",
+      "location": "HIDDEN",
+      "points": 0,
+      "health": 0,
+      "eatable": false,
+      "droppable": false,
+      "visible": false,
+      "locked": false,
+      "actions": {
+        "examine": "Speak, friend, and enter.",
+        "take": {
+          "response": "You carefully take the password paper.",
           "addToInventory": true
         }
       }

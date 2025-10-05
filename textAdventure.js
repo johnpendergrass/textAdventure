@@ -798,7 +798,7 @@ function showInventory() {
       { text: `ITEMS`, type: "underlined" },
     ]);
     questItems.forEach((item) => {
-      addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
+      addToBuffer([{ text: `  ${item.inventoryDisplay || item.display}`, type: "flavor" }]);
     });
   }
 
@@ -1012,6 +1012,93 @@ function handleEatCommand(command) {
   updateGameStatus();
 }
 
+// Handle SAY command - for combinations and passwords
+function handleSayCommand(command) {
+  // Extract the phrase - get everything after the command
+  const input = command.toLowerCase().trim();
+  const firstSpace = input.indexOf(" ");
+
+  if (firstSpace === -1) {
+    addToBuffer([{ text: "Say what?", type: "error" }]);
+    return;
+  }
+
+  const phrase = input.substring(firstSpace + 1).trim();
+  // Normalize: remove spaces, dashes, and convert to lowercase
+  const normalizedPhrase = phrase.replace(/[\s\-]/g, "").toLowerCase();
+
+  // Check if at STUDY with safe combination
+  if (currentRoom === "STUDY") {
+    const safe = items["safe"];
+    if (safe && !safe.hasBeenOpened && normalizedPhrase === "139755") {
+      // Correct combination! Open the safe
+      addToBuffer([
+        { text: "You dial the combination: 13-97-55", type: "flavor" },
+        { text: "CLICK! The safe door swings open with a satisfying thunk.", type: "flavor" },
+        { text: "Inside you see a gold coin and a small paper!", type: "flavor" }
+      ]);
+
+      // Mark safe as opened
+      safe.hasBeenOpened = true;
+
+      // Reveal krugerrand in STUDY
+      const krugerrand = items["krugerrand"];
+      if (krugerrand) {
+        krugerrand.location = "STUDY";
+        krugerrand.visible = true;
+      }
+
+      // Reveal password paper in STUDY
+      const passwordpaper = items["passwordpaper"];
+      if (passwordpaper) {
+        passwordpaper.location = "STUDY";
+        passwordpaper.visible = true;
+      }
+
+      // Show room state
+      addToBuffer([{ text: "", type: "flavor" }]);
+      lookAtRoom();
+      return;
+    }
+  }
+
+  // Check if at MUSIC-ROOM with secret door password
+  if (currentRoom === "MUSIC-ROOM") {
+    // Check if phrase includes "friend" (supports various phrasings)
+    if (normalizedPhrase.includes("friend")) {
+      // Correct password! Reveal and unlock the secret door
+      const secretDoor = doors["music-room2game-room"];
+      if (secretDoor && !secretDoor.visible) {
+        addToBuffer([
+          { text: `You say: "${phrase}"`, type: "flavor" },
+          { text: "The wall rumbles and shakes! A hidden door swings open, revealing a passage north!", type: "flavor" }
+        ]);
+
+        // Make door visible and unlocked
+        secretDoor.visible = true;
+        secretDoor.locked = false;
+        secretDoor.open = true;
+
+        // Show room state with new exit
+        addToBuffer([{ text: "", type: "flavor" }]);
+        lookAtRoom();
+        return;
+      } else if (secretDoor && secretDoor.visible) {
+        addToBuffer([
+          { text: "The secret door is already open.", type: "flavor" }
+        ]);
+        return;
+      }
+    }
+  }
+
+  // Default response - phrase didn't do anything
+  addToBuffer([
+    { text: `You say: "${phrase}"`, type: "flavor" },
+    { text: "Nothing happens.", type: "flavor" }
+  ]);
+}
+
 // Handle QUIT/HOME command - moves player to HOME room
 function handleQuitCommand() {
   // Move to HOME room
@@ -1099,11 +1186,18 @@ function handleExamineCommand(command) {
   } else {
     // Item doesn't have take action - can examine if visible in current room OR in inventory
     if ((item.location === currentRoom || item.location === "INVENTORY") && item.visible && !item.locked) {
-      // Use notes type for notes items, flavor for others
-      const textType = item.type === "notes" ? "notes" : "flavor";
-      addToBuffer([
-        { text: item.actions.examine, type: textType },
-      ]);
+      // Special handling for safe - show different text if opened
+      if (itemKey === "safe" && item.hasBeenOpened) {
+        addToBuffer([
+          { text: "The safe door is open.", type: "flavor" },
+        ]);
+      } else {
+        // Use notes type for notes items, flavor for others
+        const textType = item.type === "notes" ? "notes" : "flavor";
+        addToBuffer([
+          { text: item.actions.examine, type: textType },
+        ]);
+      }
     } else {
       addToBuffer([
         { text: `You don't see any "${targetTypedName}" here.`, type: "error" },
@@ -1475,7 +1569,7 @@ function updateGameStatus() {
   <div>e(x)amine</div>
   <div>(u)se</div>
   <div>(e)at</div>
-  <div>HOME</div>
+  <div>say</div>
 </div>`;
 
   // ASCII compass
@@ -1483,7 +1577,7 @@ function updateGameStatus() {
              |
    (w)est ------ (e)ast
              |
-          (s)outh</div>`;
+          (s)outh         HOME</div>`;
 
   statusDiv.innerHTML = `
     <div>&nbsp;</div>
@@ -1670,6 +1764,9 @@ function processCommand(command) {
         case "eat_item":
           handleEatCommand(command);
           break;
+        case "say_phrase":
+          handleSayCommand(command);
+          break;
         default:
           addToBuffer([
             { text: `Unknown action: ${cmd.action}`, type: "error" },
@@ -1842,7 +1939,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Mark scavenger items for scoring purposes and save original location
     Object.values(scavengerItems).forEach((item) => {
       item.isScavengerItem = true;
-      item.originalLocation = item.location; // Save original location for grid display
+      // Only set originalLocation if not already defined (for items starting HIDDEN)
+      if (!item.originalLocation) {
+        item.originalLocation = item.location; // Save original location for grid display
+      }
     });
 
     // Merge scavenger items into main items object
