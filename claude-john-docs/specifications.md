@@ -1,45 +1,70 @@
 # Halloween Text Adventure - Complete Specifications
-# v0.29 - SAY Command & Interactive Puzzle System
+# v0.30 - Three Puzzle Systems (Music System, Powerful PC, DVD Cabinet)
 
 ## Project Overview
 
-**Version:** 0.29
-**Total Project Size:** ~230KB (with grid assets and fonts)
-**Source Files:** 8 core files + 44 items + documentation
-**Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking, handwritten notes, locked doors, hidden items, interactive puzzles, and SAY command system
+**Version:** 0.30
+**Total Project Size:** ~235KB (with grid assets and fonts)
+**Source Files:** 8 core files + 46 items + documentation
+**Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking, handwritten notes, locked doors, hidden items, interactive puzzles, SAY command system, and OPEN command
 **Target Platform:** Web browsers (GitHub Pages compatible)
-**Current State:** Fully interactive text adventure with GO command prefix, locked door mechanics, brass key puzzle, hidden bookmark discovery, EAT command, SAY command with safe combination and secret door password puzzles, proper item categorization, bold keyword inventory display, and interior room exit formatting
+**Current State:** Fully interactive text adventure with GO command prefix, locked door mechanics, brass key puzzle, hidden bookmark discovery, EAT command, SAY command with safe combination and secret door password puzzles, OPEN command for containers and cabinets, dual reveal system (examine vs. open), proper item categorization, bold keyword inventory display, and interior room exit formatting
 
 ## Major Features
 
-### SAY Command & Interactive Puzzles ✨ NEW in v0.29
+### OPEN Command & Container System ✨ NEW in v0.30
+- **OPEN command** - Open containers, cabinets, and doors
+- **DVD cabinet puzzle** - Glass cabinet with visible but inaccessible items
+- Reveals items when opened (distinct from examine reveals)
+- hasBeenOpened state tracking prevents re-opening
+- Shortcuts: "open" or "unlock"
+- Extensible for chests, drawers, doors
+
+### Music System Sound Options Puzzle ✨ NEW in v0.30
+- **Music system** in MUSIC-ROOM with sound mode selector
+- Three options: MUSIC (warm EQ), MOVIE (surround), GAME (bass boost)
+- SAY GAME → reveals secret door (makes it visible but locked)
+- Two-step secret door: reveal (SAY GAME) then unlock (SAY FRIEND)
+- Humorous flavor text for each sound mode
+- Extends SAY command functionality
+
+### Powerful PC with Removable Video Card ✨ NEW in v0.30
+- **Gaming PC** in GAME-ROOM with humorous specs
+- Intel Core 9 Ultra 19900000K CPU, 2.3TB DDR7 RAM, 32GB HD
+- EXAMINE PC → reveals removable NVidia 5090 video card
+- "Shame to butcher such a nice PC for parts" flavor text
+- Video card appears in room as scavenger item
+- Demonstrates examine-based reveal for fixed items
+
+### DVD Cabinet Movie Paradox ✨ NEW in v0.30
+- **TV-ROOM puzzle** with "Bringing Up Baby" playing on TV
+- DVD visible through glass cabinet doors but inaccessible
+- Movie paradox: "How is the movie playing if the DVD is right there?"
+- EXAMINE CABINET → see DVD through glass (cannot take)
+- OPEN CABINET → doors open, DVD becomes accessible
+- Demonstrates open-based reveal system
+
+### Dual Reveal System ✨ NEW in v0.30
+- **Examine reveals**: Items without open action (PC, Frankenstein book)
+- **Open reveals**: Items with open action (DVD cabinet)
+- **SAY reveals**: Special puzzle items (safe, secret door)
+- Smart detection prevents wrong trigger (cabinet won't reveal on examine)
+- Extensible pattern for future puzzle design
+
+### SAY Command & Interactive Puzzles (v0.29-0.30)
 - **SAY command** - Type actual combinations and passwords
 - **Safe combination puzzle** - Find bookmark → say combination → open safe
-- **Secret door password** - Read password paper → say password → unlock door
+- **Secret door two-step** - SAY GAME (reveal) → SAY FRIEND (unlock)
 - Flexible input normalization ("13-97-55", "139755", "13 97 55" all work)
-- Context-sensitive responses (only works at specific locations)
+- Context-sensitive responses (music system, safe, secret door)
 - Shortcuts: "say" or "speak"
 
-### Bold Keyword Highlighting ✨ NEW in v0.29
+### Bold Keyword Highlighting ✨ in v0.29
 - Quest items show **bold keywords** in inventory
 - brass **key**, old **bookmark**, Mrs. McGillicutty's **list**, **password** paper
 - Makes it clear what words to use in commands
 - Uses inventoryDisplay property with HTML bold tags
 - Automatic fallback to regular display if not defined
-
-### Safe & Combination Puzzle ✨ NEW in v0.29
-- Metal safe in STUDY with combination lock
-- Bookmark reveals combination: 13-97-55
-- SAY 13-97-55 → safe opens
-- Reveals krugerrand (scavenger item) and password paper
-- Safe shows "The safe door is open" after opening
-
-### Secret Door Password System ✨ NEW in v0.29
-- Password paper in safe: "Speak, friend, and enter."
-- Secret door in MUSIC-ROOM (initially invisible and locked)
-- SAY FRIEND → door reveals and unlocks
-- North exit appears to GAME-ROOM
-- Supports flexible phrasing ("friend", "speak friend and enter")
 
 ### GO Command Prefix Support ✨ NEW in v0.28
 - Accept "GO NORTH" in addition to "NORTH"
@@ -422,7 +447,7 @@ COMMANDS:
 
 ## Game Mechanics
 
-### Complete Command System ✨ ENHANCED in v0.29
+### Complete Command System ✨ ENHANCED in v0.30
 
 **Movement Commands:**
 - north (n) - Move north
@@ -434,7 +459,7 @@ COMMANDS:
 **Information Commands:**
 - help (h, ?) - Show command list
 - look (l) - Describe current room
-- inventory (i) - Show categorized inventory with bold keywords ✨ v0.29
+- inventory (i) - Show categorized inventory with bold keywords
 
 **Interaction Commands:**
 - take (get, grab, pick) - Pick up items
@@ -447,11 +472,17 @@ COMMANDS:
   - Brass key (bedroom door)
   - Extensible for future use actions
 - **eat - Consume candy items**
-- **say (speak) - Say combinations/passwords** ✨ NEW in v0.29
+- **say (speak) - Say combinations/passwords** (v0.29)
   - Safe combination at STUDY
+  - Music system options at MUSIC-ROOM ✨ v0.30
   - Secret door password at MUSIC-ROOM
   - Context-sensitive responses
   - Flexible input normalization
+- **open (unlock) - Open containers and cabinets** ✨ NEW in v0.30
+  - DVD cabinet in TV-ROOM
+  - Generic handler for openable items
+  - hasBeenOpened state tracking
+  - Reveals items when opened
 
 **System Commands:**
 - **quit (home) - End game**
@@ -691,19 +722,33 @@ COMMANDS:
 - Health values
 - removeItem: true
 
-### Fixed Items (6 total) ✨ UPDATED in v0.29
+### Fixed Items (9 total) ✨ UPDATED in v0.30
 
 1. **doorbell (NICE-PORCH)** - Has use action, triggers Mrs. McGillicutty interaction
 2. **candy_bag (MUSIC-ROOM)** - Trick-or-treat bag, includeInGame: false (inactive)
 3. porch_light_nice (NICE-PORCH) - Not takeable, visible changes based on doorbell use
 4. **door_knocker (FRONT-PORCH)** - Has use action, unlocks front door
 5. porch_light_front (FRONT-PORCH) - Not visible, not takeable
-6. **safe (STUDY)** ✨ NEW in v0.29
+6. **safe (STUDY)** - v0.29
    - Old cast iron safe with combination lock
    - Opens with SAY 13-97-55
    - Reveals krugerrand and password paper
    - hasBeenOpened flag tracks state
    - Shows "The safe door is open" after opening
+7. **musicsystem (MUSIC-ROOM)** ✨ NEW in v0.30
+   - High-end audio system with sound mode selector
+   - Three SAY options: MUSIC, MOVIE, GAME
+   - SAY GAME reveals secret door
+   - Mounted on north wall
+8. **powerfulpc (GAME-ROOM)** ✨ NEW in v0.30
+   - Gaming PC with humorous specs
+   - Reveals NVidia 5090 when examined
+   - revealsItem property with hasBeenSearched
+9. **dvdcabinet (TV-ROOM)** ✨ NEW in v0.30
+   - Glass-door cabinet with DVDs
+   - Has open action
+   - Reveals "Bringing Up Baby" DVD when opened
+   - hasBeenOpened flag tracks state
 
 ## Scoring System
 
@@ -906,7 +951,23 @@ COMMANDS:
 
 ## Version History
 
-### v0.29 (October 4, 2025 - Evening) ✨ CURRENT
+### v0.30 (October 5, 2025) ✨ CURRENT
+- ✨ Added OPEN command for containers, cabinets, and doors
+- ✨ Implemented music system puzzle with sound options (MUSIC, MOVIE, GAME)
+- ✨ Enhanced secret door reveal to two-step (SAY GAME reveals, SAY FRIEND unlocks)
+- ✨ Added powerful PC puzzle with removable NVidia 5090 video card
+- ✨ Created DVD cabinet puzzle with "Bringing Up Baby" movie paradox
+- ✨ Implemented dual reveal system (examine vs. open triggers)
+- ✨ Fixed examine reveal logic to skip items with open action
+- ✨ Added musicsystem item (MUSIC-ROOM) with SAY integration
+- ✨ Added powerfulpc item (GAME-ROOM) with examine-based reveal
+- ✨ Added dvdcabinet item (TV-ROOM) with open-based reveal
+- ✨ Updated TV-ROOM description with movie scene and cabinet
+- ✨ Hid nvidia and bringingupbaby scavenger items (revealed by puzzles)
+- ✨ Total items: 46 (added musicsystem, powerfulpc, dvdcabinet)
+- ✨ Total commands: 14 (added OPEN)
+
+### v0.29 (October 4, 2025 - Evening)
 - ✨ Added SAY command for interactive puzzles (say combinations/passwords)
 - ✨ Implemented safe combination puzzle (bookmark → 13-97-55 → open safe)
 - ✨ Created safe item in STUDY with hasBeenOpened state tracking

@@ -1062,28 +1062,77 @@ function handleSayCommand(command) {
     }
   }
 
-  // Check if at MUSIC-ROOM with secret door password
+  // Check if at MUSIC-ROOM - music system and secret door
   if (currentRoom === "MUSIC-ROOM") {
-    // Check if phrase includes "friend" (supports various phrasings)
-    if (normalizedPhrase.includes("friend")) {
-      // Correct password! Reveal and unlock the secret door
-      const secretDoor = doors["music-room2game-room"];
+    const secretDoor = doors["music-room2game-room"];
+
+    // Check for music system sound options
+    if (normalizedPhrase.includes("music")) {
+      addToBuffer([
+        { text: `You say: "${phrase}"`, type: "flavor" },
+        { text: "The system responds with a soft chime. 'Music mode selected - warm equalization active.'", type: "flavor" }
+      ]);
+      return;
+    }
+
+    if (normalizedPhrase.includes("movie") || normalizedPhrase.includes("theater") || normalizedPhrase.includes("theatre")) {
+      addToBuffer([
+        { text: `You say: "${phrase}"`, type: "flavor" },
+        { text: "The system responds with a soft chime. 'Movie mode selected - surround sound optimized.'", type: "flavor" }
+      ]);
+      return;
+    }
+
+    if (normalizedPhrase.includes("game") || normalizedPhrase.includes("gaming")) {
       if (secretDoor && !secretDoor.visible) {
         addToBuffer([
           { text: `You say: "${phrase}"`, type: "flavor" },
-          { text: "The wall rumbles and shakes! A hidden door swings open, revealing a passage north!", type: "flavor" }
+          { text: "The system responds with a soft chime. 'Gaming mode selected - bass boost active.'", type: "flavor" },
+          { text: "You hear a mechanical CLICK from the north wall, followed by a faint grinding sound...", type: "flavor" }
         ]);
 
-        // Make door visible and unlocked
+        // Make door visible but keep it locked
         secretDoor.visible = true;
-        secretDoor.locked = false;
-        secretDoor.open = true;
 
         // Show room state with new exit
         addToBuffer([{ text: "", type: "flavor" }]);
         lookAtRoom();
         return;
       } else if (secretDoor && secretDoor.visible) {
+        addToBuffer([
+          { text: `You say: "${phrase}"`, type: "flavor" },
+          { text: "The system responds with a soft chime. 'Gaming mode already active.'", type: "flavor" }
+        ]);
+        return;
+      }
+    }
+
+    // Check for secret door password
+    if (normalizedPhrase.includes("friend")) {
+      if (secretDoor && secretDoor.visible && secretDoor.locked) {
+        // Door is visible but locked - unlock it
+        addToBuffer([
+          { text: `You say: "${phrase}"`, type: "flavor" },
+          { text: "The wall rumbles and shakes! The hidden door swings open with a loud THUNK, revealing a passage north!", type: "flavor" }
+        ]);
+
+        // Unlock the door
+        secretDoor.locked = false;
+        secretDoor.open = true;
+
+        // Show room state
+        addToBuffer([{ text: "", type: "flavor" }]);
+        lookAtRoom();
+        return;
+      } else if (secretDoor && !secretDoor.visible) {
+        // Door not visible yet
+        addToBuffer([
+          { text: `You say: "${phrase}"`, type: "flavor" },
+          { text: "You sense there might be a secret here, but you don't see a door.", type: "flavor" }
+        ]);
+        return;
+      } else if (secretDoor && secretDoor.visible && !secretDoor.locked) {
+        // Door already unlocked
         addToBuffer([
           { text: "The secret door is already open.", type: "flavor" }
         ]);
@@ -1096,6 +1145,83 @@ function handleSayCommand(command) {
   addToBuffer([
     { text: `You say: "${phrase}"`, type: "flavor" },
     { text: "Nothing happens.", type: "flavor" }
+  ]);
+}
+
+// Handle OPEN command - for opening containers and cabinets
+function handleOpenCommand(command) {
+  // Extract the item name - get everything after the command, lowercase, strip spaces
+  const input = command.toLowerCase().trim();
+  const firstSpace = input.indexOf(" ");
+
+  if (firstSpace === -1) {
+    addToBuffer([{ text: "Open what?", type: "error" }]);
+    return;
+  }
+
+  const targetName = input.substring(firstSpace + 1).trim();
+  const targetTypedName = targetName.replace(/\s+/g, "");
+
+  // Find matching items in room or inventory
+  const matchingItems = Object.entries(items).filter(([key, item]) =>
+    item.includeInGame &&
+    item.typedNames.includes(targetTypedName) &&
+    (item.location === currentRoom || item.location === "INVENTORY")
+  );
+
+  if (matchingItems.length === 0) {
+    addToBuffer([
+      { text: `You don't see any "${targetName}" here to open.`, type: "error" }
+    ]);
+    return;
+  }
+
+  const [itemKey, item] = matchingItems[0];
+
+  // Check if item has open action
+  if (!item.actions?.open) {
+    addToBuffer([
+      { text: `You can't open the ${item.display}.`, type: "error" }
+    ]);
+    return;
+  }
+
+  // Special handling for DVD cabinet
+  if (itemKey === "dvdcabinet") {
+    if (!item.hasBeenOpened) {
+      // First time opening
+      addToBuffer([
+        { text: item.actions.open, type: "flavor" }
+      ]);
+
+      // Mark as opened
+      item.hasBeenOpened = true;
+
+      // Reveal the DVD
+      if (item.revealsItem) {
+        const revealedItem = items[item.revealsItem];
+        if (revealedItem && revealedItem.location === "HIDDEN") {
+          revealedItem.location = currentRoom;
+          revealedItem.visible = true;
+          updateGameStatus();
+
+          // Show room state with new item
+          addToBuffer([{ text: "", type: "flavor" }]);
+          lookAtRoom();
+        }
+      }
+    } else {
+      // Already opened
+      addToBuffer([
+        { text: "The cabinet is already open.", type: "flavor" }
+      ]);
+    }
+    return;
+  }
+
+  // Generic open handler for other items
+  addToBuffer([
+    { text: item.actions.open, type: "flavor" }
   ]);
 }
 
@@ -1197,6 +1323,23 @@ function handleExamineCommand(command) {
         addToBuffer([
           { text: item.actions.examine, type: textType },
         ]);
+
+        // Check if examining this fixed item reveals a hidden item (first time only)
+        // Skip auto-reveal for items with open action (they reveal on OPEN instead)
+        if (item.revealsItem && !item.hasBeenSearched && !item.actions?.open) {
+          const revealedItem = items[item.revealsItem];
+          if (revealedItem && revealedItem.location === "HIDDEN") {
+            // For fixed items, reveal in current room (not INVENTORY)
+            revealedItem.location = currentRoom;
+            revealedItem.visible = true;
+            item.hasBeenSearched = true;
+            updateGameStatus();
+
+            // Show current room state after revealing item
+            addToBuffer([{ text: "", type: "flavor" }]);
+            lookAtRoom();
+          }
+        }
       }
     } else {
       addToBuffer([
@@ -1766,6 +1909,9 @@ function processCommand(command) {
           break;
         case "say_phrase":
           handleSayCommand(command);
+          break;
+        case "open_item":
+          handleOpenCommand(command);
           break;
         default:
           addToBuffer([

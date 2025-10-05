@@ -83,6 +83,12 @@
       "type": "action",
       "shortcuts": ["speak"],
       "action": "say_phrase"
+    },
+    "open": {
+      "includeInGame": true,
+      "type": "action",
+      "shortcuts": ["unlock"],
+      "action": "open_item"
     }
   }
 }

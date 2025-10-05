@@ -156,6 +156,89 @@
         "examine": "An old cast iron safe, used for valuables. It has an old fashioned rotary combination lock next to the handle. The dial shows numbers from 0 to 99."
       }
     },
+    "musicsystem": {
+      "includeInGame": true,
+      "type": "fixed",
+      "typedNames": [
+        "musicsystem",
+        "system",
+        "stereo",
+        "soundsystem",
+        "hifi",
+        "audio",
+        "receiver",
+        "amplifier"
+      ],
+      "display": "music system",
+      "description": "A high-end audio system on a wall shelf",
+      "location": "MUSIC-ROOM",
+      "points": 0,
+      "health": 0,
+      "eatable": false,
+      "droppable": false,
+      "visible": true,
+      "locked": false,
+      "actions": {
+        "examine": "A top-of-the-line music system sits on a shelf mounted on the north wall. The brushed aluminum faceplate gleams in the dim light. On the front panel, you notice a selector labeled 'Sound Options' with three buttons: 'music', 'movie', and 'game'."
+      }
+    },
+    "powerfulpc": {
+      "includeInGame": true,
+      "type": "fixed",
+      "typedNames": [
+        "powerfulpc",
+        "pc",
+        "computer",
+        "gamingpc",
+        "desktop",
+        "tower",
+        "rig"
+      ],
+      "display": "powerful PC",
+      "description": "An impressive gaming computer",
+      "location": "GAME-ROOM",
+      "points": 0,
+      "health": 0,
+      "eatable": false,
+      "droppable": false,
+      "visible": true,
+      "locked": false,
+      "revealsItem": "nvidia",
+      "hasBeenSearched": false,
+      "actions": {
+        "examine": "A beast of a gaming machine! The specs are impressive: Intel Core 9 Ultra 19900000K CPU, 2.3TB DDR7 RAM, 32GB Seagate Barracuda hard drive, and an NVidia 5090 Video Card. Wait... you notice the video card isn't fully seated in its slot. It looks like you could remove it if you wanted. 'Shame to butcher such a nice PC for parts,' you think."
+      }
+    },
+    "dvdcabinet": {
+      "includeInGame": true,
+      "type": "fixed",
+      "typedNames": [
+        "dvdcabinet",
+        "cabinet",
+        "glasscabinet",
+        "dvdcase",
+        "case",
+        "shelves",
+        "shelf",
+        "glassdoor",
+        "glassdoors"
+      ],
+      "display": "DVD cabinet",
+      "description": "An elegant wooden cabinet with glass doors",
+      "location": "TV-ROOM",
+      "points": 0,
+      "health": 0,
+      "eatable": false,
+      "droppable": false,
+      "visible": true,
+      "locked": false,
+      "hasBeenOpened": false,
+      "revealsItem": "bringingupbaby",
+      "actions": {
+        "examine": "A handsome wooden cabinet with glass doors. Through the glass you can see shelves lined with DVD cases - classics, comedies, thrillers. You spot 'Bringing Up Baby' on the second shelf.",
+        "open": "You pull open the glass doors. The DVDs are now accessible."
+      }
+    },
     "brass_key": {
       "includeInGame": true,
       "type": "tools",
