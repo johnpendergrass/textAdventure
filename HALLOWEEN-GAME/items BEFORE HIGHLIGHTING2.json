@@ -9,7 +9,7 @@
         "pillowcase",
         "sack"
       ],
-      "display": "candy <b>bag</b>",
+      "display": "candy bag",
       "description": "A pillowcase for collecting treats",
       "location": "MUSIC-ROOM",
       "points": 0,
@@ -19,9 +19,9 @@
       "visible": true,
       "locked": false,
       "actions": {
-        "examine": "Your trusty candy collection <b>bag</b>. It's getting heavy with treats.",
+        "examine": "Your trusty candy collection bag. It's getting heavy with treats.",
         "take": {
-          "response": "You pick up the candy <b>bag</b>.",
+          "response": "You pick up the candy bag.",
           "addToInventory": true
         }
       }
@@ -41,7 +41,7 @@
       "points": 0,
       "health": 0,
       "eatable": false,
-      "droppable": false,
+      "droppable": true,
       "visible": true,
       "locked": false,
       "hasBeenUsed": false,
@@ -54,11 +54,7 @@
           "response": "Ding-dong! You hear footsteps approaching from inside."
         },
         "use": {
-          "response": "<span style='font-size: 24px; font-weight: bold; color: #00BFFF; text-shadow: 0 0 10px #00BFFF, 0 0 20px #87CEEB, 0 0 30px #FFFFFF, 2px 2px 4px rgba(0,0,0,0.3);'>Ding Dong!</span> You hear footsteps approaching from inside. The door to the nice house swings open. Mrs. McGillicutty appears. Her face is painted green, and she is wearing a pointy witch hat. 'Elphaba!' you think. <br><br>She holds a small candy dish, and tells you to take two candies.\n\nAfter you take the candies she leans over and whispers 'Mr. Radley and his son Aurhur next door are having a scavenger hunt. You might find this <b>list</b> useful during that game!' She hands you a handwritten <b>list</b> and you put it in your pocket. 'Good luck dear!' she says, and closes the door. <span style='color: #ffcc00;'>[Hint: type <b>'examine list'</b> to read the list. and don't forget <b>'look'</b> to check out where you are.]</span>"
-        },
-        "take": {
-          "response": "You cannot take it. It's attached to the house. But you could <b>ring</b> it or <b>use</b> it.",
-          "addToInventory": false
+          "response": "Ding-dong! You hear footsteps approaching from inside. The door to the nice house swings open. Mrs. McGillicutty appears. Her face is painted green, and she is wearing a pointy witch hat. 'Elphaba!' you think. <br><br>She holds a small candy dish, and tells you to take two candies.\n\nAfter you take the candies she leans over and whispers 'Mr. Radley and his son Aurhur next door are having a scavenger hunt. You might find this <b>list</b> useful during that game!' She hands you a handwritten <b>list</b> and you put it in your pocket. 'Good luck dear!' she says, and closes the door. <span style='color: #ffcc00;'>[Hint: type <b>'examine list'</b> to read the list. and don't forget <b>'look'</b> to check out where you are.]</span>"
         }
       }
     },
@@ -66,9 +62,6 @@
       "includeInGame": true,
       "type": "fixed",
       "typedNames": [
-        "porchlight",
-        "light",
-        "porch",
         "nicelight",
         "warmlight",
         "welcominglight",
@@ -80,15 +73,11 @@
       "points": 0,
       "health": 0,
       "eatable": false,
-      "droppable": false,
+      "droppable": true,
       "visible": true,
       "locked": false,
       "actions": {
-        "examine": "The <b>porch light</b> is on, casting a warm, welcoming glow.",
-        "take": {
-          "response": "You cannot take it. It's part of the house. But you could <b>examine</b> it.",
-          "addToInventory": false
-        }
+        "examine": "The <b>porch light</b> is on, casting a warm, welcoming glow."
       }
     },
     "door_knocker": {
@@ -107,7 +96,7 @@
       "points": 0,
       "health": 0,
       "eatable": false,
-      "droppable": false,
+      "droppable": true,
       "visible": true,
       "locked": false,
       "hasBeenUsed": false,
@@ -118,20 +107,13 @@
         "use": {
           "response": "<span style='font-size: 28px; font-weight: bold; color: #ff0000; text-shadow: 0 0 10px red;'>KNOCK! KNOCK!</span> <span style='font-size: 48px; font-weight: bold; color: #8B00FF; text-shadow: 0 0 10px red;'>GONG!</span> The sound echoes ominously through the house.<br><br>After a moment the great door creaks open.<br><br>"
         },
-        "examine": "A heavy iron door <b>knocker</b> shaped like a snarling gargoyle.",
-        "take": {
-          "response": "You cannot take it. It's attached to the door. But you could <b>use</b> it or <b>knock</b> with it.",
-          "addToInventory": false
-        }
+        "examine": "A heavy iron door <b>knocker</b> shaped like a snarling gargoyle."
       }
     },
     "porch_light_front": {
       "includeInGame": true,
       "type": "fixed",
       "typedNames": [
-        "porchlight",
-        "light",
-        "porch",
         "eerielight",
         "spookylight",
         "flickeringlight",
@@ -143,15 +125,11 @@
       "points": 0,
       "health": 0,
       "eatable": false,
-      "droppable": false,
+      "droppable": true,
       "visible": false,
       "locked": false,
       "actions": {
-        "examine": "The <b>porch light</b> flickers eerily, casting dancing shadows.",
-        "take": {
-          "response": "You cannot take it. It's part of the house. But you could <b>examine</b> it.",
-          "addToInventory": false
-        }
+        "examine": "The <b>porch light</b> flickers eerily, casting dancing shadows."
       }
     },
     "safe": {
@@ -175,11 +153,7 @@
       "locked": false,
       "hasBeenOpened": false,
       "actions": {
-        "examine": "An old cast iron <b>safe</b>, used for valuables. It has an old fashioned rotary combination lock next to the handle. The dial shows numbers from 0 to 99.",
-        "take": {
-          "response": "It's too heavy to move. But you could <b>examine</b> it.",
-          "addToInventory": false
-        }
+        "examine": "An old cast iron <b>safe</b>, used for valuables. It has an old fashioned rotary combination lock next to the handle. The dial shows numbers from 0 to 99."
       }
     },
     "musicsystem": {
@@ -190,16 +164,13 @@
         "system",
         "stereo",
         "soundsystem",
-        "stereomusicsystem",
-        "stereosystem",
         "hifi",
         "audio",
         "receiver",
-        "amplifier",
-        "bose"
+        "amplifier"
       ],
-      "display": "<b>Stereo</b> <b>system</b>",
-      "description": "A high-end <b>stereo</b> music <b>system</b> on a wall shelf",
+      "display": "music <b>system</b>",
+      "description": "A high-end music <b>system</b> on a wall shelf",
       "location": "MUSIC-ROOM",
       "points": 0,
       "health": 0,
@@ -208,11 +179,7 @@
       "visible": true,
       "locked": false,
       "actions": {
-        "examine": "A top-of-the-line Bose <b>stereo</b> music <b>system</b> sits on a shelf mounted on the north wall. The brushed aluminum faceplate gleams in the dim light. On the front panel, you notice a selector labeled 'Sound Options' with three buttons: <b>'music'</b>, <b>'movie'</b>, and <b>'game'</b>.",
-        "take": {
-          "response": "It's mounted on the wall. You cannot take it. But you could <b>examine</b> it.",
-          "addToInventory": false
-        }
+        "examine": "A top-of-the-line <b>stereo</b> music <b>system</b> sits on a shelf mounted on the north wall. The brushed aluminum faceplate gleams in the dim light. On the front panel, you notice a selector labeled 'Sound Options' with three buttons: <'music', 'movie', and 'game'."
       }
     },
     "powerfulpc": {
@@ -227,7 +194,7 @@
         "tower",
         "rig"
       ],
-      "display": "powerful <b>PC</b>",
+      "display": "powerful PC",
       "description": "An impressive gaming computer",
       "location": "GAME-ROOM",
       "points": 0,
@@ -239,11 +206,7 @@
       "revealsItem": "nvidia",
       "hasBeenSearched": false,
       "actions": {
-        "examine": "A beast of a gaming machine! The specs are impressive: Intel Core 9 Ultra 19900000K CPU, 2.3TB DDR7 RAM, 32GB Seagate Barracuda hard drive, and an <b>NVidia 5090</b> Video Card. Wait... you notice the video card isn't fully seated in its slot. It looks like you could remove it if you wanted. 'Shame to butcher such a nice PC for parts,' you think.",
-        "take": {
-          "response": "It's too heavy and bulky to carry. But you could <b>examine</b> it.",
-          "addToInventory": false
-        }
+        "examine": "A beast of a gaming machine! The specs are impressive: Intel Core 9 Ultra 19900000K CPU, 2.3TB DDR7 RAM, 32GB Seagate Barracuda hard drive, and an <b>NVidia 5090</b> Video Card. Wait... you notice the video card isn't fully seated in its slot. It looks like you could remove it if you wanted. 'Shame to butcher such a nice PC for parts,' you think."
       }
     },
     "dvdcabinet": {
@@ -260,7 +223,7 @@
         "glassdoor",
         "glassdoors"
       ],
-      "display": "DVD <b>cabinet</b>",
+      "display": "DVD cabinet",
       "description": "An elegant wooden <b>cabinet</b> with glass doors",
       "location": "TV-ROOM",
       "points": 0,
@@ -273,11 +236,7 @@
       "revealsItem": "bringingupbaby",
       "actions": {
         "examine": "A handsome wooden <b>cabinet</b> with glass doors. Through the glass you can see shelves lined with DVD cases - classics, comedies, thrillers. You spot 'Bringing Up Baby' on the second shelf.",
-        "open": "You pull open the glass doors. The DVDs are now accessible.",
-        "take": {
-          "response": "It's a piece of furniture. You cannot take it. But you could <b>examine</b> it or <b>open</b> it.",
-          "addToInventory": false
-        }
+        "open": "You pull open the glass doors. The DVDs are now accessible."
       }
     },
     "brass_key": {
@@ -290,7 +249,7 @@
         "metalkey",
         "oldkey"
       ],
-      "display": "brass <b>key</b>",
+      "display": "brass key",
       "inventoryDisplay": "brass <b>key</b>",
       "description": "An old brass key",
       "location": "LIBRARY",
@@ -308,7 +267,7 @@
           "addToInventory": true
         },
         "use": {
-        "response": "You insert the brass key into the bedroom door lock and turn it. CLICK! The door unlocks.<br><br>"
+        "response": "You insert the brass key into the bedroom door lock and turn it. CLICK! The door unlocks."
         }
       }
     },
@@ -320,7 +279,7 @@
         "oldbookmark",
         "frankensteinbookmark"
       ],
-      "display": "old <b>bookmark</b>",
+      "display": "old bookmark",
       "inventoryDisplay": "old <b>bookmark</b>",
       "description": "An old <b>bookmark</b> from the Frankenstein book",
       "location": "HIDDEN",
@@ -344,9 +303,9 @@
         "clues",
         "scavengerlist"
       ],
-      "display": "Mrs. McGillicutty's Scavenger Hunt <b>list</b>",
+      "display": "Mrs. McGillicutty's Scavenger Hunt <bList</b>",
       "inventoryDisplay": "Mrs. McGillicutty's <b>list</b>",
-      "description": "A handwritten <b>list</b> with clues",
+      "description": "A handwritten <blist with clues",
       "location": "NICE-HOUSE",
       "points": 0,
       "health": 0,
@@ -370,9 +329,9 @@
         "password",
         "mellon"
       ],
-      "display": "<b>parchment</b> paper",
+      "display": "parchment paper",
       "inventoryDisplay": "<b>parchment</b> paper",
-      "description": "A small piece of <b>parchment</b> with hastily scrawled text - it appears to be of drarven origin.",
+      "description": "A small piece of parchment with hastily scrawled text - it appears to be of drarven origin.",
       "location": "HIDDEN",
       "points": 0,
       "health": 0,
@@ -383,7 +342,7 @@
       "actions": {
         "examine": "Speak, friend, and enter.",
         "take": {
-          "response": "You carefully take the <b>parchment</b> paper.",
+          "response": "You carefully take the parchment paper.",
           "addToInventory": true
         }
       }
@@ -396,7 +355,7 @@
         "snickersbar",
         "chocolatebar"
       ],
-      "display": "<b>Snickers</b> mini-bar",
+      "display": "Snickers mini-bar",
       "description": "A fun-size Snickers bar",
       "location": "FOYER",
       "points": 1,
@@ -407,9 +366,9 @@
       "locked": false,
       "icon150": "assets/items/Snickers150.png",
       "actions": {
-        "examine": "It's a <b>Snickers</b> bar, what's not to like?",
+        "examine": "It's a Snickers bar, what's not to like?",
         "take": {
-          "response": "You pick up the <b>Snickers</b> bar and put it in your trick or treat bag.",
+          "response": "You pick up the Snickers bar and put it in your trick or treat bag.",
           "addToInventory": true
         },
         "eat": {
@@ -427,7 +386,7 @@
         "whatchamacallitbar",
         "crispybar"
       ],
-      "display": "<b>Whatchamacallit</b> bar",
+      "display": "Whatchamacallit bar",
       "description": "A crispy candy bar",
       "location": "LIBRARY",
       "points": 1,
@@ -440,7 +399,7 @@
       "actions": {
         "examine": "Crispy rice and chewy caramel covered in chocolate. An unusual but tasty choice.",
         "take": {
-          "response": "You pick up the <b>Whatchamacallit</b> bar and put it in your trick or treat bag.",
+          "response": "You pick up the Whatchamacallit bar and put it in your trick or treat bag.",
           "addToInventory": true
         },
         "eat": {
@@ -460,7 +419,7 @@
         "100",
         "crispybar"
       ],
-      "display": "<b>100 Grand</b> bar",
+      "display": "100 Grand bar",
       "description": "A crispy chocolate bar worth 100 grand",
       "location": "DINING-ROOM",
       "points": 1,
@@ -473,7 +432,7 @@
       "actions": {
         "examine": "Crispy crunchies in caramel, covered in milk chocolate. Feels like a fortune!",
         "take": {
-          "response": "You pick up the <b>100 Grand</b> bar.",
+          "response": "You pick up the 100 Grand bar.",
           "addToInventory": true
         },
         "eat": {
@@ -494,7 +453,7 @@
         "threemusketeersbar",
         "fluffybar"
       ],
-      "display": "<b>3 Musketeers</b> bar",
+      "display": "3 Musketeers bar",
       "description": "A light and fluffy chocolate bar",
       "location": "STUDY",
       "points": 1,
@@ -507,7 +466,7 @@
       "actions": {
         "examine": "Light, fluffy nougat covered in rich chocolate. One for all!",
         "take": {
-          "response": "You pick up the <b>3 Musketeers</b> bar.",
+          "response": "You pick up the 3 Musketeers bar.",
           "addToInventory": true
         },
         "eat": {
@@ -527,7 +486,7 @@
         "butterbar",
         "peanutbutterbar"
       ],
-      "display": "<b>Butterfinger</b> bar",
+      "display": "Butterfinger bar",
       "description": "A crispy peanut butter bar",
       "location": "KITCHEN",
       "points": 1,
@@ -540,7 +499,7 @@
       "actions": {
         "examine": "Crispy, crunchy peanut butter layers covered in chocolate. Nobody better lay a finger!",
         "take": {
-          "response": "You pick up the <b>Butterfinger</b> bar.",
+          "response": "You pick up the Butterfinger bar.",
           "addToInventory": true
         },
         "eat": {
@@ -558,7 +517,7 @@
         "marsbar",
         "almondsbar"
       ],
-      "display": "<b>Mars</b> bar",
+      "display": "Mars bar",
       "description": "A classic chocolate bar with almonds",
       "location": "GAME-ROOM",
       "points": 1,
@@ -571,7 +530,7 @@
       "actions": {
         "examine": "Nougat and caramel with almonds, covered in chocolate. Out of this world!",
         "take": {
-          "response": "You pick up the <b>Mars</b> bar.",
+          "response": "You pick up the Mars bar.",
           "addToInventory": true
         },
         "eat": {
@@ -590,7 +549,7 @@
         "coconutbar",
         "darkchocolatecoconut"
       ],
-      "display": "<b>Mounds</b> bar",
+      "display": "Mounds bar",
       "description": "A dark chocolate coconut bar",
       "location": "BEDROOM",
       "points": 1,
@@ -603,7 +562,7 @@
       "actions": {
         "examine": "Sweet coconut surrounded by dark chocolate. Sometimes you feel like a nut!",
         "take": {
-          "response": "You pick up the <b>Mounds</b> bar.",
+          "response": "You pick up the Mounds bar.",
           "addToInventory": true
         },
         "eat": {
@@ -622,7 +581,7 @@
         "goodbar",
         "peanutchocolatebar"
       ],
-      "display": "<b>Mr. Goodbar</b>",
+      "display": "Mr. Goodbar",
       "description": "A peanut chocolate bar",
       "location": "TV-ROOM",
       "points": 1,
@@ -635,7 +594,7 @@
       "actions": {
         "examine": "Milk chocolate with peanuts. A good bar indeed!",
         "take": {
-          "response": "You pick up the <b>Mr. Goodbar</b>.",
+          "response": "You pick up the Mr. Goodbar.",
           "addToInventory": true
         },
         "eat": {
@@ -654,7 +613,7 @@
         "fruit",
         "healthytreat"
       ],
-      "display": "Red <b>apple</b>",
+      "display": "Red apple",
       "description": "A shiny red apple",
       "location": "DINING-ROOM",
       "points": 1,
@@ -665,9 +624,9 @@
       "locked": false,
       "icon150": "assets/items/apple150.png",
       "actions": {
-        "examine": "A perfectly shiny red <b>apple</b>. The healthiest treat you'll find tonight!",
+        "examine": "A perfectly shiny red apple. The healthiest treat you'll find tonight!",
         "take": {
-          "response": "You pick up the <b>apple</b>.",
+          "response": "You pick up the apple.",
           "addToInventory": true
         },
         "eat": {
@@ -690,7 +649,7 @@
         "cornkernals",
         "corn"
       ],
-      "display": "Del Monte Canned <b>Corn</b>",
+      "display": "Del Monte Canned Corn",
       "description": "A large can of Del Monte Canned 'Fiesta' corn.",
       "location": "KITCHEN",
       "points": 1,
@@ -724,7 +683,7 @@
         "bears",
         "chewybears"
       ],
-      "display": "<b>Gummy Bears</b>",
+      "display": "Gummy Bears",
       "description": "A bag of colorful gummy bears",
       "location": "STUDY",
       "points": 1,
@@ -735,9 +694,9 @@
       "locked": false,
       "icon150": "assets/items/gummyBears150.png",
       "actions": {
-        "examine": "Colorful, chewy <b>gummy bears</b> in all the fruit flavors!",
+        "examine": "Colorful, chewy gummy bears in all the fruit flavors!",
         "take": {
-          "response": "You pick up the bag of <b>gummy bears</b>.",
+          "response": "You pick up the bag of gummy bears.",
           "addToInventory": true
         },
         "eat": {
@@ -756,7 +715,7 @@
         "chocolatekisses",
         "silverwrapped"
       ],
-      "display": "<b>Hershey's Kisses</b>",
+      "display": "Hershey's Kisses",
       "description": "A handful of silver-wrapped chocolate kisses",
       "location": "GAME-ROOM",
       "points": 1,
@@ -767,9 +726,9 @@
       "locked": false,
       "icon150": "assets/items/hersheysKisses150.png",
       "actions": {
-        "examine": "Classic <b>Hershey's Kisses</b> wrapped in silver foil. Iconic!",
+        "examine": "Classic Hershey's Kisses wrapped in silver foil. Iconic!",
         "take": {
-          "response": "You pick up the <b>Hershey's Kisses</b>.",
+          "response": "You pick up the Hershey's Kisses.",
           "addToInventory": true
         },
         "eat": {
@@ -788,7 +747,7 @@
         "weiner",
         "sausage"
       ],
-      "display": "<b>Hot dog</b>",
+      "display": "Hot dog",
       "description": "A cold hot dog",
       "location": "TV-ROOM",
       "points": 1,
@@ -799,9 +758,9 @@
       "locked": false,
       "icon150": "assets/items/hotdog150.png",
       "actions": {
-        "examine": "A cold <b>hot dog</b>. Who gives out hot dogs for Halloween?",
+        "examine": "A cold hot dog. Who gives out hot dogs for Halloween?",
         "take": {
-          "response": "You pick up the <b>hot dog</b>, reluctantly.",
+          "response": "You pick up the hot dog, reluctantly.",
           "addToInventory": true
         },
         "eat": {
@@ -818,12 +777,9 @@
         "jollyrancher",
         "jollyranchers",
         "hardcandy",
-        "jolly",
-        "ranchers",
-        "rancher",
         "fruitcandy"
       ],
-      "display": "<b>Jolly Rancher</b>",
+      "display": "Jolly Rancher",
       "description": "A small bag of hard fruit candies",
       "location": "BEDROOM",
       "points": 1,
@@ -836,7 +792,7 @@
       "actions": {
         "examine": "Hard fruit-flavored candies. Long-lasting flavor!",
         "take": {
-          "response": "You pick up the <b>Jolly Ranchers</b>.",
+          "response": "You pick up the Jolly Ranchers.",
           "addToInventory": true
         },
         "eat": {
@@ -857,7 +813,7 @@
         "drops",
         "yellowcandy"
       ],
-      "display": "<b>Lemon Drops</b>",
+      "display": "Lemon Drops",
       "description": "A bag of tart lemon drops",
       "location": "DINING-ROOM",
       "points": 1,
@@ -868,9 +824,9 @@
       "locked": false,
       "icon150": "assets/items/lemonDrops150.png",
       "actions": {
-        "examine": "Bright yellow <b>lemon drops</b>. Sweet and sour!",
+        "examine": "Bright yellow lemon drops. Sweet and sour!",
         "take": {
-          "response": "You pick up the <b>lemon drops</b>.",
+          "response": "You pick up the lemon drops.",
           "addToInventory": true
         },
         "eat": {
@@ -892,7 +848,7 @@
         "rolled",
         "rolledcandy"
       ],
-      "display": "<b>Life Savers</b>",
+      "display": "Life Savers",
       "description": "A roll of Butter Rum Life Savers candy",
       "location": "STUDY",
       "points": 1,
@@ -903,9 +859,9 @@
       "locked": false,
       "icon150": "assets/items/lifeSavers150.png",
       "actions": {
-        "examine": "A full sized roll of tasty Butter Rum <b>Life Savers</b>!",
+        "examine": "A full sized roll of tasty Butter Rum Life Savers!",
         "take": {
-          "response": "You pick up the <b>Life Savers</b> roll.",
+          "response": "You pick up the Life Savers roll.",
           "addToInventory": true
         },
         "eat": {
@@ -925,7 +881,7 @@
         "moviepopcorn",
         "butteredpopcorn"
       ],
-      "display": "<b>Popcorn</b>",
+      "display": "Popcorn",
       "description": "A small bag of movie style buttered popcorn",
       "location": "GAME-ROOM",
       "points": 1,
@@ -936,9 +892,9 @@
       "locked": false,
       "icon150": "assets/items/popcorn150.png",
       "actions": {
-        "examine": "Fresh popped <b>popcorn</b>. Movie style. Salted and buttered just right!",
+        "examine": "Fresh popped popcorn. Movie style. Salted and buttered just right!",
         "take": {
-          "response": "You pick up the bag of <b>popcorn</b> and put it in your bag. It spills everywhere.",
+          "response": "You pick up the bag of popcorn and put it in your bag. It spills everywhere.",
           "addToInventory": true
         },
         "eat": {
@@ -957,7 +913,7 @@
         "peanutbutter",
         "pieces"
       ],
-      "display": "<b>Reese's Pieces</b>",
+      "display": "Reese's Pieces",
       "description": "A bag of peanut butter candy",
       "location": "KITCHEN",
       "points": 1,
@@ -970,7 +926,7 @@
       "actions": {
         "examine": "Colorful peanut butter candy coated in a crunchy shell.",
         "take": {
-          "response": "You pick up the <b>Reese's Pieces</b>.",
+          "response": "You pick up the Reese's Pieces.",
           "addToInventory": true
         },
         "eat": {
@@ -989,7 +945,7 @@
         "badtomato",
         "spoiledtomato"
       ],
-      "display": "Rotten <b>tomato</b>",
+      "display": "Rotten tomato",
       "description": "A disgusting rotten tomato",
       "location": "BEDROOM",
       "points": 1,
@@ -1000,9 +956,9 @@
       "locked": false,
       "icon150": "assets/items/rottenTomato150x150.png",
       "actions": {
-        "examine": "This <b>tomato</b> has seen better days. It's mushy and smells awful.",
+        "examine": "This tomato has seen better days. It's mushy and smells awful.",
         "take": {
-          "response": "You pick up the rotten <b>tomato</b>, trying not to gag.",
+          "response": "You pick up the rotten tomato, trying not to gag.",
           "addToInventory": true
         },
         "eat": {
@@ -1022,7 +978,7 @@
         "fruitchews",
         "colorfulcandy"
       ],
-      "display": "<b>Skittles</b>",
+      "display": "Skittles",
       "description": "A bag of rainbow-colored fruit candies",
       "location": "TV-ROOM",
       "points": 1,
@@ -1035,7 +991,7 @@
       "actions": {
         "examine": "Taste the rainbow! Colorful fruit-flavored candies.",
         "take": {
-          "response": "You pick up the <b>Skittles</b>.",
+          "response": "You pick up the Skittles.",
           "addToInventory": true
         },
         "eat": {
@@ -1054,7 +1010,7 @@
         "chalkycandy",
         "tabletcandy"
       ],
-      "display": "<b>Smarties</b>",
+      "display": "Smarties",
       "description": "A roll of Smarties candy tablets",
       "location": "MUSIC-ROOM",
       "points": 1,
@@ -1067,7 +1023,7 @@
       "actions": {
         "examine": "Colorful candy tablets wrapped in cellophane. Chalky but nostalgic!",
         "take": {
-          "response": "You pick up the <b>Smarties</b>.",
+          "response": "You pick up the Smarties.",
           "addToInventory": true
         },
         "eat": {
@@ -1086,7 +1042,7 @@
         "dirtysocks",
         "stinkysocks"
       ],
-      "display": "Dirty <b>socks</b>",
+      "display": "Dirty socks",
       "description": "A pair of dirty old socks",
       "location": "BEDROOM",
       "points": 1,
@@ -1097,9 +1053,9 @@
       "locked": false,
       "icon150": "assets/items/socks150.png",
       "actions": {
-        "examine": "Old, dirty <b>socks</b>. Who put these here? Gross!",
+        "examine": "Old, dirty socks. Who put these here? Gross!",
         "take": {
-          "response": "You reluctantly pick up the dirty <b>socks</b>.",
+          "response": "You reluctantly pick up the dirty socks.",
           "addToInventory": true
         }
       }
@@ -1113,7 +1069,7 @@
         "gumdrops",
         "jellycandy"
       ],
-      "display": "<b>Spice Drops</b>",
+      "display": "Spice Drops",
       "description": "A bag of spiced gumdrops",
       "location": "BEDROOM",
       "points": 1,
@@ -1126,7 +1082,7 @@
       "actions": {
         "examine": "Colorful spiced gumdrops. An acquired taste!",
         "take": {
-          "response": "You pick up the <b>Spice Drops</b>.",
+          "response": "You pick up the Spice Drops.",
           "addToInventory": true
         },
         "eat": {
@@ -1145,7 +1101,7 @@
         "redlicorice",
         "strawberrytwist"
       ],
-      "display": "<b>Twizzlers</b>",
+      "display": "Twizzlers",
       "description": "A pack of strawberry Twizzlers",
       "location": "TV-ROOM",
       "points": 1,
@@ -1158,7 +1114,7 @@
       "actions": {
         "examine": "Long red licorice twists. Chewy strawberry flavor!",
         "take": {
-          "response": "You pick up the <b>Twizzlers</b>.",
+          "response": "You pick up the Twizzlers.",
           "addToInventory": true
         },
         "eat": {

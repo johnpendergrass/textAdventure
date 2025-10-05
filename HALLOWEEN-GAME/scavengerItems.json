@@ -4,8 +4,8 @@
       "includeInGame": true,
       "type": "scavenger",
       "typedNames": ["nvidia5090videocard", "nvidia5090", "nvidia", "5090", "videocard", "nvidiavideocard", "graphicscard", "nvidia5090card", "5090card", "nvidia5090video"],
-      "display": "NVidia 5090 Video Card",
-      "description": "A decent video card for gaming.",
+      "display": "NVidia <b>5090</b> Video Card",
+      "description": "A decent <b>video card</b> for gaming.",
       "location": "HIDDEN",
       "originalLocation": "GAME-ROOM",
       "points": 10,
@@ -18,9 +18,9 @@
       "icon90x90": "assets/scavenger/nVidia90x90.png",
       "icon250x250": "assets/scavenger/nVidia250x250.png",
       "actions": {
-        "examine": "An ASUS 5090 Video Card! This will be a great card to play Minesweeper on!",
+        "examine": "An ASUS <b>5090</b> Video Card! This will be a great card to play Minesweeper on!",
         "take": {
-          "response": "You pick up the NVidia 5090 Video Card.",
+          "response": "You pick up the NVidia <b>5090</b> Video Card.",
           "addToInventory": true,
           "markAsFound": true
         }
@@ -29,9 +29,9 @@
     "beatles": {
       "includeInGame": true,
       "type": "scavenger",
-      "typedNames": ["beatlesrevolvermusiccd", "beatlesrevolver", "beatles", "revolver", "musiccd", "music", "cd"],
-      "display": "Beatles Revolver Music CD",
-      "description": "The Beatles 1966 classic album",
+      "typedNames": ["beatlesrevolvermusiccd", "beatlesrevolver", "beatles", "revolver", "musiccd", "music", "cd", "album"],
+      "display": "<b>Beatles</b> <b>Revolver</b> Music <b>CD</b>",
+      "description": "The <b>Beatles</b> 1966 classic <b>album</b>.",
       "location": "MUSIC-ROOM",
       "points": 10,
       "health": 0,
@@ -43,9 +43,9 @@
       "icon90x90": "assets/scavenger/beatles90x90.png",
       "icon250x250": "assets/scavenger/beatles250x250.png",
       "actions": {
-        "examine": "Wow! What a great album! I cannot wait to listen to Eleanor Rigby.",
+        "examine": "Wow! What a great <b>album</b>! The <b>Beatles</b> are one of my favorite bands. I can't wait to listen to Eleanor Rigby.",
         "take": {
-          "response": "You put the Beatles Revolver Music CD in your treat bag.",
+          "response": "You put the <b>Beatles</b> <b>Revolver</b> Music <b>CD</b> in your treat bag.",
           "addToInventory": true,
           "markAsFound": true
         }
@@ -55,8 +55,8 @@
       "includeInGame": true,
       "type": "scavenger",
       "typedNames": ["catmug", "cat", "mug", "cup", "kittymug"],
-      "display": "Cat Mug",
-      "description": "A black mug in the shape of a cat's head. Scary!",
+      "display": "<b>Cat</b> <b>Mug</b>",
+      "description": "A black <b>mug</b> in the shape of a <b>cat</b>'s head. Scary!",
       "location": "DINING-ROOM",
       "points": 10,
       "health": 0,
@@ -68,9 +68,9 @@
       "icon90x90": "assets/scavenger/catMug90x90.png",
       "icon250x250": "assets/scavenger/catMug250x250.png",
       "actions": {
-        "examine": "A heavy ceramic mug shaped like a cat's head. Black. Scary. This thing could do some real damage in the wrong hands!",
+        "examine": "A heavy ceramic <b>mug</b> shaped like a <b>cat</b>'s head. Black. Scary. This thing could do some real damage in the wrong hands!",
         "take": {
-          "response": "You put the heavy cat mug in your treat bag.",
+          "response": "You put the heavy <b>cat</b> <b>mug</b> in your treat bag.",
           "addToInventory": true,
           "markAsFound": true
         }
@@ -79,9 +79,9 @@
     "cuponoodles": {
       "includeInGame": true,
       "type": "scavenger",
-      "typedNames": ["cupo'noodles", "cuponoodles", "cup", "bowl", "noodles", "food", "noodle", "cupofnoodles"],
-      "display": "Cup O' Noodles",
-      "description": "Delicious seafood style noodles! - and in a cup too!",
+      "typedNames": ["cupo'noodles", "cuponoodles", "noodles", "food", "noodle", "cupofnoodles"],
+      "display": "Cup O' <b>Noodles</b>",
+      "description": "Delicious seafood style <b>noodles</b>! - and in a stylish styrofoam container too!",
       "location": "KITCHEN",
       "points": 10,
       "health": 0,
@@ -93,9 +93,9 @@
       "icon90x90": "assets/scavenger/cuponoodles90x90.png",
       "icon250x250": "assets/scavenger/cuponoodles250x250.png",
       "actions": {
-        "examine": "Delicious seafood noodles in a styrofoam cup. This will make a great snack!",
+        "examine": "Delicious seafood <b>noodles</b> in a styrofoam container. This will make a great snack!",
         "take": {
-          "response": "You pick up the Cup O' Noodles and put them in your bag.",
+          "response": "You pick up the Cup O' <b>Noodles</b> and put them in your bag.",
           "addToInventory": true,
           "markAsFound": true
         }
@@ -104,8 +104,8 @@
     "watch": {
       "includeInGame": false,
       "typedNames": ["fancywatch", "watch", "timepiece", "langeandsohnewatch", "clock", "luxurywatch"],
-      "display": "Fancy Watch",
-      "description": "An expensive Lange & Sohne watch!",
+      "display": "Fancy <b>Watch</b>",
+      "description": "An expensive Lange & Sohne <b>watch</b>!",
       "location": "BEDROOM",
       "points": 10,
       "health": 0,
@@ -117,9 +117,9 @@
       "icon90x90": "assets/scavenger/watch90x90.png",
       "icon250x250": "assets/scavenger/watch250x250.png",
       "actions": {
-        "examine": "Fantastic! A very expensive Lange & Sohne watch! It calculates the seasons! It even tells the time!",
+        "examine": "Fantastic! A very expensive Lange & Sohne <b>watch</b>! It calculates the seasons! It even tells the time!",
         "take": {
-          "response": "You put the watch on your wrist",
+          "response": "You put the <b>watch</b> on your wrist",
           "addToInventory": true,
           "markAsFound": true
         }
@@ -129,8 +129,8 @@
       "includeInGame": true,
       "type": "scavenger",
       "typedNames": ["bringingupbaby", "bringingup", "baby", "dvd", "movie", "carygrant", "katherinehepburn"],
-      "display": "Bringing Up Baby DVD",
-      "description": "A DVD of the 1938 classic movie Bringing Up Baby, starring Cary Grant and Katharine Hepburn.",
+      "display": "Bringing Up Baby <b>DVD</b>",
+      "description": "A <b>DVD</b> of the 1938 classic <b>movie</b> Bringing Up Baby, starring Cary Grant and Katharine Hepburn.",
       "location": "HIDDEN",
       "originalLocation": "TV-ROOM",
       "points": 10,
@@ -143,9 +143,9 @@
       "icon90x90": "assets/scavenger/bringingUpBaby90x90.png",
       "icon250x250": "assets/scavenger/bringingUpBaby250x250.png",
       "actions": {
-        "examine": "An old style clamshell case DVD of the 1938 classic movie Bringing Up Baby. Not scratched at all!",
+        "examine": "An old style clamshell case <b>DVD</b> of the 1938 classic <b>movie</b> Bringing Up Baby. Not scratched at all!",
         "take": {
-          "response": "You put the DVD in your treat bag.",
+          "response": "You put the <b>DVD</b> in your treat bag.",
           "addToInventory": true,
           "markAsFound": true
         }
@@ -155,8 +155,8 @@
       "includeInGame": true,
       "type": "scavenger",
       "typedNames": ["odddog", "dog", "odd", "weird", "weirddog", "weirddoggy", "cavalier", "cavalierkingcharles", "ceramicdog"],
-      "display": "Odd Dog",
-      "description": "Small ceramic figurine of a King Charles Cavalier. Not weird at all!",
+      "display": "<b>Odd</b> <b>Dog</b>",
+      "description": "Small ceramic figurine of a King Charles Cavalier <b>dog</b>. Not weird at all!",
       "location": "BEDROOM",
       "points": 10,
       "health": 0,
@@ -170,7 +170,7 @@
       "actions": {
         "examine": "Ceramic figure of a King Charles Cavalier Spaniel. Will be great for throwing at a ghost or something.",
         "take": {
-          "response": "You pick up the oddly shaped ceramic dog and put it in your bag.",
+          "response": "You pick up the oddly shaped ceramic <b>dog</b> and put it in your bag.",
           "addToInventory": true,
           "markAsFound": true
         }
@@ -180,8 +180,8 @@
       "includeInGame": true,
       "type": "scavenger",
       "typedNames": ["krugerrand", "coin", "goldcoin", "gold", "currency"],
-      "display": "Krugerrand",
-      "description": "Ohh! a 2025 South African Krugerrand! 1 once of solid gold!",
+      "display": "<b>Krugerrand</b>",
+      "description": "Ohh! a 2025 South African <b>Krugerrand</b>! 1 once of solid <b>gold</b>!",
       "location": "HIDDEN",
       "originalLocation": "STUDY",
       "points": 10,
@@ -194,9 +194,9 @@
       "icon90x90": "assets/scavenger/Krugerrand90x90.png",
       "icon250x250": "assets/scavenger/Krugerrand250x250.png",
       "actions": {
-        "examine": "A 1 once coin of 91.6% gold! That ought to help pay the rent!",
+        "examine": "A 1 once <b>coin</b> of 91.6% <b>gold</b>! That ought to help pay the rent!",
         "take": {
-          "response": "You carefully put the krugerrand in your pocket.",
+          "response": "You carefully put the <b>krugerrand</b> in your pocket.",
           "addToInventory": true,
           "markAsFound": true
         }
@@ -206,8 +206,8 @@
       "includeInGame": true,
       "type": "scavenger",
       "typedNames": ["decorativepumpkin", "pumpkin", "ceramicpumpkin", "glasspumpkin", "knickknack"],
-      "display": "Decorative Pumpkin",
-      "description": "A small decorative pumpkin to celebrate the season!",
+      "display": "Decorative <b>Pumpkin</b>",
+      "description": "A small decorative <b>pumpkin</b> to celebrate the season!",
       "location": "FOYER",
       "points": 10,
       "health": 0,
@@ -219,7 +219,7 @@
       "icon90x90": "assets/scavenger/pumpkin90x90.png",
       "icon250x250": "assets/scavenger/pumpkin250x250.png",
       "actions": {
-        "examine": "A finely made glass pumpkin, lovingly hand painted. Feels good in the hand",
+        "examine": "A finely made glass <b>pumpkin</b>, lovingly hand painted. Feels good in the hand",
         "take": {
           "response": "You carefully pick up the pumpkin and put it in your bag.",
           "addToInventory": true,
@@ -230,7 +230,7 @@
     "gamingmouse": {
       "includeInGame": false,
       "typedNames": ["razergamingmouse", "gamingmouse", "mouse", "razorgamingmouse", "razermouse", "razormouse", "razer", "razor"],
-      "display": "Razer Gaming Mouse",
+      "display": "Razer Gaming <b>Mouse</b>",
       "description": "Top of the line gaming mouse from Razer.",
       "location": "GAME-ROOM",
       "points": 10,
@@ -243,9 +243,9 @@
       "icon90x90": "assets/scavenger/gamingMouse90x90.png",
       "icon250x250": "assets/scavenger/gamingMouse250x250.png",
       "actions": {
-        "examine": "Great gaming mouse from Razer. Laser. High DPI. Low-latency. Wired or wireless. RGB. and more!",
+        "examine": "Great gaming <b>mouse</b> from Razer. Laser. High DPI. Low-latency. Wired or wireless. RGB. and more!",
         "take": {
-          "response": "You put the Razer mouse in your bag.",
+          "response": "You put the Razer <b>mouse</b> in your bag.",
           "addToInventory": true,
           "markAsFound": true
         }
@@ -255,8 +255,8 @@
       "includeInGame": true,
       "type": "scavenger",
       "typedNames": ["frankensteinbook", "frankenstein", "book", "novel", "maryshelley", "frankensteinnovel"],
-      "display": "Frankenstein book",
-      "description": "Hardback copy of Mary Shelley's 1818 Frankenstein novel.",
+      "display": "Frankenstein <b>book</b>",
+      "description": "Hardback copy of Mary Shelley's 1818 Frankenstein <b>novel</b>.",
       "location": "LIBRARY",
       "points": 10,
       "health": 0,
@@ -270,9 +270,9 @@
       "icon90x90": "assets/scavenger/frankenstein90x90.png",
       "icon250x250": "assets/scavenger/frankenstein250x250.png",
       "actions": {
-        "examine": "The book is a First Edition of the classic 'Frankenstein' novel by Mary Shelley. It looks like it might fall apart if not handled gently. As you riffle through the pages you notice an old yellowed bookmark inside the cover. You take the bookmark.",
+        "examine": "The <b>book</b> is a First Edition of the classic 'Frankenstein' <b>novel</b> by Mary Shelley. It looks like it might fall apart if not handled gently. As you riffle through the pages you notice an old yellowed <b>bookmark</b> inside the cover. You take the <b>bookmark</b>.",
         "take": {
-          "response": "You put the book in your bag to read later.",
+          "response": "You put the <b>book</b> in your bag to read later.",
           "addToInventory": true,
           "markAsFound": true
         }

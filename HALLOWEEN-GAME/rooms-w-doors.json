@@ -14,10 +14,10 @@
     "STREET-01": {
       "name": "Street",
       "enterText": {
-        "first": "You are on the street. The walkway to Mrs. McGillicutty's house is to the north.  The sidewalk continues to the east. [hint: type -north- to go to the house, -east- to keep walking.]",
-        "repeat": "You are on the street. The path to Mrs. McGillicutty's house is to the north.  The sidewalk continues to the east."
+        "first": "You are on the street. The walkway to Mrs. McGillicutty's house is to the <b>north</b>.  The sidewalk continues to the <b>east</b>.  <span style=\"color: #ffcc00;\">[hint: type <b>go north</b> (or just <b>north</b>) to go to the house, <b>east</b> to keep walking.]</span>",
+        "repeat": "You are on the street. The path to Mrs. McGillicutty's house is to the <b>north</b>.  The sidewalk continues to the <b>east</b>."
       },
-      "lookText": "You are on the street. The path to Mrs. McGillicutty's house is to the north.  The sidewalk continues to the east.",
+      "lookText": "You are on the street. The path to Mrs. McGillicutty's house is to the <b>north</b>.  The sidewalk continues to the <b>east</b>. <span style='color: #ffcc00;'>[Hint: type <b>'go north'</b> to revisit Mrs. McGillicutty's house, or <b>'go east'</b> to head on down the road.]</span>",
       "exits": {
         "north": { "to": "NICE-PORCH", "door": "street-012nice-porch" },
         "east":  { "to": "STREET-02",  "door": "street-012street-02" }
@@ -31,10 +31,10 @@
     "STREET-02": {
       "name": "Street",
       "enterText": {
-        "first": "You walk down the street to the Radley House.  To the north is the Radley front porch. You could walk south back to Mrs. McGillicutty's house.",
+        "first": "You walk down the street to the Radley House.  Such an imposing decrepit old house! Sort of a cross between the Addams Family mansion and Notre Dame Cathedral. Gothic! To the <b>north</b> is the front porch. or... maybe you should just walk <b>west</b> back to Mrs. McGillicutty's house?",
         "repeat": "You are in front of the Radley House."
       },
-      "lookText": "You are in front of the Radley House.",
+      "lookText": "You are in front of the Radley House. Not so bad once you get used to it.",
       "exits": {
         "west":  { "to": "STREET-01",   "door": "street-012street-02" },
         "north": { "to": "FRONT-PORCH", "door": "street022front-porch" }
@@ -47,11 +47,11 @@
     "NICE-PORCH": {
       "name": "Nice Porch",
       "enterText": {
-        "first": "You are standing on Mrs. McGillicutty's porch. The porch light is on, casting a warm welcoming glow. [hint: type -use doorbell- to ring the doorbell]",
+        "first": "You are standing on Mrs. McGillicutty's porch. The porch light is on, casting a warm welcoming glow. <span style=\"color: #ffcc00;\">[hint: type <b>ring doorbell</b> or <b>use doorbell</b> to ring the doorbell.]</span>",
         "second": "The porch light is off, but you try the bell anyway. No one answers.",
         "repeat": "The porch light is off. No one answers the door."
       },
-      "lookText": "You are on Mrs. McGillicutty's porch.",
+      "lookText": "You are on Mrs. McGillicutty's porch. The front door is <b>north</b> and the pathway to the street is <b>south</b>.",
       "exits": {
         "south": { "to": "STREET-01",  "door": "street-012nice-porch" }
       },
@@ -63,11 +63,11 @@
     "NICE-HOUSE": {
       "name": "Nice House",
         "enterText": {
-          "first": "The door to the nice house swings open.  Mrs. McGillicutty answers. Her face is painted green, and she is wearing a pointy witch hat. 'Elphaba!' you think? She holds a small candy dish, and tells you to take two candies.\n\nAfter you take the candies she leans over and whispers 'Mr. Radley and his son Aurhur next door are having a scavenger hunt. You might find this note useful during that game!'  She hands you a handwritten note and you put it in your pocket. [hint: use examine note to read it] 'Good luck dear!' she says, and closes the door.",
+          "first": "NOTE THIS IS NOW IN THE ITEMS - THIS IS LEFT HERE TO REMIND ME. The door to the nice house swings open.  Mrs. McGillicutty answers. Her face is painted green, and she is wearing a pointy witch hat. 'Elphaba!' you think? She holds a small candy dish, and tells you to take two candies.\n\nAfter you take the candies she leans over and whispers 'Mr. Radley and his son Aurhur next door are having a scavenger hunt. You might find this note useful during that game!'  She hands you a handwritten note and you put it in your pocket. <span style='color: #ffcc00;'>[hint: type <b>examine list</b> to read Mrs. McGillicutty's clues.]</span> 'Good luck dear!' she says, and closes the door.",
 
 
-          "second": "You ring and ring, but no one answers.",
-          "repeat": "You ring and ring, but no one answers."
+          "second": "The porchlight is off. You ring and ring, but no one answers.",
+          "repeat": "The porchlight is off. You ring and ring, but no one answers."
       },
       "lookText": "You are still on the porch.",
       "exits": {
@@ -81,10 +81,10 @@
     "FRONT-PORCH": {
       "name": "Front Porch",
       "enterText": {
-"first": "You go up the walkway to the front porch of the Radley House.",
-        "repeat": "You are on the Radley's front porch."
+        "first": "You go up the walkway to the front porch of the Radley House. The porchlight is flickering. Not a soul in sight. There is a brass door knocker on the door. <span style='color: #ffcc00;'>[hint: type <b>use knocker</b> to knock on the door.]</span>",
+        "repeat": "You are on the Radley's front porch. Porchlight still flickering and buzzing. Is that a rat?"
       },
-      "lookText": "You are on the Radley's front porch.",
+      "lookText": "You are on the Radley's front porch.  Dark. Dank. And spooky. Entry into the house is to the <b>north</b>.  The sidewalk is behind you to the <b>south</b>.<br><br>",
       "exits": {
         "south": { "to": "STREET-02", "door": "street022front-porch" },
         "north": { "to": "FOYER",     "door": "front-porch2foyer" }
@@ -97,10 +97,10 @@
     "FOYER": {
       "name": "Foyer",
       "enterText": {
-        "first": "You enter the Radley House foyer. It reminds you of a scene from that Downton Abbey show...  there are doors everywhere! [hint: type -get ???- to pick up something.]",
+        "first": "You enter the Radley House foyer. It reminds you of a scene from that Downton Abbey show...  there are doors everywhere! <span style='color: #ffcc00;'>[hint: type <b>take</b> or <b>get</b> to pick up items you find.]</span>",
         "repeat": "You are in the foyer."
       },
-      "lookText": "You are in the foyer.",
+      "lookText": "You are in the foyer.  Doors lead all directions!",
       "exits": {
         "south": { "to": "FRONT-PORCH",  "door": "front-porch2foyer" },
         "north": { "to": "DINING-ROOM",  "door": "foyer2dining-room" },
@@ -116,7 +116,7 @@
     "LIBRARY": {
       "name": "Library",
       "enterText": {
-        "first": "You enter the library. Wow! Tall bookshelves line the walls, and the floor is covered in a thick carpet.  There are several armchairs scattered around the room.  An open book lies on a table near the window.",
+        "first": "You enter the library. Wow! Tall bookshelves line the walls, and the floor is covered in a thick carpet.  There are several armchairs scattered around the room.  An open book lies on a table near the window. <span style='color: #ffcc00;'>[hint: you can <b>examine</b> items you find here.]</span>",
         "repeat": "You are in the library."
       },
       "lookText": "You are in the library.",
@@ -151,7 +151,7 @@
     "STUDY": {
       "name": "Study",
       "enterText": {
-        "first": "You enter the study.",
+        "first": "You enter the study. <span style='color: #ffcc00;'>[hint: try to <b>examine</b> things you see in rooms.]</span>",
         "repeat": "You are in the study."
       },
       "lookText": "You are in the study.",
@@ -168,7 +168,7 @@
     "MUSIC-ROOM": {
       "name": "Music Room",
       "enterText": {
-        "first": "You enter the music-room.",
+        "first": "You enter the music-room. <span style='color: #ffcc00;'>[hint: don't forget to <b>look</b> around to see what's in each room.]</span>",
         "repeat": "You are in the music-room."
       },
       "lookText": "You are in the music-room.",
@@ -233,7 +233,7 @@
     "TV-ROOM": {
       "name": "TV Room",
       "enterText": {
-        "first": "You enter the TV room. A large flat-screen TV mounted on the wall is playing a movie - the classic 1938 screwball comedy 'Bringing Up Baby.' On the screen, Cary Grant and Katharine Hepburn are in the middle of a hilarious scene involving a leopard. Against the opposite wall stands an elegant wooden cabinet with glass doors. Through the glass, you can see shelves lined with DVD cases. Your eyes are drawn to a DVD of 'Bringing Up Baby' on the second shelf. Wait... how is the movie playing if the DVD is right there in the cabinet?",
+        "first": "You enter the TV room. A large flat-screen TV mounted on the wall is playing a movie - the classic 1938 screwball comedy 'Bringing Up Baby.' On the screen, Cary Grant and Katharine Hepburn are in the middle of a hilarious scene involving a leopard. Against the opposite wall stands an elegant wooden <b>cabinet</b> with glass doors. Through the glass, you can see shelves lined with DVD cases. Your eyes are drawn to a DVD of 'Bringing Up Baby' on the second shelf. Wait... how is the movie playing if the DVD is right there in the cabinet? <span style='color: #ffcc00;'>[hint: you could try to <b>open cabinet</b>.]</span>",
         "repeat": "You are in the TV room. The movie is still playing on the TV, and the DVD cabinet stands against the wall."
       },
       "lookText": "You are in the TV room. A large TV is mounted on one wall, currently playing 'Bringing Up Baby.' An elegant DVD cabinet with glass doors stands against the opposite wall.",

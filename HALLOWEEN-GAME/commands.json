@@ -45,13 +45,13 @@
     "take": {
       "includeInGame": true,
       "type": "action",
-      "shortcuts": ["get", "grab", "pick"],
+      "shortcuts": ["t", "get", "g", "grab", "pick"],
       "action": "take_item"
     },
     "examine": {
       "includeInGame": true,
       "type": "action",
-      "shortcuts": ["x", "ex"],
+      "shortcuts": ["x", "ex", "read"],
       "action": "examine_item"
     },
     "drop": {
@@ -81,7 +81,7 @@
     "say": {
       "includeInGame": true,
       "type": "action",
-      "shortcuts": ["speak"],
+      "shortcuts": ["speak", "push", "press"],
       "action": "say_phrase"
     },
     "open": {
