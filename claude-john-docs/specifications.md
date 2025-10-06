@@ -1,18 +1,49 @@
 # Halloween Text Adventure - Complete Specifications
-# v0.31 - Text Formatting and Take Message Improvements
+# v0.32 - Room Display Polish and DOOR GONG Implementation
 
 ## Project Overview
 
-**Version:** 0.31
+**Version:** 0.32
 **Total Project Size:** ~235KB (with grid assets and fonts)
 **Source Files:** 8 core files + 46 items + documentation
-**Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking, handwritten notes, locked doors, hidden items, interactive puzzles, SAY command system, OPEN command, inline HTML text formatting, and custom "cannot take" messages
+**Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking, handwritten notes, locked doors, hidden items, interactive puzzles, SAY command system, OPEN command, inline HTML text formatting, custom "cannot take" messages, capitalized interior room names, and dramatic DOOR GONG with cascading echo effects
 **Target Platform:** Web browsers (GitHub Pages compatible)
-**Current State:** Fully interactive text adventure with GO command prefix, locked door mechanics, brass key puzzle, hidden bookmark discovery, EAT command, SAY command with safe combination and secret door password puzzles, OPEN command for containers and cabinets, dual reveal system (examine vs. open), proper item categorization, bold keyword inventory display, interior room exit formatting, inline HTML formatting for visual hints, and helpful "cannot take" messages for fixed items
+**Current State:** Fully interactive text adventure with GO command prefix, locked door mechanics, brass key puzzle, hidden bookmark discovery, EAT command, SAY command with safe combination and secret door password puzzles, OPEN command for containers and cabinets, dual reveal system (examine vs. open), proper item categorization, bold keyword inventory display, capitalized interior room names, standardized room display order, "picked clean" messages, DOOR GONG with dramatic cascading effects, and TURN command alias
 
 ## Major Features
 
-### Inline Text Formatting System ✨ NEW in v0.31
+### Capitalized Interior Room Names ✨ NEW in v0.32
+- **All 9 interior rooms capitalized** - FOYER, LIBRARY, DINING ROOM, STUDY, MUSIC ROOM, GAME ROOM, KITCHEN, BEDROOM, TV ROOM
+- **Visual distinction** - Interior rooms stand out from lowercase exterior areas
+- **Consistent throughout** - enterText, lookText, and door descriptions all use capitals
+- **Multi-word rooms use spaces** - "MUSIC ROOM" not "MUSIC-ROOM"
+- **Enhanced prominence** - Room names draw attention as primary play area
+
+### "Picked Clean" Message System ✨ NEW in v0.32
+- **Completion feedback** - Shows when all takeable items collected from interior room
+- **Interior rooms only** - Only appears in 9 house rooms, not exterior areas
+- **Smart detection** - Ignores fixed items (safe, PC, etc.) that can't be taken
+- **Message**: "You have picked this room clean. Nothing left to take here."
+- **Player guidance** - Encourages moving to next room after thorough search
+
+### Standardized Room Display Order ✨ NEW in v0.32
+- **Consistent presentation** - Both lookAtRoom() and displayRoom() use same order
+- **Order**: Description → blank line → Items/Picked Clean → blank line → Exits
+- **Clean spacing** - Single blank lines, no excessive whitespace
+- **Visual hierarchy** - Important information properly separated
+
+### DOOR GONG with Cascading Echo Effect ✨ NEW in v0.32
+- **Dramatic transformation** - Door knocker renamed to DOOR GONG
+- **Cascading visual effect** - Three progressively smaller GONGs with indentation
+  - First: 60px red, no indent
+  - Second: 45px red, 6-space indent
+  - Third: 30px red, 12-space indent
+- **Echo flavor text** - "the sound echoes" → "the sound fades away"
+- **HTML entity indentation** - Uses `&nbsp;` for reliable spacing
+- **Multiple aliases** - gong, doorgong, handle, knocker all work
+- **TURN command** - New alias for USE: "turn handle" or "turn gong"
+
+### Inline Text Formatting System ✨ in v0.31
 - **HTML formatting in JSON** - All text supports bold, colors, sizes, shadows
 - **Bold hints** - Commands, directions, item names bolded throughout
 - **Colored hints** - Yellow (#ffcc00) hints guide players
@@ -984,7 +1015,31 @@ COMMANDS:
 
 ## Version History
 
-### v0.30 (October 5, 2025) ✨ CURRENT
+### v0.32 (October 5, 2025 - Evening) ✨ CURRENT
+- ✨ Capitalized all 9 interior room names (FOYER, LIBRARY, DINING ROOM, STUDY, MUSIC ROOM, GAME ROOM, KITCHEN, BEDROOM, TV ROOM)
+- ✨ Added "picked clean" message system for empty interior rooms
+- ✨ Standardized room display order (description → items → exits) with clean single-line spacing
+- ✨ Renamed "door knocker" to "DOOR GONG" throughout game
+- ✨ Implemented dramatic DOOR GONG cascading echo effect (60px → 45px → 30px red text with progressive indentation)
+- ✨ Added "turn" as alias for USE command
+- ✨ Fixed excessive blank lines in room displays
+- ✨ Updated FRONT-PORCH descriptions to reference DOOR GONG
+- ✨ All room names now capitalized in enterText, lookText, and door descriptions
+- ✨ Total edits: ~35 changes across items.json, rooms-w-doors.json, commands.json, textAdventure.js
+
+### v0.31 (October 5, 2025 - Afternoon)
+- ✨ Added inline HTML text formatting system (bold, colors, sizes, shadows)
+- ✨ Implemented custom "cannot take" messages for all 8 fixed items
+- ✨ Improved take command to handle addToInventory: false items
+- ✨ Fixed examine command to work with fixed items in room
+- ✨ Added dramatic effects to doorbell (blue sparkle) and door knocker (red/purple glow)
+- ✨ Bolded keywords throughout room descriptions, hints, and item text
+- ✨ Added yellow hint text (#ffcc00) for player guidance
+- ✨ Fixed droppable properties on porch lights and door knocker
+- ✨ Added common typedNames to porch lights ("light", "porch", "porchlight")
+- ✨ Total formatting updates: 75+ edits across items.json and rooms-w-doors.json
+
+### v0.30 (October 5, 2025 - Morning)
 - ✨ Added OPEN command for containers, cabinets, and doors
 - ✨ Implemented music system puzzle with sound options (MUSIC, MOVIE, GAME)
 - ✨ Enhanced secret door reveal to two-step (SAY GAME reveals, SAY FRIEND unlocks)

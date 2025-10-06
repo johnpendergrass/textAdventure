@@ -1502,7 +1502,7 @@ function handleUseCommand(command) {
       lookAtRoom();
     }
   } else if (itemKey === "door_knocker") {
-    // Special handling for door knocker
+    // Special handling for DOOR GONG
     if (item.hasBeenUsed) {
       // Door is already unlocked
       addToBuffer([{ text: "The door is already unlocked.", type: "flavor" }]);
@@ -1516,7 +1516,7 @@ function handleUseCommand(command) {
         doors["front-porch2foyer"].open = true;
       }
 
-      // Mark door knocker as used
+      // Mark DOOR GONG as used
       item.hasBeenUsed = true;
 
       // Redisplay current room to show the north exit is now available

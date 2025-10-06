@@ -95,14 +95,14 @@
       "includeInGame": true,
       "type": "fixed",
       "typedNames": [
-        "knocker",
-        "doorknocker",
-        "gargoyle",
-        "ironknocker",
-        "door"
+        "gong",
+        "doorgong",
+        "handle",
+        "brasshandle",
+        "brassgonghandle"
       ],
-      "display": "door <b>knocker</b>",
-      "description": "A heavy iron door <b>knocker</b>",
+      "display": "Door <b>gong</b> <b>handle</b>",
+      "description": "A brass handle that activates the door <b>gong</b>, which sounds inside the house.",
       "location": "FRONT-PORCH",
       "points": 0,
       "health": 0,
@@ -112,15 +112,12 @@
       "locked": false,
       "hasBeenUsed": false,
       "actions": {
-        "knock": {
-          "response": "<span style='font-size: 28px; font-weight: bold; color: #ff0000; text-shadow: 0 0 10px red;'>KNOCK! KNOCK!</span> <span style='font-size: 48px; font-weight: bold; color: #8B00FF; text-shadow: 0 0 10px red;'>GONG!</span> The sound echoes ominously through the house.<br><br>After a moment the great door creaks open."
-        },
         "use": {
-          "response": "<span style='font-size: 28px; font-weight: bold; color: #ff0000; text-shadow: 0 0 10px red;'>KNOCK! KNOCK!</span> <span style='font-size: 48px; font-weight: bold; color: #8B00FF; text-shadow: 0 0 10px red;'>GONG!</span> The sound echoes ominously through the house.<br><br>After a moment the great door creaks open.<br><br>"
+          "response": "<span style='font-size: 60px; font-weight: bold; color: #ff0000; text-shadow: 0 0 10px red;'>GONG!</span> ... the sound echoes ...<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-size: 45px; font-weight: bold; color: #ff0000; text-shadow: 0 0 10px red;'>GONG!</span> ... the sound echoes ...<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-size: 30px; font-weight: bold; color: #ff0000; text-shadow: 0 0 10px red;'>GONG!</span> ... the sound fades away .....<br><br>After a moment the great door creaks open.<br>"
         },
-        "examine": "A heavy iron door <b>knocker</b> shaped like a snarling gargoyle.",
+        "examine": "A brass handle that operates the door <b>gong</b>.",
         "take": {
-          "response": "You cannot take it. It's attached to the door. But you could <b>use</b> it or <b>knock</b> with it.",
+          "response": "You cannot take it. It's attached to the house. But you could <b>use</b> it or <b>turn</b> it.",
           "addToInventory": false
         }
       }

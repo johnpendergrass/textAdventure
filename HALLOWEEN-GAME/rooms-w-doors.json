@@ -32,9 +32,9 @@
       "name": "Street",
       "enterText": {
         "first": "You walk down the street to the Radley House.  Such an imposing decrepit old house! Sort of a cross between the Addams Family mansion and Notre Dame Cathedral. Gothic! To the <b>north</b> is the front porch. or... maybe you should just walk <b>west</b> back to Mrs. McGillicutty's house?",
-        "repeat": "You are in front of the Radley House."
+        "repeat": "You are in front of the Radley House again. Its not so bad once you get used to it.... if you're a ghost!"
       },
-      "lookText": "You are in front of the Radley House. Not so bad once you get used to it.",
+      "lookText": "You are in front of the Radley House again. Its not so bad once you get used to it I guess.",
       "exits": {
         "west":  { "to": "STREET-01",   "door": "street-012street-02" },
         "north": { "to": "FRONT-PORCH", "door": "street022front-porch" }
@@ -81,10 +81,10 @@
     "FRONT-PORCH": {
       "name": "Front Porch",
       "enterText": {
-        "first": "You go up the walkway to the front porch of the Radley House. The porchlight is flickering. Not a soul in sight. There is a brass door knocker on the door. <span style='color: #ffcc00;'>[hint: type <b>use knocker</b> to knock on the door.]</span>",
-        "repeat": "You are on the Radley's front porch. Porchlight still flickering and buzzing. Is that a rat?"
+        "first": "You go up the walkway to the front porch of the Radley House. The porchlight is flickering. Not a soul in sight. There is a brass door <b>gong</b> handle to the right of the door. <span style='color: #ffcc00;'>[hint: type <b>use gong</b> or <b>turn handle</b> to sound the <b>gong</b>!.]</span>",
+        "repeat": "You are on the Radley's front porch. Porchlight still flickering and buzzing. The <b>gong</b> handle is very ornate. What!! Is that a rat?"
       },
-      "lookText": "You are on the Radley's front porch.  Dark. Dank. And spooky. Entry into the house is to the <b>north</b>.  The sidewalk is behind you to the <b>south</b>.<br><br>",
+      "lookText": "You are on the Radley's front porch.  The door <b>gong</b> handle is right in front of you. Dark. Dank. And spooky. Entry into the house is to the <b>north</b>.  The sidewalk is behind you to the <b>south</b>.",
       "exits": {
         "south": { "to": "STREET-02", "door": "street022front-porch" },
         "north": { "to": "FOYER",     "door": "front-porch2foyer" }

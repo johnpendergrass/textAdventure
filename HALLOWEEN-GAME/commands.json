@@ -69,7 +69,7 @@
     "use": {
       "includeInGame": true,
       "type": "action",
-      "shortcuts": ["u", "ring"],
+      "shortcuts": ["u", "ring", "turn"],
       "action": "use_item"
     },
     "eat": {
