@@ -1,18 +1,113 @@
 # Halloween Text Adventure - Complete Specifications
-# v0.32 - Room Display Polish and DOOR GONG Implementation
+# v0.33 - Visual Enhancements and Final Polish
 
 ## Project Overview
 
-**Version:** 0.32
-**Total Project Size:** ~235KB (with grid assets and fonts)
-**Source Files:** 8 core files + 46 items + documentation
-**Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking, handwritten notes, locked doors, hidden items, interactive puzzles, SAY command system, OPEN command, inline HTML text formatting, custom "cannot take" messages, capitalized interior room names, and dramatic DOOR GONG with cascading echo effects
+**Version:** 0.33 (Polish Complete)
+**Total Project Size:** ~285KB (with grid assets, item images, and fonts)
+**Source Files:** 8 core files + 46 items + documentation + 32 item images
+**Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking, handwritten notes, locked doors, hidden items, interactive puzzles, SAY command system, OPEN command, inline HTML text formatting, inline item images (150px candy, 250px scavenger), polished status panel, HOME/QUIT confirmation, inventory-rich game ending, and hidden Easter eggs
 **Target Platform:** Web browsers (GitHub Pages compatible)
-**Current State:** Fully interactive text adventure with GO command prefix, locked door mechanics, brass key puzzle, hidden bookmark discovery, EAT command, SAY command with safe combination and secret door password puzzles, OPEN command for containers and cabinets, dual reveal system (examine vs. open), proper item categorization, bold keyword inventory display, capitalized interior room names, standardized room display order, "picked clean" messages, DOOR GONG with dramatic cascading effects, and TURN command alias
+**Current State:** Fully polished text adventure with rich visual feedback, inline item images, consistent hint formatting, proper spacing throughout, bold directional commands, HOME/QUIT confirmation, inventory summary at game end, safe puzzle hints, and hidden THROW command Easter egg
 
 ## Major Features
 
-### Capitalized Interior Room Names ✨ NEW in v0.32
+### Polish and Presentation (Final v0.33)
+
+#### Consistent Hint Formatting
+- **Lowercase "hint:"** - Casual, friendly tone throughout
+- **Blank line separation** - All hints separated from flavor text with `<br><br>`
+- **Yellow color** - #ffcc00 for visibility and consistency
+- **Strategic placement** - 5 hints guide new players without hand-holding
+- **Bold keywords** - Commands and important words highlighted
+- **Applied to**: Welcome message, STREET-01, NICE-PORCH, FRONT-PORCH, FOYER
+
+#### Bold Directional Commands
+- **Exit formatting** - All directions in exits are bolded
+- **Interior rooms**: `Exits: <b>SOUTH</b> door, <b>NORTH</b> door`
+- **Exterior rooms**: `Exits: <b>north</b>, <b>south</b>`
+- **Consistency** - Matches bold formatting throughout game text
+
+#### Proper Spacing System
+- **Command echo**: Blank before and after every command
+- **Room display**: Smart blank lines only when needed
+- **No double blanks**: Fixed issue where empty rooms had two blank lines
+- **Professional presentation**: Clean, readable output throughout
+
+#### Hidden THROW Command Easter Egg ✨
+- **Secret command** - Not shown in status panel
+- **Shortcuts**: throw, toss, chuck, hurl
+- **Validation**: Checks inventory like other item commands
+- **Humorous responses**: 5 random rejection messages
+  - "You consider throwing it, but decide that's a terrible idea."
+  - "That seems like a waste. Better keep it."
+  - "Nah, you might need that later."
+  - Plus 2 more variations
+- **Proper errors**: "Throw what?" and "You're not carrying any X"
+- **Fun discovery**: Players enjoy finding hidden commands
+
+### Inline Item Images System ✨ in v0.33
+- **Candy item images** - 150px images display on EXAMINE and TAKE
+  - 23 candy items with custom images (Snickers, Mounds, 100 Grand, etc.)
+  - Display pattern: Item name → Image → Examine text
+  - Auto-scroll after image loads to show all content
+
+- **Scavenger item images** - 250px images for important collectibles
+  - 9 scavenger items with larger images (NVidia GPU, Beatles vinyl, etc.)
+  - Same display pattern with larger format
+  - Separate logic branch for scavenger vs. candy
+
+- **Smart image loading** - `onload` handler scrolls after image dimensions known
+- **Applied to commands**:
+  - EXAMINE: Shows image between name and description
+  - TAKE: Shows "you pick up" text, image, then description
+
+### Status Panel UI Polish ✨ NEW in v0.33
+- **Command argument indicators** - Commands requiring nouns show `?`
+  - `(t)ake ?`, `(d)rop ?`, `e(x)amine ?`, `(u)se ?`, `eat ?`, `say ?`
+  - Helps players understand command syntax
+
+- **Centered section titles** - "SCORE" and "COMMANDS" center-aligned
+  - Cleaner visual hierarchy
+  - Score values also centered
+
+- **Removed colons** - "SCORE:" → "SCORE", "COMMANDS:" → "COMMANDS"
+  - Less cluttered appearance
+
+- **Compass repositioned** - Shifted 3 spaces right for better balance
+
+- **Fixed EAT display** - `(e)at` → `eat ?`
+  - Shows no shortcut (conflicts with east)
+  - Indicates requires argument
+
+### HOME/QUIT Confirmation System ✨ NEW in v0.33
+- **Two-step quit** - First HOME/QUIT shows warning, second confirms
+- **Warning message** - Yellow text with attention-grabbing format
+  - "!*!*!*! HEY! This will take you back to your home and QUIT THE GAME!"
+  - Underlined "QUIT THE GAME" for emphasis
+
+- **Auto-cancel** - ANY other command cancels quit attempt
+- **Natural flow** - Type HOME → see warning → type NORTH to continue OR HOME to quit
+
+### HOME Room Inventory Display ✨ NEW in v0.33
+- **Victory summary** - Shows player accomplishments at game end
+- **Dynamic inventory insertion** - Lists all collected items
+  - "You plundered lots of stuff and got lots of treats:"
+  - SCAVENGER ITEMS (X/9) - Individual items listed
+  - TREATS (X/20) - Comma-separated candy list
+
+- **Split HOME text** - Inserted between two parts of ending message
+- **Satisfying conclusion** - Player sees exactly what they achieved
+
+### Safe Puzzle Helper Messages ✨ NEW in v0.33
+- **Helpful hints** - USE SAFE or OPEN SAFE shows combination hint
+  - Before opening: "The **safe** requires a combination. Type **'SAY ##-##-##'** to unlock the safe."
+  - After opening: "The **safe** door is open. You can see the items inside."
+
+- **State-aware** - Different messages based on hasBeenOpened flag
+- **Eliminates confusion** - No more generic "can't use" errors
+
+### Capitalized Interior Room Names ✨ in v0.32
 - **All 9 interior rooms capitalized** - FOYER, LIBRARY, DINING ROOM, STUDY, MUSIC ROOM, GAME ROOM, KITCHEN, BEDROOM, TV ROOM
 - **Visual distinction** - Interior rooms stand out from lowercase exterior areas
 - **Consistent throughout** - enterText, lookText, and door descriptions all use capitals

@@ -89,6 +89,12 @@
       "type": "action",
       "shortcuts": ["unlock"],
       "action": "open_item"
+    },
+    "throw": {
+      "includeInGame": true,
+      "type": "action",
+      "shortcuts": ["toss", "chuck", "hurl"],
+      "action": "throw_item"
     }
   }
 }

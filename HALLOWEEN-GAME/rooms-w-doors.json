@@ -14,10 +14,10 @@
     "STREET-01": {
       "name": "Street",
       "enterText": {
-        "first": "You are on the street. The walkway to Mrs. McGillicutty's house is to the <b>north</b>.  The sidewalk continues to the <b>east</b>.  <span style=\"color: #ffcc00;\">[hint: type <b>go north</b> (or just <b>north</b>) to go to the house, <b>east</b> to keep walking.]</span>",
+        "first": "You are on the street. Mrs. McGillicutty's front porch is to the <b>north</b>.  The sidewalk continues to the <b>east</b>.<br><br><span style=\"color: #ffcc00;\">[hint: type <b>go north</b> (or just <b>n</b>) to go to the house, <b>east</b> (or <b>e</b>) to keep walking.]</span>",
         "repeat": "You are on the street. The path to Mrs. McGillicutty's house is to the <b>north</b>.  The sidewalk continues to the <b>east</b>."
       },
-      "lookText": "You are on the street. The path to Mrs. McGillicutty's house is to the <b>north</b>.  The sidewalk continues to the <b>east</b>. <span style='color: #ffcc00;'>[Hint: type <b>'go north'</b> to revisit Mrs. McGillicutty's house, or <b>'go east'</b> to head on down the road.]</span>",
+      "lookText": "You are on the street. Mrs. McGillicutty's front porch is to the <b>north</b>.  The sidewalk continues to the <b>east</b>. It is getting darker, but this house is cheerful and welcoming. <span style='color: #ffcc00;'>[Hint: type <b>'go north'</b> to revisit Mrs. McGillicutty's house, or <b>'go east'</b> to head on down the road.]</span>",
       "exits": {
         "north": { "to": "NICE-PORCH", "door": "street-012nice-porch" },
         "east":  { "to": "STREET-02",  "door": "street-012street-02" }
@@ -31,7 +31,7 @@
     "STREET-02": {
       "name": "Street",
       "enterText": {
-        "first": "You walk down the street to the Radley House.  Such an imposing decrepit old house! Sort of a cross between the Addams Family mansion and Notre Dame Cathedral. Gothic! To the <b>north</b> is the front porch. or... maybe you should just walk <b>west</b> back to Mrs. McGillicutty's house?",
+        "first": "You walk down the street to the Radley House.  Such an imposing decrepit old house! Sort of a cross between the Addams Family mansion and Notre Dame Cathedral. Gothic!<br><br>To the <b>north</b> is the Radley's front porch. or... maybe it would be safer to just walk <b>west</b>, back to Mrs. McGillicutty's house?",
         "repeat": "You are in front of the Radley House again. Its not so bad once you get used to it.... if you're a ghost!"
       },
       "lookText": "You are in front of the Radley House again. Its not so bad once you get used to it I guess.",
@@ -47,7 +47,7 @@
     "NICE-PORCH": {
       "name": "Nice Porch",
       "enterText": {
-        "first": "You are standing on Mrs. McGillicutty's porch. The porch light is on, casting a warm welcoming glow. <span style=\"color: #ffcc00;\">[hint: type <b>ring doorbell</b> or <b>use doorbell</b> to ring the doorbell.]</span>",
+        "first": "You are standing on Mrs. McGillicutty's porch. The porch light is on, casting a warm welcoming glow.<br><br><span style=\"color: #ffcc00;\">[hint: type <b>ring doorbell</b> or <b>use doorbell</b> to ring the doorbell.]<br><br>[hint: If a word is bolded (<b>south</b>) it generally means it can be typed for some purpose.]</span><br><br>The door is to the <b>north</b>.",
         "second": "The porch light is off, but you try the bell anyway. No one answers.",
         "repeat": "The porch light is off. No one answers the door."
       },
@@ -63,7 +63,7 @@
     "NICE-HOUSE": {
       "name": "Nice House",
         "enterText": {
-          "first": "NOTE THIS IS NOW IN THE ITEMS - THIS IS LEFT HERE TO REMIND ME. The door to the nice house swings open.  Mrs. McGillicutty answers. Her face is painted green, and she is wearing a pointy witch hat. 'Elphaba!' you think? She holds a small candy dish, and tells you to take two candies.\n\nAfter you take the candies she leans over and whispers 'Mr. Radley and his son Aurhur next door are having a scavenger hunt. You might find this note useful during that game!'  She hands you a handwritten note and you put it in your pocket. <span style='color: #ffcc00;'>[hint: type <b>examine list</b> to read Mrs. McGillicutty's clues.]</span> 'Good luck dear!' she says, and closes the door.",
+          "first": "NOTE THIS IS NOW IN THE ITEMS - THIS IS LEFT HERE TO REMIND ME. The door to the nice house swings open.  Mrs. McGillicutty answers. Her face is painted green, and she is wearing a pointy witch hat. 'Elphaba!' you think? She holds a small candy dish, and tells you to take two candies.<br><br>After you take the candies she leans over and whispers 'Mr. Radley and his son Aurhur next door are having a scavenger hunt. You might find this note useful during that game!'<br><br>She hands you a handwritten note and you put it in your pocket. <span style='color: #ffcc00;'>[hint: type <b>examine list</b> to read Mrs. McGillicutty's clues.]</span> 'Good luck dear!' she says, and closes the door.",
 
 
           "second": "The porchlight is off. You ring and ring, but no one answers.",
@@ -81,7 +81,7 @@
     "FRONT-PORCH": {
       "name": "Front Porch",
       "enterText": {
-        "first": "You go up the walkway to the front porch of the Radley House. The porchlight is flickering. Not a soul in sight. There is a brass door <b>gong</b> handle to the right of the door. <span style='color: #ffcc00;'>[hint: type <b>use gong</b> or <b>turn handle</b> to sound the <b>gong</b>!.]</span>",
+        "first": "You go up the walkway to the front porch of the Radley House. The porchlight is dirty yellow, flickering. Not a soul in sight. There is a brass door <b>gong</b> handle to the right of the door.<br><br><span style='color: #ffcc00;'>[hint: type <b>use gong</b> or <b>use handle</b> to sound the <b>gong</b>.]</span>",
         "repeat": "You are on the Radley's front porch. Porchlight still flickering and buzzing. The <b>gong</b> handle is very ornate. What!! Is that a rat?"
       },
       "lookText": "You are on the Radley's front porch.  The door <b>gong</b> handle is right in front of you. Dark. Dank. And spooky. Entry into the house is to the <b>north</b>.  The sidewalk is behind you to the <b>south</b>.",
@@ -97,7 +97,7 @@
     "FOYER": {
       "name": "Foyer",
       "enterText": {
-        "first": "You enter the Radley House FOYER. It reminds you of a scene from that Downton Abbey show...  there are doors everywhere! <span style='color: #ffcc00;'>[hint: type <b>take</b> or <b>get</b> to pick up items you find.]</span>",
+        "first": "You enter the Radley House FOYER. It reminds you of a scene from that Downton Abbey show...  there are doors everywhere!<br><br><span style='color: #ffcc00;'>[hint: type <b>take &lt;item&gt;</b> or <b>get &lt;item&gt;</b> to pick up items you find.]</span>",
         "repeat": "You are in the FOYER."
       },
       "lookText": "You are in the FOYER.  Doors lead all directions!",

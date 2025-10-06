@@ -219,7 +219,7 @@
       "icon90x90": "assets/scavenger/pumpkin90x90.png",
       "icon250x250": "assets/scavenger/pumpkin250x250.png",
       "actions": {
-        "examine": "A finely made glass <b>pumpkin</b>, lovingly hand painted. Feels good in the hand",
+        "examine": "A finely made glass <b>pumpkin</b>. Clearly hand-blown by a highly skilled artisan. Feels good in the hand. Will make a nice paperweight.",
         "take": {
           "response": "You carefully pick up the pumpkin and put it in your bag.",
           "addToInventory": true,

@@ -54,7 +54,7 @@
           "response": "Ding-dong! You hear footsteps approaching from inside."
         },
         "use": {
-          "response": "<span style='font-size: 24px; font-weight: bold; color: #00BFFF; text-shadow: 0 0 10px #00BFFF, 0 0 20px #87CEEB, 0 0 30px #FFFFFF, 2px 2px 4px rgba(0,0,0,0.3);'>Ding Dong!</span> You hear footsteps approaching from inside. The door to the nice house swings open. Mrs. McGillicutty appears. Her face is painted green, and she is wearing a pointy witch hat. 'Elphaba!' you think. <br><br>She holds a small candy dish, and tells you to take two candies.\n\nAfter you take the candies she leans over and whispers 'Mr. Radley and his son Aurhur next door are having a scavenger hunt. You might find this <b>list</b> useful during that game!' She hands you a handwritten <b>list</b> and you put it in your pocket. 'Good luck dear!' she says, and closes the door. <span style='color: #ffcc00;'>[Hint: type <b>'examine list'</b> to read the list. and don't forget <b>'look'</b> to check out where you are.]</span>"
+          "response": "<span style='font-size: 24px; font-weight: bold; color: #00BFFF; text-shadow: 0 0 10px #00BFFF, 0 0 20px #87CEEB, 0 0 30px #FFFFFF, 2px 2px 4px rgba(0,0,0,0.3);'>Ding Dong!</span> You hear footsteps approaching from inside. The door to the nice house swings open. Mrs. McGillicutty appears. Her face is painted green, and she is wearing a pointy witch hat. 'Elphaba!' you think. <br><br>She offers you two candies, and then leans over and whispers <i>'Mr. Radley and his son Aurhur next door are having a scavenger hunt. You might find this <b>list</b> useful during that game!'</i><br><br>You take the <b>list</b> she offers. 'Good luck dear!' she says, and closes the door. <span style='color: #ffcc00;'>[Hint: typing <b>'(i)nventory</b>, <b>e(x)amine</b>, and <b>(l)ook</b> can help you manage your stuff!]</span>"
         },
         "take": {
           "response": "You cannot take it. It's attached to the house. But you could <b>ring</b> it or <b>use</b> it.",
@@ -97,6 +97,7 @@
       "typedNames": [
         "gong",
         "doorgong",
+        "brassgong",
         "handle",
         "brasshandle",
         "brassgonghandle"
@@ -395,10 +396,10 @@
       "typedNames": [
         "snickers",
         "snickersbar",
-        "chocolatebar"
+        "caramelbar"
       ],
       "display": "<b>Snickers</b> mini-bar",
-      "description": "A fun-size Snickers bar",
+      "description": "A full sized <b>Snickers</b> bar",
       "location": "FOYER",
       "points": 1,
       "health": 1,
@@ -408,7 +409,7 @@
       "locked": false,
       "icon150": "assets/items/Snickers150.png",
       "actions": {
-        "examine": "It's a <b>Snickers</b> bar, what's not to like?",
+        "examine": "It's a <b>Snickers</b> bar, what's not to like?  Full sized, not like those cheap fun-size bars!",
         "take": {
           "response": "You pick up the <b>Snickers</b> bar and put it in your trick or treat bag.",
           "addToInventory": true
@@ -429,7 +430,7 @@
         "crispybar"
       ],
       "display": "<b>Whatchamacallit</b> bar",
-      "description": "A crispy candy bar",
+      "description": "A <b>crispy bar</b> with caramel and chocolate.",
       "location": "LIBRARY",
       "points": 1,
       "health": 1,
@@ -439,7 +440,7 @@
       "locked": false,
       "icon150": "assets/items/Whatchamacallit150.png",
       "actions": {
-        "examine": "Crispy rice and chewy caramel covered in chocolate. An unusual but tasty choice.",
+        "examine": "Crispy rice and chewy caramel covered in chocolate. An unusual but tasty choice. A rare treat in this neighborhood!",
         "take": {
           "response": "You pick up the <b>Whatchamacallit</b> bar and put it in your trick or treat bag.",
           "addToInventory": true
@@ -462,7 +463,7 @@
         "crispybar"
       ],
       "display": "<b>100 Grand</b> bar",
-      "description": "A crispy chocolate bar worth 100 grand",
+      "description": "A crispy chocolate bar easily worth <b>100 grand</b>",
       "location": "DINING-ROOM",
       "points": 1,
       "health": 1,
@@ -472,7 +473,7 @@
       "locked": false,
       "icon150": "assets/items/100Grand150.png",
       "actions": {
-        "examine": "Crispy crunchies in caramel, covered in milk chocolate. Feels like a fortune!",
+        "examine": "<b>Crispy bar</b> with rice crunchies and caramel, covered in milk chocolate. Feels like a fortune!",
         "take": {
           "response": "You pick up the <b>100 Grand</b> bar.",
           "addToInventory": true
@@ -529,7 +530,7 @@
         "peanutbutterbar"
       ],
       "display": "<b>Butterfinger</b> bar",
-      "description": "A crispy peanut butter bar",
+      "description": "A crispy <b>peanut butter bar</b>",
       "location": "KITCHEN",
       "points": 1,
       "health": 1,
@@ -592,7 +593,7 @@
         "darkchocolatecoconut"
       ],
       "display": "<b>Mounds</b> bar",
-      "description": "A dark chocolate coconut bar",
+      "description": "A dark chocolate <b>coconut bar</b>",
       "location": "BEDROOM",
       "points": 1,
       "health": 1,
@@ -608,7 +609,7 @@
           "addToInventory": true
         },
         "eat": {
-          "response": "The coconut is sweet and chewy!",
+          "response": "This <b>coconut bar</b> is delicious!",
           "addHealth": 3,
           "removeItem": true
         }
@@ -624,7 +625,7 @@
         "peanutchocolatebar"
       ],
       "display": "<b>Mr. Goodbar</b>",
-      "description": "A peanut chocolate bar",
+      "description": "A <b>peanut chocolate bar</b>",
       "location": "TV-ROOM",
       "points": 1,
       "health": 1,
@@ -634,7 +635,7 @@
       "locked": false,
       "icon150": "assets/items/MrGoodbar150.png",
       "actions": {
-        "examine": "Milk chocolate with peanuts. A good bar indeed!",
+        "examine": "Milk chocolate with peanuts. A <b>good bar</b> indeed!",
         "take": {
           "response": "You pick up the <b>Mr. Goodbar</b>.",
           "addToInventory": true
@@ -653,10 +654,12 @@
         "apple",
         "redapple",
         "fruit",
+        "goldenapple",
+        "goldendelicious",
         "healthytreat"
       ],
       "display": "Red <b>apple</b>",
-      "description": "A shiny red apple",
+      "description": "A shiny red <b>apple</b>",
       "location": "DINING-ROOM",
       "points": 1,
       "health": 1,
@@ -666,9 +669,9 @@
       "locked": false,
       "icon150": "assets/items/apple150.png",
       "actions": {
-        "examine": "A perfectly shiny red <b>apple</b>. The healthiest treat you'll find tonight!",
+        "examine": "A blemish-free shiny <b>Golden Delicious red apple</b>. The healthiest treat you'll find tonight!",
         "take": {
-          "response": "You pick up the <b>apple</b>.",
+          "response": "You pick up the <b>apple</b>. You can eat it, or maybe throw it?",
           "addToInventory": true
         },
         "eat": {
@@ -691,8 +694,8 @@
         "cornkernals",
         "corn"
       ],
-      "display": "Del Monte Canned <b>Corn</b>",
-      "description": "A large can of Del Monte Canned 'Fiesta' corn.",
+      "display": "<b>Del Monte Canned Corn</b>",
+      "description": "A large can of <b>Del Monte</b> Canned '<b>Fiesta</b>' <b>corn</b>.",
       "location": "KITCHEN",
       "points": 1,
       "health": 1,
@@ -723,10 +726,11 @@
         "gummys",
         "gummies",
         "bears",
+        "fruitybears",
         "chewybears"
       ],
       "display": "<b>Gummy Bears</b>",
-      "description": "A bag of colorful gummy bears",
+      "description": "A bag of colorful <b>gummy bears</b>",
       "location": "STUDY",
       "points": 1,
       "health": 1,
@@ -742,7 +746,7 @@
           "addToInventory": true
         },
         "eat": {
-          "response": "Chewy and fruity! They stick to your teeth a bit.",
+          "response": "<b>Chewy bears!</b> <b>Fruity bears!</b> They stick to your teeth a bit.",
           "addHealth": 3,
           "removeItem": true
         }
@@ -758,7 +762,7 @@
         "silverwrapped"
       ],
       "display": "<b>Hershey's Kisses</b>",
-      "description": "A handful of silver-wrapped chocolate kisses",
+      "description": "A handful of <b>silver wrapped</b> chocolate <b>kisses</b>",
       "location": "GAME-ROOM",
       "points": 1,
       "health": 1,
@@ -768,7 +772,7 @@
       "locked": false,
       "icon150": "assets/items/hersheysKisses150.png",
       "actions": {
-        "examine": "Classic <b>Hershey's Kisses</b> wrapped in silver foil. Iconic!",
+        "examine": "Classic <b>Hershey's Kisses</b>, <b>silver wrapped</b>!. Iconic!",
         "take": {
           "response": "You pick up the <b>Hershey's Kisses</b>.",
           "addToInventory": true
@@ -825,7 +829,7 @@
         "fruitcandy"
       ],
       "display": "<b>Jolly Rancher</b>",
-      "description": "A small bag of hard fruit candies",
+      "description": "A small bag of hard <b>fruit candy</b>.",
       "location": "BEDROOM",
       "points": 1,
       "health": 1,
@@ -859,7 +863,7 @@
         "yellowcandy"
       ],
       "display": "<b>Lemon Drops</b>",
-      "description": "A bag of tart lemon drops",
+      "description": "A bag of tart <b>lemon drops</b>",
       "location": "DINING-ROOM",
       "points": 1,
       "health": 1,
@@ -891,6 +895,7 @@
         "life",
         "mints",
         "rolled",
+        "butterrum",
         "rolledcandy"
       ],
       "display": "<b>Life Savers</b>",
@@ -904,7 +909,7 @@
       "locked": false,
       "icon150": "assets/items/lifeSavers150.png",
       "actions": {
-        "examine": "A full sized roll of tasty Butter Rum <b>Life Savers</b>!",
+        "examine": "A full sized roll of tasty <b>Butter Rum</b> <b>Life Savers</b>!",
         "take": {
           "response": "You pick up the <b>Life Savers</b> roll.",
           "addToInventory": true
@@ -924,10 +929,11 @@
         "poppedcorn",
         "kernels",
         "moviepopcorn",
+        "theaterpopcorn",
         "butteredpopcorn"
       ],
       "display": "<b>Popcorn</b>",
-      "description": "A small bag of movie style buttered popcorn",
+      "description": "A small bag of movie style buttered <b>popcorn</b>",
       "location": "GAME-ROOM",
       "points": 1,
       "health": 1,
@@ -937,13 +943,13 @@
       "locked": false,
       "icon150": "assets/items/popcorn150.png",
       "actions": {
-        "examine": "Fresh popped <b>popcorn</b>. Movie style. Salted and buttered just right!",
+        "examine": "Fresh popped <b>popcorn</b>. Movie style. Just like I would get when watching the latest Coen Brother movie! Salted and buttered just right!",
         "take": {
           "response": "You pick up the bag of <b>popcorn</b> and put it in your bag. It spills everywhere.",
           "addToInventory": true
         },
         "eat": {
-          "response": "Light and fluffy! This is delicious.",
+          "response": "You dig some out of your bag - uugh... but it is light and fluffy! This is delicious.",
           "addHealth": 3,
           "removeItem": true
         }
@@ -959,7 +965,7 @@
         "pieces"
       ],
       "display": "<b>Reese's Pieces</b>",
-      "description": "A bag of peanut butter candy",
+      "description": "A bag of <b>peanut butter</b> candy",
       "location": "KITCHEN",
       "points": 1,
       "health": 1,
@@ -969,7 +975,7 @@
       "locked": false,
       "icon150": "assets/items/reesesPieces150.png",
       "actions": {
-        "examine": "Colorful peanut butter candy coated in a crunchy shell.",
+        "examine": "Colorful <b>peanut butter</b> candy coated in a crunchy shell.",
         "take": {
           "response": "You pick up the <b>Reese's Pieces</b>.",
           "addToInventory": true
@@ -1003,7 +1009,7 @@
       "actions": {
         "examine": "This <b>tomato</b> has seen better days. It's mushy and smells awful.",
         "take": {
-          "response": "You pick up the rotten <b>tomato</b>, trying not to gag.",
+          "response": "You pick up the <b>rotten</b> <b>tomato</b>, trying not to gag.",
           "addToInventory": true
         },
         "eat": {
@@ -1021,10 +1027,12 @@
         "skitles",
         "rainbowcandy",
         "fruitchews",
+        "fruitcandies",
+        "fruitflavored",
         "colorfulcandy"
       ],
       "display": "<b>Skittles</b>",
-      "description": "A bag of rainbow-colored fruit candies",
+      "description": "A bag of rainbow-colored <b>fruit candies</b>",
       "location": "TV-ROOM",
       "points": 1,
       "health": 1,
@@ -1034,7 +1042,7 @@
       "locked": false,
       "icon150": "assets/items/skittles150.png",
       "actions": {
-        "examine": "Taste the rainbow! Colorful fruit-flavored candies.",
+        "examine": "Taste the rainbow! Colorful <b>fruit-flavored</b> candies.",
         "take": {
           "response": "You pick up the <b>Skittles</b>.",
           "addToInventory": true
@@ -1052,11 +1060,11 @@
       "typedNames": [
         "smarties",
         "smartiescandy",
-        "chalkycandy",
+        "chalky",
         "tabletcandy"
       ],
       "display": "<b>Smarties</b>",
-      "description": "A roll of Smarties candy tablets",
+      "description": "A roll of <b>Smarties</b> candy tablets",
       "location": "MUSIC-ROOM",
       "points": 1,
       "health": 1,
@@ -1066,7 +1074,7 @@
       "locked": false,
       "icon150": "assets/items/smarties150.png",
       "actions": {
-        "examine": "Colorful candy tablets wrapped in cellophane. Chalky but nostalgic!",
+        "examine": "Colorful candy tablets wrapped in cellophane. <b>Chalky</b> but nostalgic!",
         "take": {
           "response": "You pick up the <b>Smarties</b>.",
           "addToInventory": true
@@ -1088,7 +1096,7 @@
         "stinkysocks"
       ],
       "display": "Dirty <b>socks</b>",
-      "description": "A pair of dirty old socks",
+      "description": "A pair of dirty old <b>socks</b>",
       "location": "BEDROOM",
       "points": 1,
       "health": 1,
@@ -1116,7 +1124,7 @@
         "jellycandy"
       ],
       "display": "<b>Spice Drops</b>",
-      "description": "A bag of spiced gumdrops",
+      "description": "A bag of spiced <b>gumdrops</b>",
       "location": "BEDROOM",
       "points": 1,
       "health": 1,
@@ -1126,7 +1134,7 @@
       "locked": false,
       "icon150": "assets/items/spiceDrops150.png",
       "actions": {
-        "examine": "Colorful spiced gumdrops. An acquired taste!",
+        "examine": "Colorful spiced <b>gumdrops</b>. An acquired taste!",
         "take": {
           "response": "You pick up the <b>Spice Drops</b>.",
           "addToInventory": true
@@ -1148,7 +1156,7 @@
         "strawberrytwist"
       ],
       "display": "<b>Twizzlers</b>",
-      "description": "A pack of strawberry Twizzlers",
+      "description": "A pack of strawberry <b>Twizzlers</b>",
       "location": "TV-ROOM",
       "points": 1,
       "health": 1,
@@ -1158,7 +1166,7 @@
       "locked": false,
       "icon150": "assets/items/twizzlers150.png",
       "actions": {
-        "examine": "Long red licorice twists. Chewy strawberry flavor!",
+        "examine": "Bite sized red <b>licorice</b> twists. Chewy cherry flavor!",
         "take": {
           "response": "You pick up the <b>Twizzlers</b>.",
           "addToInventory": true

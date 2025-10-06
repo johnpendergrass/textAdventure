@@ -1,6 +1,203 @@
 # Halloween Text Adventure - Technical Specifications
 # Implementation Details & Architecture Deep Dive
 
+## v0.33 Technical Additions
+
+### Inline Image Display System
+
+**Problem:** Images load asynchronously AFTER scroll-to-bottom, leaving content below viewport.
+
+**Root Cause:**
+```javascript
+updateDisplay() {
+  textDiv.innerHTML = htmlLines.join("<br>");
+  textDiv.scrollTop = textDiv.scrollHeight; // Scrolls before images load!
+}
+```
+Browser calculates `scrollHeight` without knowing image dimensions → scroll insufficient.
+
+**Solution:** Add `onload` handler to each image:
+```javascript
+const imgTag = `<img src="${item.icon150}"
+  style="display:block; margin:10px 0; max-width:150px;"
+  onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`;
+```
+
+**Why this works:**
+1. Initial scroll happens (lands at wrong position)
+2. Image loads asynchronously
+3. `onload` fires when image ready
+4. Second scroll now knows true scrollHeight with image dimensions
+5. Lands at correct bottom position
+
+**Conditional Image Logic:**
+```javascript
+if (item.icon150 && item.type !== "scavenger") {
+  // Show 150px candy image
+  addToBuffer([display, image150px, examineText]);
+} else if (item.icon250x250 && item.type === "scavenger") {
+  // Show 250px scavenger image
+  addToBuffer([display, image250px, examineText]);
+} else {
+  // Text only (notes, tools, fixed items)
+  addToBuffer([examineText]);
+}
+```
+
+**Applied to 3 locations:**
+- `handleExamineCommand()` - portable items (lines 1487-1503)
+- `handleExamineCommand()` - fixed items (lines 1542-1558)
+- `handleTakeCommand()` - all items (lines 925-964)
+
+### HOME/QUIT Confirmation Architecture
+
+**Global State Flag:**
+```javascript
+let awaitingQuitConfirmation = false; // Line 30
+```
+
+**Reset Logic - Placed at START of processCommand():**
+```javascript
+function processCommand(command) {
+  // Strip "go" prefix...
+
+  // Reset quit confirmation for any non-quit command
+  const firstWord = command.trim().split(/\s+/)[0];
+  const lowerFirst = firstWord.toLowerCase();
+  if (lowerFirst !== "quit" && lowerFirst !== "home") {
+    awaitingQuitConfirmation = false; // Cancel if doing anything else
+  }
+
+  // Continue with command processing...
+}
+```
+
+**Why reset at START:** Ensures ANY command (NORTH, LOOK, etc.) cancels quit before execution.
+
+**Two-Step Quit in handleQuitCommand():**
+```javascript
+function handleQuitCommand() {
+  if (!awaitingQuitConfirmation) {
+    // First attempt - show warning
+    addToBuffer([{
+      text: "!*!*!*! HEY! This will take you... <u>QUIT THE GAME</u>!",
+      type: "flavor"
+    }]);
+    awaitingQuitConfirmation = true;
+    return; // Don't quit yet!
+  }
+
+  // Second attempt - confirmed, execute quit
+  awaitingQuitConfirmation = false;
+  currentRoom = "HOME";
+  // ... display HOME room
+}
+```
+
+### HOME Room Inventory Display
+
+**Architecture Change:** `handleQuitCommand()` builds custom display instead of calling `displayRoom()`.
+
+**Why custom:** Need to insert dynamic inventory between two text sections.
+
+**Implementation Flow:**
+```javascript
+function handleQuitCommand() {
+  // ... confirmation check
+
+  const homeRoom = rooms["HOME"];
+
+  // Part 1: Opening text
+  addToBuffer([homeRoom.enterText.first]); // "What a great haul!"
+
+  // Part 2: Dynamic inventory (if items exist)
+  if (scavengerItems.length > 0 || candyItems.length > 0) {
+    addToBuffer(["You plundered lots of stuff..."]);
+
+    // Scavenger section
+    if (scavengerItems.length > 0) {
+      addToBuffer([`SCAVENGER ITEMS (${count}/${total})`]);
+      scavengerItems.forEach(item => addToBuffer([item.display]));
+    }
+
+    // Treats section
+    if (candyItems.length > 0) {
+      addToBuffer([`TREATS (${count}/20)`]);
+      const candyList = candyItems.map(i => i.display).join(", ");
+      addToBuffer([candyList]);
+    }
+  }
+
+  // Part 3: Closing text
+  addToBuffer([homeRoom.enterText.second]); // "That's about it..."
+}
+```
+
+**JSON Data Structure Change:**
+```json
+"HOME": {
+  "enterText": {
+    "first": "You walk home... What a great haul!",
+    "second": "......... That's about it for this game..."
+  }
+}
+```
+
+**Reuses Inventory Logic:** Same item filtering and formatting as `showInventory()` function.
+
+### Safe Puzzle Helper Messages
+
+**Pattern Match:** Same as doorbell, door_knocker (item-specific special handling).
+
+**In handleUseCommand() and handleOpenCommand():**
+```javascript
+if (itemKey === "safe") {
+  if (!item.hasBeenOpened) {
+    addToBuffer([{text: "Hint: use SAY command...", type: "flavor"}]);
+  } else {
+    addToBuffer([{text: "Already open...", type: "flavor"}]);
+  }
+  return; // Skip generic handler
+}
+```
+
+**Requires placeholder actions in JSON:**
+```json
+"safe": {
+  "actions": {
+    "use": { "response": "placeholder" },
+    "open": "placeholder"
+  }
+}
+```
+
+**Why placeholders needed:** Commands check `if (!item.actions?.use)` before reaching special handler. Placeholder passes validation, special handler takes over.
+
+### Status Panel CSS Centering
+
+**Challenge:** Center titles and values without centering command grid or compass.
+
+**Solution:** Targeted CSS classes:
+```css
+.status-title {
+  text-align: center; /* Centers "SCORE" and "COMMANDS" */
+}
+
+.score-items {
+  text-align: center; /* Centers score numbers */
+}
+
+.command-grid {
+  display: grid; /* Remains left-aligned */
+}
+
+.compass {
+  white-space: pre; /* Preserves manual spacing */
+}
+```
+
+**Command Grid Remains Grid:** No text-align change, stays left-aligned as designed.
+
 ## Command Processing Architecture
 
 ### Complete Command Flow Pipeline

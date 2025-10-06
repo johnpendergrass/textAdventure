@@ -14,7 +14,7 @@
       {"text": "", "type": "flavor"},
       {"text": "Your last house is Mrs. McGillicutty's. Nice house. Good, the porch light is still on. Probably has some candy left.", "type": "flavor"},
       {"text": "", "type": "flavor"},
-      {"text": "Type HELP or H for a list of commands.", "type": "command"},
+      {"text": "<span style='color: #ffcc00;'>[hint: Type <b>help</b> or <b>h</b> for a list of commands (which are also shown in the bottom-right of the screen!)]</span>", "type": "flavor"},
       {"text": "", "type": "flavor"}
     ],
     "playerStats": {

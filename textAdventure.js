@@ -213,7 +213,7 @@ const CONFIG_FALLBACKS = {
         { text: "FALLBACK: initGame.json could not be loaded.", type: "error" },
         { text: "Using system defaults.", type: "error" },
         { text: "", type: "flavor" },
-        { text: "Type HELP or H for a list of commands.", type: "command" },
+        { text: "<span style='color: #ffcc00;'>[hint: Type <b>help</b> or <b>h</b> for a list of commands (which are also shown in the bottom-right of the screen!)]</span>", type: "flavor" },
       ],
       availableCommands: [
         "help",
@@ -666,12 +666,10 @@ function displayRoom(roomId = currentRoom) {
     (item) => item.actions?.take?.addToInventory === true
   );
 
-  // Blank line before items/picked clean message
-  addToBuffer([{ text: "", type: "flavor" }]);
-
   // Show "picked clean" message for interior rooms with no takeable items
   if (interiorRooms.includes(currentRoom) && takeableItems.length === 0) {
     addToBuffer([
+      { text: "", type: "flavor" }, // Blank line before message
       {
         text: "You have picked this room clean. Nothing left to take here.",
         type: "flavor",
@@ -681,7 +679,10 @@ function displayRoom(roomId = currentRoom) {
 
   // Show all visible items (if any)
   if (roomItems.length > 0) {
-    addToBuffer([{ text: "You see:", type: "command" }]);
+    addToBuffer([
+      { text: "", type: "flavor" }, // Blank line before items
+      { text: "You see:", type: "command" }
+    ]);
     roomItems.forEach((item) => {
       addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
     });
@@ -708,10 +709,10 @@ function displayRoom(roomId = currentRoom) {
     let exitsText;
     if (interiorRooms.includes(currentRoom)) {
       exitsText = availableExits
-        .map((dir) => `${dir.toUpperCase()} door`)
+        .map((dir) => `<b>${dir.toUpperCase()}</b> door`)
         .join(", ");
     } else {
-      exitsText = availableExits.join(", ");
+      exitsText = availableExits.map((dir) => `<b>${dir}</b>`).join(", ");
     }
     addToBuffer([{ text: `Exits: ${exitsText}`, type: "command" }]);
   } else {
@@ -766,9 +767,6 @@ function movePlayer(direction) {
   // Move to new room
   currentRoom = exit.to;
   updateScavengerBackground(currentRoom);
-  addToBuffer([
-    { text: "", type: "flavor" }, // Blank line before room description
-  ]);
   displayRoom(currentRoom);
 }
 
@@ -921,13 +919,47 @@ function handleTakeCommand(command) {
   const [itemKey, item] = roomItems[0];
   const takeAction = item.actions.take;
 
-  // Show response message
-  addToBuffer([
-    {
-      text: takeAction.response || `You pick up the ${item.display}.`,
-      type: "flavor",
-    },
-  ]);
+  // Show response message with image and examine text if available
+  if (item.icon150 && item.type !== "scavenger") {
+    // Candy items with 150px images
+    addToBuffer([
+      {
+        text: takeAction.response || `You pick up the ${item.display}.`,
+        type: "flavor",
+      },
+      {
+        text: `<img src="${item.icon150}" style="display:block; margin:10px 0; max-width:150px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`,
+        type: "flavor",
+      },
+      {
+        text: item.actions?.examine || "",
+        type: "flavor",
+      },
+    ]);
+  } else if (item.icon250x250 && item.type === "scavenger") {
+    // Scavenger items with 250px images
+    addToBuffer([
+      {
+        text: takeAction.response || `You pick up the ${item.display}.`,
+        type: "flavor",
+      },
+      {
+        text: `<img src="${item.icon250x250}" style="display:block; margin:10px 0; max-width:250px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`,
+        type: "flavor",
+      },
+      {
+        text: item.actions?.examine || "",
+        type: "flavor",
+      },
+    ]);
+  } else {
+    addToBuffer([
+      {
+        text: takeAction.response || `You pick up the ${item.display}.`,
+        type: "flavor",
+      },
+    ]);
+  }
 
   // Only move to inventory if addToInventory is true
   if (takeAction.addToInventory === true) {
@@ -999,6 +1031,52 @@ function handleDropCommand(command) {
 
   // Update the status panel to show new inventory
   updateGameStatus();
+}
+
+// Handle throw command (Easter egg - doesn't actually do anything)
+function handleThrowCommand(command) {
+  // Extract the item name - get everything after the command, lowercase, strip spaces
+  const input = command.toLowerCase().trim();
+  const firstSpace = input.indexOf(" ");
+
+  if (firstSpace === -1) {
+    addToBuffer([{ text: "Throw what?", type: "error" }]);
+    return;
+  }
+
+  const remainder = input.substring(firstSpace + 1).trim();
+  const targetTypedName = remainder.replace(/\s+/g, ""); // Strip all spaces
+
+  // Find item in inventory with matching typedNames
+  const inventoryItems = Object.entries(items).filter(
+    ([key, item]) =>
+      item.includeInGame &&
+      item.location === "INVENTORY" &&
+      item.typedNames?.includes(targetTypedName)
+  );
+
+  if (inventoryItems.length === 0) {
+    addToBuffer([
+      { text: `You're not carrying any "${targetTypedName}".`, type: "error" },
+    ]);
+    return;
+  }
+
+  // Item exists, but refuse to throw it with a humorous message
+  const [itemKey, item] = inventoryItems[0];
+
+  const throwMessages = [
+    "You consider throwing it, but decide that's a terrible idea.",
+    "That seems like a waste. Better keep it.",
+    "Nah, you might need that later.",
+    "Why would you throw that? Think again.",
+    "You raise your arm to throw, then think better of it.",
+  ];
+
+  // Pick a random message
+  const randomMessage = throwMessages[Math.floor(Math.random() * throwMessages.length)];
+
+  addToBuffer([{ text: randomMessage, type: "flavor" }]);
 }
 
 // Handle eat command
@@ -1465,7 +1543,25 @@ function handleExamineCommand(command) {
     if (item.location === "INVENTORY") {
       // Use notes type for notes items, flavor for others
       const textType = item.type === "notes" ? "notes" : "flavor";
-      addToBuffer([{ text: item.actions.examine, type: textType }]);
+
+      // Add image if available
+      if (item.icon150 && item.type !== "scavenger") {
+        // Candy items with 150px images
+        addToBuffer([
+          { text: item.display, type: "flavor" },
+          { text: `<img src="${item.icon150}" style="display:block; margin:10px 0; max-width:150px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`, type: "flavor" },
+          { text: item.actions.examine, type: textType }
+        ]);
+      } else if (item.icon250x250 && item.type === "scavenger") {
+        // Scavenger items with 250px images
+        addToBuffer([
+          { text: item.display, type: "flavor" },
+          { text: `<img src="${item.icon250x250}" style="display:block; margin:10px 0; max-width:250px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`, type: "flavor" },
+          { text: item.actions.examine, type: textType }
+        ]);
+      } else {
+        addToBuffer([{ text: item.actions.examine, type: textType }]);
+      }
 
       // Check if examining this item reveals a hidden item (first time only)
       if (item.revealsItem && !item.hasBeenSearched) {
@@ -1502,7 +1598,25 @@ function handleExamineCommand(command) {
       } else {
         // Use notes type for notes items, flavor for others
         const textType = item.type === "notes" ? "notes" : "flavor";
-        addToBuffer([{ text: item.actions.examine, type: textType }]);
+
+        // Add image if available
+        if (item.icon150 && item.type !== "scavenger") {
+          // Candy items with 150px images
+          addToBuffer([
+            { text: item.display, type: "flavor" },
+            { text: `<img src="${item.icon150}" style="display:block; margin:10px 0; max-width:150px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`, type: "flavor" },
+            { text: item.actions.examine, type: textType }
+          ]);
+        } else if (item.icon250x250 && item.type === "scavenger") {
+          // Scavenger items with 250px images
+          addToBuffer([
+            { text: item.display, type: "flavor" },
+            { text: `<img src="${item.icon250x250}" style="display:block; margin:10px 0; max-width:250px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`, type: "flavor" },
+            { text: item.actions.examine, type: textType }
+          ]);
+        } else {
+          addToBuffer([{ text: item.actions.examine, type: textType }]);
+        }
 
         // Check if examining this fixed item reveals a hidden item (first time only)
         // Skip auto-reveal for items with open action (they reveal on OPEN instead)
@@ -1729,12 +1843,10 @@ function lookAtRoom() {
     (item) => item.actions?.take?.addToInventory === true
   );
 
-  // Blank line before items/picked clean message
-  addToBuffer([{ text: "", type: "flavor" }]);
-
   // Show "picked clean" message for interior rooms with no takeable items
   if (interiorRooms.includes(currentRoom) && takeableItems.length === 0) {
     addToBuffer([
+      { text: "", type: "flavor" }, // Blank line before message
       {
         text: "You have picked this room clean. Nothing left to take here.",
         type: "flavor",
@@ -1744,7 +1856,10 @@ function lookAtRoom() {
 
   // Show all visible items (if any)
   if (roomItems.length > 0) {
-    addToBuffer([{ text: "You see:", type: "command" }]);
+    addToBuffer([
+      { text: "", type: "flavor" }, // Blank line before items
+      { text: "You see:", type: "command" }
+    ]);
     roomItems.forEach((item) => {
       addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
     });
@@ -1771,10 +1886,10 @@ function lookAtRoom() {
     let exitsText;
     if (interiorRooms.includes(currentRoom)) {
       exitsText = availableExits
-        .map((dir) => `${dir.toUpperCase()} door`)
+        .map((dir) => `<b>${dir.toUpperCase()}</b> door`)
         .join(", ");
     } else {
-      exitsText = availableExits.join(", ");
+      exitsText = availableExits.map((dir) => `<b>${dir}</b>`).join(", ");
     }
     addToBuffer([{ text: `Exits: ${exitsText}`, type: "command" }]);
   }
@@ -2151,6 +2266,9 @@ function processCommand(command) {
           break;
         case "open_item":
           handleOpenCommand(command);
+          break;
+        case "throw_item":
+          handleThrowCommand(command);
           break;
         default:
           addToBuffer([
