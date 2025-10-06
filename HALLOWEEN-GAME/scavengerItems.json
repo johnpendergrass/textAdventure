@@ -18,9 +18,9 @@
       "icon90x90": "assets/scavenger/nVidia90x90.png",
       "icon250x250": "assets/scavenger/nVidia250x250.png",
       "actions": {
-        "examine": "An ASUS <b>5090</b> Video Card! This will be a great card to play Minesweeper on!",
+        "examine": "An ASUS <b>5090</b> Video Card! Released in 2024 to great acclaim and even greater price, this video card will will be a great card to play Minesweeper on!",
         "take": {
-          "response": "You pick up the NVidia <b>5090</b> Video Card.",
+          "response": "You remove the <b>NVidia</b> <b>5090</b> <b>Video Card</b> from the PC case, look around to make sure no one is watching, and then furtively put it in your bag.",
           "addToInventory": true,
           "markAsFound": true
         }
@@ -103,7 +103,7 @@
     },
     "watch": {
       "includeInGame": false,
-      "typedNames": ["fancywatch", "watch", "timepiece", "langeandsohnewatch", "clock", "luxurywatch"],
+      "typedNames": ["fancywatch", "watch", "timepiece", "lange&sohne", "clock", "luxurywatch"],
       "display": "Fancy <b>Watch</b>",
       "description": "An expensive Lange & Sohne <b>watch</b>!",
       "location": "BEDROOM",
@@ -117,7 +117,7 @@
       "icon90x90": "assets/scavenger/watch90x90.png",
       "icon250x250": "assets/scavenger/watch250x250.png",
       "actions": {
-        "examine": "Fantastic! A very expensive Lange & Sohne <b>watch</b>! It calculates the seasons! It even tells the time!",
+        "examine": "Fantastic! A very expensive <b>Lange & Sohne</b> <b>watch</b>! It calculates the seasons! It even tells the time!",
         "take": {
           "response": "You put the <b>watch</b> on your wrist",
           "addToInventory": true,
@@ -130,7 +130,7 @@
       "type": "scavenger",
       "typedNames": ["bringingupbaby", "bringingup", "baby", "dvd", "movie", "carygrant", "katherinehepburn"],
       "display": "Bringing Up Baby <b>DVD</b>",
-      "description": "A <b>DVD</b> of the 1938 classic <b>movie</b> Bringing Up Baby, starring Cary Grant and Katharine Hepburn.",
+      "description": "A <b>DVD</b> of the 1938 classic <b>movie</b> <b>Bringing Up Baby</b>, starring Cary Grant and Katharine Hepburn.",
       "location": "HIDDEN",
       "originalLocation": "TV-ROOM",
       "points": 10,
@@ -143,7 +143,7 @@
       "icon90x90": "assets/scavenger/bringingUpBaby90x90.png",
       "icon250x250": "assets/scavenger/bringingUpBaby250x250.png",
       "actions": {
-        "examine": "An old style clamshell case <b>DVD</b> of the 1938 classic <b>movie</b> Bringing Up Baby. Not scratched at all!",
+        "examine": "An old style clamshell case <b>DVD</b> of the 1938 classic <b>movie</b> <b>Bringing Up Baby</b>. Not scratched at all!",
         "take": {
           "response": "You put the <b>DVD</b> in your treat bag.",
           "addToInventory": true,
@@ -194,9 +194,9 @@
       "icon90x90": "assets/scavenger/Krugerrand90x90.png",
       "icon250x250": "assets/scavenger/Krugerrand250x250.png",
       "actions": {
-        "examine": "A 1 once <b>coin</b> of 91.6% <b>gold</b>! That ought to help pay the rent!",
+        "examine": "A 1 once <b>coin</b> of 91.6% <b>gold</b>! That is about $4,400 in October 2025 dollars! That will make a nice addition to my college fund! (ha ha)",
         "take": {
-          "response": "You carefully put the <b>krugerrand</b> in your pocket.",
+          "response": "You carefully put the valuable <b>krugerrand</b> in your pocket.",
           "addToInventory": true,
           "markAsFound": true
         }

@@ -81,7 +81,7 @@
     "say": {
       "includeInGame": true,
       "type": "action",
-      "shortcuts": ["speak", "push", "press"],
+      "shortcuts": ["speak", "push", "press", "dial"],
       "action": "say_phrase"
     },
     "open": {

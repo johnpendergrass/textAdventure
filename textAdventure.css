@@ -257,6 +257,11 @@ body {
   color: #ffcc00;
   font-weight: bold;
   margin-bottom: 2px;
+  text-align: center;
+}
+
+.score-items {
+  text-align: center;
 }
 
 .command-grid {

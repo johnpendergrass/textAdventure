@@ -26,6 +26,9 @@ let gameState = {};
 let uiConfig = {};
 let keyboardShortcuts = {};
 
+// Quit confirmation flag
+let awaitingQuitConfirmation = false;
+
 // Game world data
 let rooms = {};
 let doors = {};
@@ -1298,23 +1301,125 @@ function handleOpenCommand(command) {
     return;
   }
 
+  // Special handling for safe
+  if (itemKey === "safe") {
+    if (!item.hasBeenOpened) {
+      // Safe is locked - show hint
+      addToBuffer([{
+        text: "The <b>safe</b> requires a combination. Type <b>'SAY ##-##-##'</b> to unlock the safe.",
+        type: "flavor"
+      }]);
+    } else {
+      // Safe already opened
+      addToBuffer([{
+        text: "The <b>safe</b> door is open. You can see the items inside.",
+        type: "flavor"
+      }]);
+    }
+    return;
+  }
+
   // Generic open handler for other items
   addToBuffer([{ text: item.actions.open, type: "flavor" }]);
 }
 
 // Handle QUIT/HOME command - moves player to HOME room
 function handleQuitCommand() {
+  // Check if awaiting confirmation
+  if (!awaitingQuitConfirmation) {
+    // First time - show confirmation message
+    addToBuffer([
+      {
+        text: "<span style='color: #ffcc00;'>!*!*!*! HEY! This will take you back to your home and <u>QUIT THE GAME</u>! Type <b>HOME</b> or <b>QUIT</b> again to confirm you want to do this.</span>",
+        type: "flavor"
+      }
+    ]);
+    awaitingQuitConfirmation = true;
+    return;
+  }
+
+  // Confirmed - execute quit
+  awaitingQuitConfirmation = false;
+
   // Move to HOME room
   currentRoom = "HOME";
 
   // Update background image for scavenger box
   updateScavengerBackground("HOME");
 
-  // Display the HOME room
+  // Custom HOME room display with inventory
+  const homeRoom = rooms["HOME"];
+  if (!homeRoom) {
+    addToBuffer([{ text: "ERROR: HOME room not found!", type: "error" }]);
+    return;
+  }
+
+  // Track visit
+  player.core.visitedRooms.push("HOME");
+
+  // Display first part of HOME text
   addToBuffer([
-    { text: "", type: "flavor" }, // Blank line before room description
+    { text: "", type: "flavor" }, // Blank line before
+    { text: homeRoom.enterText.first, type: "flavor" },
   ]);
-  displayRoom("HOME");
+
+  // Get inventory items
+  const inventoryItems = Object.values(items).filter(
+    (item) => item.includeInGame && item.location === "INVENTORY"
+  );
+
+  // Separate by type
+  const scavengerItems = inventoryItems.filter(
+    (item) => item.type === "scavenger"
+  );
+  const candyItems = inventoryItems.filter((item) => item.type === "candy");
+
+  // Add inventory section if player has items
+  if (scavengerItems.length > 0 || candyItems.length > 0) {
+    addToBuffer([
+      { text: "", type: "flavor" }, // Blank line
+      { text: "You plundered lots of stuff and got lots of treats:", type: "flavor" },
+      { text: "", type: "flavor" }, // Blank line
+    ]);
+
+    // Count total available scavenger items
+    const totalScavenger = Object.values(items).filter(
+      (item) => item.includeInGame && item.type === "scavenger"
+    ).length;
+
+    // Display scavenger items
+    if (scavengerItems.length > 0) {
+      addToBuffer([
+        {
+          text: `SCAVENGER ITEMS (${scavengerItems.length}/${totalScavenger})`,
+          type: "underlined",
+        },
+      ]);
+      scavengerItems.forEach((item) => {
+        addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
+      });
+    }
+
+    // Blank line between sections if both exist
+    if (scavengerItems.length > 0 && candyItems.length > 0) {
+      addToBuffer([{ text: "", type: "flavor" }]);
+    }
+
+    // Display treats
+    if (candyItems.length > 0) {
+      addToBuffer([
+        { text: `TREATS (${candyItems.length}/20)`, type: "underlined" },
+      ]);
+      const candyList = candyItems.map((item) => item.display).join(", ");
+      addToBuffer([{ text: `  ${candyList}`, type: "flavor" }]);
+    }
+  }
+
+  // Display second part of HOME text
+  addToBuffer([
+    { text: "", type: "flavor" }, // Blank line
+    { text: homeRoom.enterText.second, type: "flavor" },
+  ]);
 }
 
 // Handle examine command
@@ -1548,6 +1653,21 @@ function handleUseCommand(command) {
 
       item.hasBeenUsed = true;
       lookAtRoom();
+    }
+  } else if (itemKey === "safe") {
+    // Special handling for safe
+    if (!item.hasBeenOpened) {
+      // Safe is locked - show hint
+      addToBuffer([{
+        text: "The <b>safe</b> requires a combination. Type <b>'SAY ##-##-##'</b> to unlock the safe.",
+        type: "flavor"
+      }]);
+    } else {
+      // Safe already opened
+      addToBuffer([{
+        text: "The <b>safe</b> door is open. You can see the items inside.",
+        type: "flavor"
+      }]);
     }
   } else {
     // Generic use action for other items
@@ -1804,32 +1924,33 @@ function updateGameStatus() {
   const displayTreatsCount = Math.min(treatsCount, 20);
 
   // Generate status section with aligned columns
-  const statusTitle = uiConfig?.statusPanel?.status?.title || "SCORE:";
+  const statusTitle = uiConfig?.statusPanel?.status?.title || "SCORE";
 
-  let statsHTML = "";
+  let statsHTML = `<div class="score-items">`;
   statsHTML += `<div>Scavenger Items: ${scavengerCount} / 9</div>`;
   statsHTML += `<div>Treats:          ${displayTreatsCount} / 20</div>`;
+  statsHTML += `</div>`;
 
   // Commands section with 3-column alignment
-  const commandsTitle = uiConfig?.statusPanel?.commands?.title || "COMMANDS:";
+  const commandsTitle = uiConfig?.statusPanel?.commands?.title || "COMMANDS";
   const commandsHTML = `<div class="command-grid">
   <div>(h)elp</div>
   <div>(l)ook</div>
   <div>(i)nventory</div>
-  <div>(t)ake</div>
-  <div>(d)rop</div>
-  <div>e(x)amine</div>
-  <div>(u)se</div>
-  <div>(e)at</div>
-  <div>say</div>
+  <div>(t)ake ?</div>
+  <div>(d)rop ?</div>
+  <div>e(x)amine ?</div>
+  <div>(u)se ?</div>
+  <div>eat ?</div>
+  <div>say ?</div>
 </div>`;
 
   // ASCII compass
-  const compassHTML = `<div class="compass">          (n)orth
-             |
-   (w)est ------ (e)ast
-             |
-          (s)outh         HOME</div>`;
+  const compassHTML = `<div class="compass">             (n)orth
+                |
+      (w)est ------ (e)ast
+                |
+             (s)outh         HOME</div>`;
 
   statusDiv.innerHTML = `
     <div>&nbsp;</div>
@@ -1956,9 +2077,14 @@ function processCommand(command) {
     command = words.slice(1).join(" ");
   }
 
-  // Check for QUIT/HOME uppercase requirement
+  // Reset quit confirmation flag for any non-quit command
   const firstWord = command.trim().split(/\s+/)[0];
   const lowerFirst = firstWord.toLowerCase();
+  if (lowerFirst !== "quit" && lowerFirst !== "home") {
+    awaitingQuitConfirmation = false;
+  }
+
+  // Check for QUIT/HOME uppercase requirement
 
   if (
     (lowerFirst === "quit" || lowerFirst === "home") &&

@@ -176,7 +176,11 @@
         "take": {
           "response": "It's too heavy to move. But you could <b>examine</b> it.",
           "addToInventory": false
-        }
+        },
+        "use": {
+          "response": "placeholder"
+        },
+        "open": "placeholder"
       }
     },
     "musicsystem": {

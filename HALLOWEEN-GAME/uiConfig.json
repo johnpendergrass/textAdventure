@@ -1,7 +1,7 @@
 {
   "statusPanel": {
     "commands": {
-      "title": "COMMANDS:",
+      "title": "COMMANDS",
       "list": [
         "(h)elp (l)ook (i)nventory",
         "(t)ake e(x)amine (d)rop",
@@ -12,7 +12,7 @@
       "title": "INVENTORY:"
     },
     "status": {
-      "title": "SCORE:"
+      "title": "SCORE"
     }
   },
   "fallbackText": {
