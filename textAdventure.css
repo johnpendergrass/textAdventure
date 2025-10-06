@@ -146,6 +146,24 @@ body {
   max-width: 90%;
 }
 
+/* Flashing animation for scavenger hunt discoveries */
+@keyframes flash {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.scavenger-found {
+  color: #ffa500; /* Bright orange/gold */
+  font-size: 20px;
+  font-weight: bold;
+  animation: flash 2s ease-in-out infinite;
+}
+
 .prompt {
   grid-area: prompt;
   border: 2px solid white;

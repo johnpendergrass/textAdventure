@@ -787,6 +787,12 @@ function showHelp() {
   ]);
 }
 
+// Helper function to convert numbers to words for scavenger hunt
+function numberToWord(num) {
+  const words = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+  return words[num] || num.toString();
+}
+
 // Show inventory
 function showInventory() {
   // Get items from INVENTORY room
@@ -938,7 +944,30 @@ function handleTakeCommand(command) {
     ]);
   } else if (item.icon250x250 && item.type === "scavenger") {
     // Scavenger items with 250px images
+    // Count how many scavenger items are now in inventory (including this one being added)
+    const scavengerCount = Object.values(items).filter(
+      (i) => i.includeInGame && i.type === "scavenger" &&
+             (i.location === "INVENTORY" || i === item)
+    ).length;
+
+    // Total scavenger items in game
+    const totalScavenger = Object.values(items).filter(
+      (i) => i.includeInGame && i.type === "scavenger"
+    ).length;
+
+    // Show congratulatory message with word-based count
+    const countWord = numberToWord(scavengerCount).toLowerCase();
+    const totalWord = numberToWord(totalScavenger).toLowerCase();
+
     addToBuffer([
+      {
+        text: `<span class="scavenger-found">** SCAVENGER HUNT ITEM!!! ** (${countWord} of ${totalWord})</span>`,
+        type: "flavor",
+      },
+      {
+        text: "",
+        type: "flavor",
+      },
       {
         text: takeAction.response || `You pick up the ${item.display}.`,
         type: "flavor",

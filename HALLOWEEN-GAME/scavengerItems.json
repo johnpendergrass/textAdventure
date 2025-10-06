@@ -93,7 +93,7 @@
       "icon90x90": "assets/scavenger/cuponoodles90x90.png",
       "icon250x250": "assets/scavenger/cuponoodles250x250.png",
       "actions": {
-        "examine": "Delicious seafood <b>noodles</b> in a styrofoam container. This will make a great snack!",
+        "examine": "Delicious seafood <b>noodles</b> in a styrofoam container. No added MSG! This will make a great snack!",
         "take": {
           "response": "You pick up the Cup O' <b>Noodles</b> and put them in your bag.",
           "addToInventory": true,
