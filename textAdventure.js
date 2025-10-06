@@ -639,7 +639,52 @@ function displayRoom(roomId = currentRoom) {
   // Add room to visited rooms tracking
   player.core.visitedRooms.push(roomId);
 
-  // Add blank line before exits
+  // Interior rooms list (used for exit formatting and "picked clean" message)
+  const interiorRooms = [
+    "FOYER",
+    "LIBRARY",
+    "MUSIC-ROOM",
+    "GAME-ROOM",
+    "KITCHEN",
+    "BEDROOM",
+    "STUDY",
+    "DINING-ROOM",
+    "TV-ROOM",
+  ];
+
+  // Show items in room (if any)
+  const roomItems = Object.values(items).filter(
+    (item) =>
+      item.includeInGame && item.location === currentRoom && item.visible
+  );
+
+  // Filter for takeable items (items that can be picked up)
+  const takeableItems = roomItems.filter(
+    (item) => item.actions?.take?.addToInventory === true
+  );
+
+  // Blank line before items/picked clean message
+  addToBuffer([{ text: "", type: "flavor" }]);
+
+  // Show "picked clean" message for interior rooms with no takeable items
+  if (interiorRooms.includes(currentRoom) && takeableItems.length === 0) {
+    addToBuffer([
+      {
+        text: "You have picked this room clean. Nothing left to take here.",
+        type: "flavor",
+      },
+    ]);
+  }
+
+  // Show all visible items (if any)
+  if (roomItems.length > 0) {
+    addToBuffer([{ text: "You see:", type: "command" }]);
+    roomItems.forEach((item) => {
+      addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
+    });
+  }
+
+  // Blank line before exits
   addToBuffer([{ text: "", type: "flavor" }]);
 
   // Show available exits (all visible doors)
@@ -657,17 +702,6 @@ function displayRoom(roomId = currentRoom) {
 
   if (availableExits.length > 0) {
     // Interior rooms show "SOUTH door, NORTH door" format
-    const interiorRooms = [
-      "FOYER",
-      "LIBRARY",
-      "MUSIC-ROOM",
-      "GAME-ROOM",
-      "KITCHEN",
-      "BEDROOM",
-      "STUDY",
-      "DINING-ROOM",
-      "TV-ROOM",
-    ];
     let exitsText;
     if (interiorRooms.includes(currentRoom)) {
       exitsText = availableExits
@@ -679,19 +713,6 @@ function displayRoom(roomId = currentRoom) {
     addToBuffer([{ text: `Exits: ${exitsText}`, type: "command" }]);
   } else {
     addToBuffer([{ text: "No obvious exits.", type: "command" }]);
-  }
-
-  // Show items in room (if any)
-  const roomItems = Object.values(items).filter(
-    (item) =>
-      item.includeInGame && item.location === currentRoom && item.visible
-  );
-
-  if (roomItems.length > 0) {
-    addToBuffer([{ text: "You see:", type: "command" }]);
-    roomItems.forEach((item) => {
-      addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
-    });
   }
 }
 
@@ -1564,6 +1585,54 @@ function lookAtRoom() {
 
   addToBuffer([{ text: lookText, type: "flavor" }]);
 
+  // Interior rooms list (used for exit formatting and "picked clean" message)
+  const interiorRooms = [
+    "FOYER",
+    "LIBRARY",
+    "MUSIC-ROOM",
+    "GAME-ROOM",
+    "KITCHEN",
+    "BEDROOM",
+    "STUDY",
+    "DINING-ROOM",
+    "TV-ROOM",
+  ];
+
+  // Show items in room (if any)
+  const roomItems = Object.values(items).filter(
+    (item) =>
+      item.includeInGame && item.location === currentRoom && item.visible
+  );
+
+  // Filter for takeable items (items that can be picked up)
+  const takeableItems = roomItems.filter(
+    (item) => item.actions?.take?.addToInventory === true
+  );
+
+  // Blank line before items/picked clean message
+  addToBuffer([{ text: "", type: "flavor" }]);
+
+  // Show "picked clean" message for interior rooms with no takeable items
+  if (interiorRooms.includes(currentRoom) && takeableItems.length === 0) {
+    addToBuffer([
+      {
+        text: "You have picked this room clean. Nothing left to take here.",
+        type: "flavor",
+      },
+    ]);
+  }
+
+  // Show all visible items (if any)
+  if (roomItems.length > 0) {
+    addToBuffer([{ text: "You see:", type: "command" }]);
+    roomItems.forEach((item) => {
+      addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
+    });
+  }
+
+  // Blank line before exits
+  addToBuffer([{ text: "", type: "flavor" }]);
+
   // Show available exits (all visible doors)
   const allExits = Object.keys(room.exits || {});
   const availableExits = allExits.filter((direction) => {
@@ -1579,17 +1648,6 @@ function lookAtRoom() {
 
   if (availableExits.length > 0) {
     // Interior rooms show "SOUTH door, NORTH door" format
-    const interiorRooms = [
-      "FOYER",
-      "LIBRARY",
-      "MUSIC-ROOM",
-      "GAME-ROOM",
-      "KITCHEN",
-      "BEDROOM",
-      "STUDY",
-      "DINING-ROOM",
-      "TV-ROOM",
-    ];
     let exitsText;
     if (interiorRooms.includes(currentRoom)) {
       exitsText = availableExits
@@ -1599,19 +1657,6 @@ function lookAtRoom() {
       exitsText = availableExits.join(", ");
     }
     addToBuffer([{ text: `Exits: ${exitsText}`, type: "command" }]);
-  }
-
-  // Show items in room (if any)
-  const roomItems = Object.values(items).filter(
-    (item) =>
-      item.includeInGame && item.location === currentRoom && item.visible
-  );
-
-  if (roomItems.length > 0) {
-    addToBuffer([{ text: "You see:", type: "command" }]);
-    roomItems.forEach((item) => {
-      addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
-    });
   }
 }
 

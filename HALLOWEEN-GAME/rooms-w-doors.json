@@ -97,10 +97,10 @@
     "FOYER": {
       "name": "Foyer",
       "enterText": {
-        "first": "You enter the Radley House foyer. It reminds you of a scene from that Downton Abbey show...  there are doors everywhere! <span style='color: #ffcc00;'>[hint: type <b>take</b> or <b>get</b> to pick up items you find.]</span>",
-        "repeat": "You are in the foyer."
+        "first": "You enter the Radley House FOYER. It reminds you of a scene from that Downton Abbey show...  there are doors everywhere! <span style='color: #ffcc00;'>[hint: type <b>take</b> or <b>get</b> to pick up items you find.]</span>",
+        "repeat": "You are in the FOYER."
       },
-      "lookText": "You are in the foyer.  Doors lead all directions!",
+      "lookText": "You are in the FOYER.  Doors lead all directions!",
       "exits": {
         "south": { "to": "FRONT-PORCH",  "door": "front-porch2foyer" },
         "north": { "to": "DINING-ROOM",  "door": "foyer2dining-room" },
@@ -116,10 +116,10 @@
     "LIBRARY": {
       "name": "Library",
       "enterText": {
-        "first": "You enter the library. Wow! Tall bookshelves line the walls, and the floor is covered in a thick carpet.  There are several armchairs scattered around the room.  An open book lies on a table near the window. <span style='color: #ffcc00;'>[hint: you can <b>examine</b> items you find here.]</span>",
-        "repeat": "You are in the library."
+        "first": "You enter the LIBRARY. Wow! Tall bookshelves line the walls, and the floor is covered in a thick carpet.  There are several armchairs scattered around the room.  An open book lies on a table near the window. <span style='color: #ffcc00;'>[hint: you can <b>examine</b> items you find here.]</span>",
+        "repeat": "You are in the LIBRARY."
       },
-      "lookText": "You are in the library.",
+      "lookText": "You are in the LIBRARY.",
       "exits": {
         "east":  { "to": "FOYER",  "door": "foyer2library" },
         "north": { "to": "MUSIC-ROOM", "door": "library2music-room" }
@@ -133,10 +133,10 @@
     "DINING-ROOM": {
       "name": "Dining Room",
       "enterText": {
-        "first": "You enter the dining room.",
-        "repeat": "You are in the dining room."
+        "first": "You enter the DINING ROOM.",
+        "repeat": "You are in the DINING ROOM."
       },
-      "lookText": "You are in the dining room.",
+      "lookText": "You are in the DINING ROOM.",
       "exits": {
         "south": { "to": "FOYER",       "door": "foyer2dining-room" },
         "north": { "to": "KITCHEN",     "door": "dining-room2kitchen" },
@@ -151,10 +151,10 @@
     "STUDY": {
       "name": "Study",
       "enterText": {
-        "first": "You enter the study. <span style='color: #ffcc00;'>[hint: try to <b>examine</b> things you see in rooms.]</span>",
-        "repeat": "You are in the study."
+        "first": "You enter the STUDY. <span style='color: #ffcc00;'>[hint: try to <b>examine</b> things you see in rooms.]</span>",
+        "repeat": "You are in the STUDY."
       },
-      "lookText": "You are in the study.",
+      "lookText": "You are in the STUDY.",
       "exits": {
         "west":  { "to": "FOYER",   "door": "foyer2study" },
         "north": { "to": "TV-ROOM", "door": "study2tv-room" }
@@ -168,10 +168,10 @@
     "MUSIC-ROOM": {
       "name": "Music Room",
       "enterText": {
-        "first": "You enter the music-room. <span style='color: #ffcc00;'>[hint: don't forget to <b>look</b> around to see what's in each room.]</span>",
-        "repeat": "You are in the music-room."
+        "first": "You enter the MUSIC ROOM. <span style='color: #ffcc00;'>[hint: don't forget to <b>look</b> around to see what's in each room.]</span>",
+        "repeat": "You are in the MUSIC ROOM."
       },
-      "lookText": "You are in the music-room.",
+      "lookText": "You are in the MUSIC ROOM.",
       "exits": {
         "south": { "to": "LIBRARY",   "door": "library2music-room" },
         "north": { "to": "GAME-ROOM", "door": "music-room2game-room" }
@@ -185,10 +185,10 @@
     "GAME-ROOM": {
       "name": "Game Room",
       "enterText": {
-        "first": "You enter the game room.",
-        "repeat": "You are in the game room."
+        "first": "You enter the GAME ROOM.",
+        "repeat": "You are in the GAME ROOM."
       },
-      "lookText": "You are in the game room.",
+      "lookText": "You are in the GAME ROOM.",
       "exits": {
         "south": { "to": "MUSIC-ROOM", "door": "music-room2game-room" }
       },
@@ -201,10 +201,10 @@
     "KITCHEN": {
       "name": "Kitchen",
       "enterText": {
-        "first": "You enter the kitchen.",
-        "repeat": "You are in the kitchen."
+        "first": "You enter the KITCHEN.",
+        "repeat": "You are in the KITCHEN."
       },
-      "lookText": "You are in the kitchen.",
+      "lookText": "You are in the KITCHEN.",
       "exits": {
         "south": { "to": "DINING-ROOM", "door": "dining-room2kitchen" }
       },
@@ -217,10 +217,10 @@
     "BEDROOM": {
       "name": "Bedroom",
       "enterText": {
-        "first": "You enter the bedroom.",
-        "repeat": "You are in the bedroom."
+        "first": "You enter the BEDROOM.",
+        "repeat": "You are in the BEDROOM."
       },
-      "lookText": "You are in the bedroom.",
+      "lookText": "You are in the BEDROOM.",
       "exits": {
         "south": { "to": "TV-ROOM", "door": "bedroom2tv-room" }
       },
@@ -233,10 +233,10 @@
     "TV-ROOM": {
       "name": "TV Room",
       "enterText": {
-        "first": "You enter the TV room. A large flat-screen TV mounted on the wall is playing a movie - the classic 1938 screwball comedy 'Bringing Up Baby.' On the screen, Cary Grant and Katharine Hepburn are in the middle of a hilarious scene involving a leopard. Against the opposite wall stands an elegant wooden <b>cabinet</b> with glass doors. Through the glass, you can see shelves lined with DVD cases. Your eyes are drawn to a DVD of 'Bringing Up Baby' on the second shelf. Wait... how is the movie playing if the DVD is right there in the cabinet? <span style='color: #ffcc00;'>[hint: you could try to <b>open cabinet</b>.]</span>",
-        "repeat": "You are in the TV room. The movie is still playing on the TV, and the DVD cabinet stands against the wall."
+        "first": "You enter the TV ROOM. A large flat-screen TV mounted on the wall is playing a movie - the classic 1938 screwball comedy 'Bringing Up Baby.' On the screen, Cary Grant and Katharine Hepburn are in the middle of a hilarious scene involving a leopard. Against the opposite wall stands an elegant wooden <b>cabinet</b> with glass doors. Through the glass, you can see shelves lined with DVD cases. Your eyes are drawn to a DVD of 'Bringing Up Baby' on the second shelf. Wait... how is the movie playing if the DVD is right there in the cabinet? <span style='color: #ffcc00;'>[hint: you could try to <b>open cabinet</b>.]</span>",
+        "repeat": "You are in the TV ROOM. The movie is still playing on the TV, and the DVD cabinet stands against the wall."
       },
-      "lookText": "You are in the TV room. A large TV is mounted on one wall, currently playing 'Bringing Up Baby.' An elegant DVD cabinet with glass doors stands against the opposite wall.",
+      "lookText": "You are in the TV ROOM. A large TV is mounted on one wall, currently playing 'Bringing Up Baby.' An elegant DVD cabinet with glass doors stands against the opposite wall.",
       "exits": {
         "south": { "to": "STUDY",       "door": "study2tv-room" },
         "north": { "to": "BEDROOM", "door": "bedroom2tv-room" },
@@ -375,7 +375,7 @@
         "visible": true,
         "locked": true,
         "open": false,
-        "lockedMessage": "The bedroom door is locked. You'll need a key to open it."
+        "lockedMessage": "The BEDROOM door is locked. You'll need a key to open it."
       },
 
       "game-room2home": {

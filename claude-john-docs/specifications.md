@@ -1,16 +1,49 @@
 # Halloween Text Adventure - Complete Specifications
-# v0.30 - Three Puzzle Systems (Music System, Powerful PC, DVD Cabinet)
+# v0.31 - Text Formatting and Take Message Improvements
 
 ## Project Overview
 
-**Version:** 0.30
+**Version:** 0.31
 **Total Project Size:** ~235KB (with grid assets and fonts)
 **Source Files:** 8 core files + 46 items + documentation
-**Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking, handwritten notes, locked doors, hidden items, interactive puzzles, SAY command system, and OPEN command
+**Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking, handwritten notes, locked doors, hidden items, interactive puzzles, SAY command system, OPEN command, inline HTML text formatting, and custom "cannot take" messages
 **Target Platform:** Web browsers (GitHub Pages compatible)
-**Current State:** Fully interactive text adventure with GO command prefix, locked door mechanics, brass key puzzle, hidden bookmark discovery, EAT command, SAY command with safe combination and secret door password puzzles, OPEN command for containers and cabinets, dual reveal system (examine vs. open), proper item categorization, bold keyword inventory display, and interior room exit formatting
+**Current State:** Fully interactive text adventure with GO command prefix, locked door mechanics, brass key puzzle, hidden bookmark discovery, EAT command, SAY command with safe combination and secret door password puzzles, OPEN command for containers and cabinets, dual reveal system (examine vs. open), proper item categorization, bold keyword inventory display, interior room exit formatting, inline HTML formatting for visual hints, and helpful "cannot take" messages for fixed items
 
 ## Major Features
+
+### Inline Text Formatting System ✨ NEW in v0.31
+- **HTML formatting in JSON** - All text supports bold, colors, sizes, shadows
+- **Bold hints** - Commands, directions, item names bolded throughout
+- **Colored hints** - Yellow (#ffcc00) hints guide players
+- **Dramatic effects** - Doorbell with blue sparkle, knocker with red/purple glow
+- **Consistent formatting** - Works in both JSON data and JS hardcoded strings
+- Safe JSON encoding using single quotes in HTML style attributes
+- Blank lines: `<br><br>` for regular text, `\n\n` for notes
+
+### Custom "Cannot Take" Message System ✨ NEW in v0.31
+- **Helpful feedback** - All 8 fixed items have custom messages
+- **Action suggestions** - Messages suggest what players CAN do
+- **Unified system** - Take actions with `addToInventory: false` property
+- doorbell: "You cannot take it. It's attached to the house. But you could **ring** it or **use** it."
+- safe: "It's too heavy to move. But you could **examine** it."
+- pc: "It's too heavy and bulky to carry. But you could **examine** it."
+- Replaces confusing error "You don't see any X here"
+
+### Take Command Improvements ✨ NEW in v0.31
+- **Dual mode support** - Items with `addToInventory: true` go to inventory
+- **Custom messages** - Items with `addToInventory: false` show message only
+- Modified filter: checks for `take !== undefined` instead of `addToInventory === true`
+- Conditional inventory update: only if `addToInventory === true`
+- All fixed items now have helpful "take" actions
+
+### Examine Command Improvements ✨ NEW in v0.31
+- **Smart inventory check** - Only requires inventory if `addToInventory === true`
+- Fixed items with `addToInventory: false` can be examined in room
+- Previous bug: fixed items with take actions couldn't be examined
+- Now works: "examine light" shows porch light description in room
+
+## Major Features (Pre-v0.31)
 
 ### OPEN Command & Container System ✨ NEW in v0.30
 - **OPEN command** - Open containers, cabinets, and doors

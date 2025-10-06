@@ -208,7 +208,7 @@
       "visible": true,
       "locked": false,
       "actions": {
-        "examine": "A top-of-the-line Bose <b>stereo</b> music <b>system</b> sits on a shelf mounted on the north wall. The brushed aluminum faceplate gleams in the dim light. On the front panel, you notice a selector labeled 'Sound Options' with three buttons: <b>'music'</b>, <b>'movie'</b>, and <b>'game'</b>.",
+        "examine": "A top-of-the-line Bose <b>stereo</b> music <b>system</b> sits on a shelf mounted on the north wall. The brushed aluminum faceplate gleams in the dim light. On the front panel, you notice a selector labeled 'Sound Options' with three buttons: <b>'music'</b>, <b>'movie'</b>, and <b>'game'</b>. <span style='color: #ffcc00;'>[Hint: Try <b>press</b> the buttons to see what they do.]</span>",
         "take": {
           "response": "It's mounted on the wall. You cannot take it. But you could <b>examine</b> it.",
           "addToInventory": false
@@ -308,7 +308,7 @@
           "addToInventory": true
         },
         "use": {
-        "response": "You insert the brass key into the bedroom door lock and turn it. CLICK! The door unlocks.<br><br>"
+        "response": "You insert the brass key into the BEDROOM door lock and turn it. CLICK! The door unlocks.<br><br>"
         }
       }
     },
@@ -1111,6 +1111,7 @@
         "spicedrops",
         "spicycandy",
         "gumdrops",
+        "spice",
         "jellycandy"
       ],
       "display": "<b>Spice Drops</b>",

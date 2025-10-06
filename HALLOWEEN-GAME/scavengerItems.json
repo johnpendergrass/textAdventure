@@ -180,7 +180,7 @@
       "includeInGame": true,
       "type": "scavenger",
       "typedNames": ["krugerrand", "coin", "goldcoin", "gold", "currency"],
-      "display": "<b>Krugerrand</b>",
+      "display": "<b>Krugerrand</b> <b>coin</b>",
       "description": "Ohh! a 2025 South African <b>Krugerrand</b>! 1 once of solid <b>gold</b>!",
       "location": "HIDDEN",
       "originalLocation": "STUDY",
