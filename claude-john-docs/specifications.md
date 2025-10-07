@@ -1,1221 +1,469 @@
 # Halloween Text Adventure - Complete Specifications
-# v0.33 - Visual Enhancements and Final Polish
+# v0.32 - Victory Celebration & Polish Complete
 
 ## Project Overview
 
-**Version:** 0.33 (Polish Complete)
-**Total Project Size:** ~285KB (with grid assets, item images, and fonts)
-**Source Files:** 8 core files + 46 items + documentation + 32 item images
-**Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking, handwritten notes, locked doors, hidden items, interactive puzzles, SAY command system, OPEN command, inline HTML text formatting, inline item images (150px candy, 250px scavenger), polished status panel, HOME/QUIT confirmation, inventory-rich game ending, and hidden Easter eggs
+**Game Title:** The Radley House
+**Subtitle:** A well-articulated treasure hunt
+**Version:** 0.32 (Victory Celebration Complete)
+**Total Project Size:** ~300KB (with all assets, images, and fonts)
+**Source Files:** 8 core files + 7 data JSON files + 38 items + documentation + images
+**Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking, victory celebration animations, handwritten notes, locked doors, hidden items, interactive puzzles, two-column inventory, and comprehensive command system
 **Target Platform:** Web browsers (GitHub Pages compatible)
-**Current State:** Fully polished text adventure with rich visual feedback, inline item images, consistent hint formatting, proper spacing throughout, bold directional commands, HOME/QUIT confirmation, inventory summary at game end, safe puzzle hints, and hidden THROW command Easter egg
+**Current State:** Fully functional text adventure with rich visual feedback, victory celebration, polished UI, hidden commands, and comprehensive player guidance
 
 ## Major Features
 
-### Polish and Presentation (Final v0.33)
-
-#### Consistent Hint Formatting
-- **Lowercase "hint:"** - Casual, friendly tone throughout
-- **Blank line separation** - All hints separated from flavor text with `<br><br>`
-- **Yellow color** - #ffcc00 for visibility and consistency
-- **Strategic placement** - 5 hints guide new players without hand-holding
-- **Bold keywords** - Commands and important words highlighted
-- **Applied to**: Welcome message, STREET-01, NICE-PORCH, FRONT-PORCH, FOYER
-
-#### Bold Directional Commands
-- **Exit formatting** - All directions in exits are bolded
-- **Interior rooms**: `Exits: <b>SOUTH</b> door, <b>NORTH</b> door`
-- **Exterior rooms**: `Exits: <b>north</b>, <b>south</b>`
-- **Consistency** - Matches bold formatting throughout game text
-
-#### Proper Spacing System
-- **Command echo**: Blank before and after every command
-- **Room display**: Smart blank lines only when needed
-- **No double blanks**: Fixed issue where empty rooms had two blank lines
-- **Professional presentation**: Clean, readable output throughout
-
-#### Hidden THROW Command Easter Egg ✨
-- **Secret command** - Not shown in status panel
-- **Shortcuts**: throw, toss, chuck, hurl
-- **Validation**: Checks inventory like other item commands
-- **Humorous responses**: 5 random rejection messages
-  - "You consider throwing it, but decide that's a terrible idea."
-  - "That seems like a waste. Better keep it."
-  - "Nah, you might need that later."
-  - Plus 2 more variations
-- **Proper errors**: "Throw what?" and "You're not carrying any X"
-- **Fun discovery**: Players enjoy finding hidden commands
-
-### Inline Item Images System ✨ in v0.33
-- **Candy item images** - 150px images display on EXAMINE and TAKE
-  - 23 candy items with custom images (Snickers, Mounds, 100 Grand, etc.)
-  - Display pattern: Item name → Image → Examine text
-  - Auto-scroll after image loads to show all content
-
-- **Scavenger item images** - 250px images for important collectibles
-  - 9 scavenger items with larger images (NVidia GPU, Beatles vinyl, etc.)
-  - Same display pattern with larger format
-  - Separate logic branch for scavenger vs. candy
-
-- **Smart image loading** - `onload` handler scrolls after image dimensions known
-- **Applied to commands**:
-  - EXAMINE: Shows image between name and description
-  - TAKE: Shows "you pick up" text, image, then description
-
-### Status Panel UI Polish ✨ NEW in v0.33
-- **Command argument indicators** - Commands requiring nouns show `?`
-  - `(t)ake ?`, `(d)rop ?`, `e(x)amine ?`, `(u)se ?`, `eat ?`, `say ?`
-  - Helps players understand command syntax
-
-- **Centered section titles** - "SCORE" and "COMMANDS" center-aligned
-  - Cleaner visual hierarchy
-  - Score values also centered
-
-- **Removed colons** - "SCORE:" → "SCORE", "COMMANDS:" → "COMMANDS"
-  - Less cluttered appearance
-
-- **Compass repositioned** - Shifted 3 spaces right for better balance
-
-- **Fixed EAT display** - `(e)at` → `eat ?`
-  - Shows no shortcut (conflicts with east)
-  - Indicates requires argument
-
-### HOME/QUIT Confirmation System ✨ NEW in v0.33
-- **Two-step quit** - First HOME/QUIT shows warning, second confirms
-- **Warning message** - Yellow text with attention-grabbing format
-  - "!*!*!*! HEY! This will take you back to your home and QUIT THE GAME!"
-  - Underlined "QUIT THE GAME" for emphasis
-
-- **Auto-cancel** - ANY other command cancels quit attempt
-- **Natural flow** - Type HOME → see warning → type NORTH to continue OR HOME to quit
-
-### HOME Room Inventory Display ✨ NEW in v0.33
-- **Victory summary** - Shows player accomplishments at game end
-- **Dynamic inventory insertion** - Lists all collected items
-  - "You plundered lots of stuff and got lots of treats:"
-  - SCAVENGER ITEMS (X/9) - Individual items listed
-  - TREATS (X/20) - Comma-separated candy list
-
-- **Split HOME text** - Inserted between two parts of ending message
-- **Satisfying conclusion** - Player sees exactly what they achieved
-
-### Safe Puzzle Helper Messages ✨ NEW in v0.33
-- **Helpful hints** - USE SAFE or OPEN SAFE shows combination hint
-  - Before opening: "The **safe** requires a combination. Type **'SAY ##-##-##'** to unlock the safe."
-  - After opening: "The **safe** door is open. You can see the items inside."
-
-- **State-aware** - Different messages based on hasBeenOpened flag
-- **Eliminates confusion** - No more generic "can't use" errors
-
-### Capitalized Interior Room Names ✨ in v0.32
-- **All 9 interior rooms capitalized** - FOYER, LIBRARY, DINING ROOM, STUDY, MUSIC ROOM, GAME ROOM, KITCHEN, BEDROOM, TV ROOM
-- **Visual distinction** - Interior rooms stand out from lowercase exterior areas
-- **Consistent throughout** - enterText, lookText, and door descriptions all use capitals
-- **Multi-word rooms use spaces** - "MUSIC ROOM" not "MUSIC-ROOM"
-- **Enhanced prominence** - Room names draw attention as primary play area
-
-### "Picked Clean" Message System ✨ NEW in v0.32
-- **Completion feedback** - Shows when all takeable items collected from interior room
-- **Interior rooms only** - Only appears in 9 house rooms, not exterior areas
-- **Smart detection** - Ignores fixed items (safe, PC, etc.) that can't be taken
-- **Message**: "You have picked this room clean. Nothing left to take here."
-- **Player guidance** - Encourages moving to next room after thorough search
-
-### Standardized Room Display Order ✨ NEW in v0.32
-- **Consistent presentation** - Both lookAtRoom() and displayRoom() use same order
-- **Order**: Description → blank line → Items/Picked Clean → blank line → Exits
-- **Clean spacing** - Single blank lines, no excessive whitespace
-- **Visual hierarchy** - Important information properly separated
-
-### DOOR GONG with Cascading Echo Effect ✨ NEW in v0.32
-- **Dramatic transformation** - Door knocker renamed to DOOR GONG
-- **Cascading visual effect** - Three progressively smaller GONGs with indentation
-  - First: 60px red, no indent
-  - Second: 45px red, 6-space indent
-  - Third: 30px red, 12-space indent
-- **Echo flavor text** - "the sound echoes" → "the sound fades away"
-- **HTML entity indentation** - Uses `&nbsp;` for reliable spacing
-- **Multiple aliases** - gong, doorgong, handle, knocker all work
-- **TURN command** - New alias for USE: "turn handle" or "turn gong"
-
-### Inline Text Formatting System ✨ in v0.31
-- **HTML formatting in JSON** - All text supports bold, colors, sizes, shadows
-- **Bold hints** - Commands, directions, item names bolded throughout
-- **Colored hints** - Yellow (#ffcc00) hints guide players
-- **Dramatic effects** - Doorbell with blue sparkle, knocker with red/purple glow
-- **Consistent formatting** - Works in both JSON data and JS hardcoded strings
-- Safe JSON encoding using single quotes in HTML style attributes
-- Blank lines: `<br><br>` for regular text, `\n\n` for notes
-
-### Custom "Cannot Take" Message System ✨ NEW in v0.31
-- **Helpful feedback** - All 8 fixed items have custom messages
-- **Action suggestions** - Messages suggest what players CAN do
-- **Unified system** - Take actions with `addToInventory: false` property
-- doorbell: "You cannot take it. It's attached to the house. But you could **ring** it or **use** it."
-- safe: "It's too heavy to move. But you could **examine** it."
-- pc: "It's too heavy and bulky to carry. But you could **examine** it."
-- Replaces confusing error "You don't see any X here"
-
-### Take Command Improvements ✨ NEW in v0.31
-- **Dual mode support** - Items with `addToInventory: true` go to inventory
-- **Custom messages** - Items with `addToInventory: false` show message only
-- Modified filter: checks for `take !== undefined` instead of `addToInventory === true`
-- Conditional inventory update: only if `addToInventory === true`
-- All fixed items now have helpful "take" actions
-
-### Examine Command Improvements ✨ NEW in v0.31
-- **Smart inventory check** - Only requires inventory if `addToInventory === true`
-- Fixed items with `addToInventory: false` can be examined in room
-- Previous bug: fixed items with take actions couldn't be examined
-- Now works: "examine light" shows porch light description in room
-
-## Major Features (Pre-v0.31)
-
-### OPEN Command & Container System ✨ NEW in v0.30
-- **OPEN command** - Open containers, cabinets, and doors
-- **DVD cabinet puzzle** - Glass cabinet with visible but inaccessible items
-- Reveals items when opened (distinct from examine reveals)
-- hasBeenOpened state tracking prevents re-opening
-- Shortcuts: "open" or "unlock"
-- Extensible for chests, drawers, doors
-
-### Music System Sound Options Puzzle ✨ NEW in v0.30
-- **Music system** in MUSIC-ROOM with sound mode selector
-- Three options: MUSIC (warm EQ), MOVIE (surround), GAME (bass boost)
-- SAY GAME → reveals secret door (makes it visible but locked)
-- Two-step secret door: reveal (SAY GAME) then unlock (SAY FRIEND)
-- Humorous flavor text for each sound mode
-- Extends SAY command functionality
-
-### Powerful PC with Removable Video Card ✨ NEW in v0.30
-- **Gaming PC** in GAME-ROOM with humorous specs
-- Intel Core 9 Ultra 19900000K CPU, 2.3TB DDR7 RAM, 32GB HD
-- EXAMINE PC → reveals removable NVidia 5090 video card
-- "Shame to butcher such a nice PC for parts" flavor text
-- Video card appears in room as scavenger item
-- Demonstrates examine-based reveal for fixed items
-
-### DVD Cabinet Movie Paradox ✨ NEW in v0.30
-- **TV-ROOM puzzle** with "Bringing Up Baby" playing on TV
-- DVD visible through glass cabinet doors but inaccessible
-- Movie paradox: "How is the movie playing if the DVD is right there?"
-- EXAMINE CABINET → see DVD through glass (cannot take)
-- OPEN CABINET → doors open, DVD becomes accessible
-- Demonstrates open-based reveal system
-
-### Dual Reveal System ✨ NEW in v0.30
-- **Examine reveals**: Items without open action (PC, Frankenstein book)
-- **Open reveals**: Items with open action (DVD cabinet)
-- **SAY reveals**: Special puzzle items (safe, secret door)
-- Smart detection prevents wrong trigger (cabinet won't reveal on examine)
-- Extensible pattern for future puzzle design
-
-### SAY Command & Interactive Puzzles (v0.29-0.30)
-- **SAY command** - Type actual combinations and passwords
-- **Safe combination puzzle** - Find bookmark → say combination → open safe
-- **Secret door two-step** - SAY GAME (reveal) → SAY FRIEND (unlock)
-- Flexible input normalization ("13-97-55", "139755", "13 97 55" all work)
-- Context-sensitive responses (music system, safe, secret door)
-- Shortcuts: "say" or "speak"
-
-### Bold Keyword Highlighting ✨ in v0.29
-- Quest items show **bold keywords** in inventory
-- brass **key**, old **bookmark**, Mrs. McGillicutty's **list**, **password** paper
-- Makes it clear what words to use in commands
-- Uses inventoryDisplay property with HTML bold tags
-- Automatic fallback to regular display if not defined
-
-### GO Command Prefix Support ✨ NEW in v0.28
-- Accept "GO NORTH" in addition to "NORTH"
-- Works with all commands (GO TAKE, GO USE, etc.)
-- Intuitive for text adventure players
-- Strips "go" prefix during command preprocessing
-- "go" alone generates appropriate error
-
-### Locked Door System ✨ NEW in v0.28
-- Doors can be visible but locked
-- Locked doors appear in exits list
-- Movement blocked with custom messages
-- Doors unlock via special items (knocker, keys)
-- Supports invisible doors (secret passages)
-
-### Door Knocker & Key Puzzles ✨ NEW in v0.28
-- **Front door knocker**: USE to unlock Radley House entrance
-- **Brass key**: Find in library, use at TV-ROOM to unlock bedroom
-- Location-based validation (key only works at correct door)
-- First use messages, subsequent use handling
-- Room state updates after unlocking
-
-### Hidden Item Discovery System ✨ NEW in v0.28
-- Items can reveal other items when examined
-- Frankenstein book contains hidden bookmark
-- Revealed items auto-added to inventory
-- Parent items marked as searched to prevent duplication
-- Room state displayed after discovery
-
-### Item Type System ✨ ENHANCED in v0.28
-- **tools** - Quest items (brass key) with normal styling
-- **notes** - Quest items (bookmark, list) with handwritten styling
-- **candy** - Treats with eat actions
-- **scavenger** - Hunt collectibles
-- **fixed** - Environmental items
-- Proper inventory categorization and display
-
-### EAT Command ✨ NEW in v0.28
-- Consume candy items from inventory
-- Shows flavor text and health effects
-- Removes item from game
-- Updates treats counter
-- Validates eatable property and eat action
-
-### Interior Room Exit Formatting ✨ NEW in v0.28
-- Nine house rooms show "SOUTH door, NORTH door" format
-- Exterior rooms show "north, south" format
-- Clearer navigation in complex interior spaces
-- Maintains directional awareness
-
-### Inventory System ✨ ENHANCED in v0.28
-- Display order: ITEMS, SCAVENGER ITEMS, TREATS
-- Tools and notes combined in ITEMS section
-- Accurate treats counting (candy only)
-- Proper item type filtering
-
-### Handwritten Notes Display System
-- Google Fonts integration (Caveat) for consistent handwriting
-- Paper-like visual style with cream background and shadow
-- Distinct rendering for quest items vs. regular text
-- Line breaks preserved for proper formatting
-- Applies to all items with type: "notes"
-
-### Visual Scavenger Hunt System
-- 3×3 grid showing 9 scavenger item locations
-- Background image support
-- Items appear when discovered with green checkmark overlay
-- Icon halos for visibility against any background
-- Spatial mapping to house rooms
-
-### Redesigned Status Panel
-- Scavenger Items and Treats progress tracking
-- Three-column command grid with aligned text
-- ASCII compass for visual direction reference
-- Cleaner, more scannable layout
-- No more inventory clutter (use 'i' command instead)
-
-### USE Command System
-- Generic USE command for item interactions
-- Special handling for doorbell (Mrs. McGillicutty)
-- Special handling for door knocker (Radley front door) ✨ NEW
-- Special handling for brass key (bedroom door) ✨ NEW
-- Extensible for future use actions
-
-### Room Visit Tracking
-- Tracks visits to each room in player.core.visitedRooms
-- Supports first/second/repeat enterText variations
-- Dynamic descriptions based on game state
-- Enables narrative progression (light on → light off)
-
-### HOME/QUIT Command
-- QUIT and HOME are synonyms
-- Must be typed in UPPERCASE (serves as confirmation)
-- Moves player to HOME room with ending message
-- Custom background image for game completion
-
-## Overall Structure & File Size
-
-### Directory Structure
-```
-/mnt/d/dev/projects/halloween/games/textAdventure/
-├── textAdventure.html           (44 lines)
-├── textAdventure.css            (270+ lines, includes notes, compass, grid)
-├── textAdventure.js             (~1800 lines, GO prefix, locked doors, EAT, reveal system)
-├── HALLOWEEN-GAME/
-│   ├── gameData.json            (29 lines)
-│   ├── rooms-w-doors.json       (390+ lines, locked doors, secret door)
-│   ├── commands.json            (82 lines, 12 commands including EAT)
-│   ├── items.json               (750+ lines, 32 items including brass key, bookmark)
-│   ├── scavengerItems.json      (280+ lines, 11 items with reveal system)
-│   ├── uiConfig.json            (21 lines)
-│   └── keyboardShortcuts.json   (15 lines)
-├── assets/
-│   ├── background/              (Background images for scavenger grid)
-│   │   ├── HOME250x250.png
-│   │   ├── McGillicuttyHouse250x250.png
-│   │   └── RadleyHouse250x250.png
-│   ├── items/                   (24 candy/food images at 150px dimension)
-│   └── scavenger/               (scavenger items: 90×90 and 250×250 versions)
-│       └── [item]90x90.png      (scavenger item icons)
-└── claude-john-docs/
-    ├── Claude-ToBeContinued-2025-10-04.md (latest - v0.28)
-    ├── Claude-ToBeContinued-2025-10-02.md (quest items)
-    ├── Claude-ToBeContinued-2025-10-01-1600.md (grid & inventory)
-    ├── specifications.md (this file)
-    └── specifications-technical.md
-```
-
-**Total JavaScript Code:** ~1800 lines (includes GO prefix, locked doors, reveal system, EAT command)
-**Game Data:** 1600+ lines across 6 JSON files
-**Total Items:** 42 (11 scavenger + 23 candy + 1 tools + 2 notes + 5 fixed)
-**Total Commands:** 12 (including EAT)
-
-## Screen Layout & Grid System
-
-### Main Game Area
-- **Total Size:** 1280px × 720px (completely fixed)
-- **Position:** Absolute center using transform
-- **Border:** 3px solid #ff6600 (orange)
-- **Border Radius:** 15px
-
-### Three-Panel Layout
-
-#### Center Game Area (Main Interface)
-- **Position:** 607px wide
-- **Content:** Text output, command input, gameplay
-
-#### Right Top Panel (Scavenger Grid)
-- **Position:** 313px × 280px
-- **Content:** 3×3 scavenger item grid
-- **Grid:** CSS Grid with 2px gap
-- **Background:** Dynamic background image changes with room
-- **Squares:** Transparent, ~95×84px each
-- **Display:** Shows found items with icons + green checkmarks
-
-#### Right Bottom Panel (Status Box)
-- **Position:** 313px × variable height
-- **Content:** SCORE, COMMANDS with grid, ASCII compass
-- **Layout:**
-```
-SCORE:
-Scavenger Items: # / 9
-Treats:          # / 20
-
-COMMANDS:
-(h)elp       (l)ook       (i)nventory
-(t)ake       (d)rop       e(x)amine
-(u)se        (e)at        HOME
-
-          (n)orth
-             |
-   (w)est ------ (e)ast
-             |
-          (s)outh
-```
-
-## Data Architecture
-
-### Item Type System ✨ ENHANCED in v0.28
-
-**All 42 items now classified by type:**
-
-**Type: "tools" (1 item) ✨ NEW**
-- Purpose: Quest items, keys, utility objects
-- Points: 0
-- Droppable: false
-- Display: Normal text styling (not handwritten)
-- Items: brass_key
-- Special: Can have use actions, location-based functionality
-
-**Type: "notes" (2 items)**
-- Purpose: Quest items, clues, messages
-- Points: 0
-- Droppable: false
-- Display: Handwritten paper style when examined
-- Items: oldnote (bookmark), mrsmcgillicuttyslist
-- Special: Rendered with Caveat font, paper background
-
-**Type: "scavenger" (11 items)**
-- Purpose: Scavenger hunt collectibles
-- Points: 10 each
-- Droppable: false
-- Display: Visual grid + inventory category
-- Special: icon90x90, icon250x250, found property, can reveal other items
-
-**Type: "candy" (23 items)**
-- Purpose: Treat collection
-- Points: 1 each
-- Droppable: true
-- Display: Inventory treats category
-- Special: icon150, eatable, health values, eat actions
-
-**Type: "fixed" (5 items)**
-- Purpose: Environmental/utility items
-- Points: 0
-- Droppable: varies
-- Items: doorbell, candy_bag (inactive), 2 porch lights, door_knocker
-- Special: Can have use/ring/knock actions
-
-### Universal Item Structure ✨ ENHANCED
-
-```json
-{
-  "includeInGame": true,
-  "type": "tools" | "notes" | "scavenger" | "candy" | "fixed",
-  "typedNames": ["primary", "alias1", "alias2"],
-  "display": "Display Name",
-  "description": "Brief description",
-  "location": "ROOM-NAME" | "INVENTORY" | "HIDDEN",
-  "points": 0-10,
-  "health": -5 to 6,
-  "eatable": true/false,
-  "droppable": true/false,
-  "visible": true/false,
-  "locked": false,
-  "hasBeenUsed": false,      // For items with use actions
-  "revealsItem": "item_key",  // NEW - For items that reveal others
-  "hasBeenSearched": false,   // NEW - Prevents re-revealing
-  "icon150": "assets/items/name150.png",          // candy items
-  "icon90x90": "assets/scavenger/name90x90.png",  // scavenger items
-  "icon250x250": "assets/scavenger/name250x250.png", // scavenger items
-  "actions": {
-    "examine": "examine text",
-    "use": {
-      "response": "use response text"
-    },
-    "take": {
-      "response": "pickup message",
-      "addToInventory": true,
-      "markAsFound": true  // scavenger only
-    },
-    "eat": {  // candy only
-      "response": "eat message",
-      "addHealth": -5 to 6,
-      "removeItem": true
-    }
-  }
-}
-```
-
-### Door Structure ✨ ENHANCED in v0.28
-
-```json
-{
-  "door-id": {
-    "between": ["ROOM1", "ROOM2"],
-    "description": "door description",
-    "visible": true/false,        // false = invisible (secret doors)
-    "locked": true/false,         // true = blocks movement
-    "open": true/false,
-    "lockedMessage": "custom locked message",  // NEW
-    "requiresPuzzle": "puzzle-id"  // For puzzle-based locks
-  }
-}
-```
-
-**Door Visibility Logic:**
-- **visible: false** → Door doesn't appear in exits list
-- **visible: true, locked: true** → Appears in exits, blocks movement with message
-- **visible: true, locked: false, open: true** → Appears and allows movement
-
-### Room Structure with Visit Tracking
-
-```json
-{
-  "name": "Room Name",
-  "enterText": {
-    "first": "Text shown on first visit",
-    "second": "Text shown on second visit (optional)",
-    "repeat": "Text shown on third+ visits"
-  },
-  "lookText": "Text shown with look command",
-  "exits": {
-    "north": { "to": "OTHER-ROOM", "door": "door-id" }
-  },
-  "special": {
-    "displaySquare": 0-8,  // For scavenger grid mapping
-    "backgroundPic": "assets/background/image.png"
-  }
-}
-```
-
-### Command Structure ✨ ENHANCED in v0.28
-
-```json
-{
-  "command_name": {
-    "includeInGame": true,
-    "type": "system" | "action" | "movement",
-    "shortcuts": ["shortcut1", "shortcut2"],
-    "action": "action_name"
-  }
-}
-```
-
-**Action types:**
-- Movement: move_north, move_south, move_east, move_west
-- System: show_help, show_inventory, quit_game
-- Interaction: take_item, drop_item, examine_item, examine_room, use_item, eat_item ✨ NEW
-
-## Visual Design Elements
-
-### Handwritten Notes (.notes-text)
-
-**CSS Styling:**
-```css
-.notes-text {
-  background: #fffef0; /* Cream/ivory paper color */
-  color: #2d2d2d; /* Dark gray/black for text */
-  font-family: 'Caveat', cursive;
-  font-size: 20px;
-  padding: 15px 20px;
-  margin: 10px 0;
-  display: inline-block;
-  border: 1px solid #bbb;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-  line-height: 1.6;
-  white-space: pre-line;
-  max-width: 90%;
-}
-```
-
-**Google Fonts Import:**
-```css
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
-```
-
-**Usage:** Applied automatically to all items with type: "notes" when examined.
-
-### Status Panel Components
-
-**Command Grid:**
-```css
-.command-grid {
-  display: grid;
-  grid-template-columns: auto auto auto;
-  column-gap: 10px;
-  row-gap: 1px;
-  line-height: 1.1;
-}
-```
-
-**ASCII Compass:**
-```css
-.compass {
-  white-space: pre;
-  margin-top: 8px;
-  line-height: 1.2;
-}
-```
-
-### Text Type Classes
-
-- `.prompt-echo` - Yellow (#ffcc00) - Echoed player commands
-- `.command-output` - Cyan (#1acdb2) - System messages, exits
-- `.flavor-text` - Green (#00ff00) - Descriptions, responses
-- `.error-text` - Red (#ff4444) - Error messages
-- `.underlined-text` - Underlined - Headers, categories
-- `.notes-text` - Handwritten paper style - Quest items
-
-## Game Mechanics
-
-### Complete Command System ✨ ENHANCED in v0.30
-
-**Movement Commands:**
-- north (n) - Move north
-- south (s) - Move south
-- east (e) - Move east
-- west (w) - Move west
-- **GO prefix supported** - "go north", "go take apple", etc.
-
-**Information Commands:**
-- help (h, ?) - Show command list
-- look (l) - Describe current room
-- inventory (i) - Show categorized inventory with bold keywords
-
-**Interaction Commands:**
-- take (get, grab, pick) - Pick up items
-- examine (x, ex) - Examine items in detail
-- drop (put, place) - Drop items
-- **use (u, ring) - Use items**
-  - Generic handler for item interactions
-  - Doorbell (Mrs. McGillicutty)
-  - Door knocker (Radley front door)
-  - Brass key (bedroom door)
-  - Extensible for future use actions
-- **eat - Consume candy items**
-- **say (speak) - Say combinations/passwords** (v0.29)
-  - Safe combination at STUDY
-  - Music system options at MUSIC-ROOM ✨ v0.30
-  - Secret door password at MUSIC-ROOM
-  - Context-sensitive responses
-  - Flexible input normalization
-- **open (unlock) - Open containers and cabinets** ✨ NEW in v0.30
-  - DVD cabinet in TV-ROOM
-  - Generic handler for openable items
-  - hasBeenOpened state tracking
-  - Reveals items when opened
-
-**System Commands:**
-- **quit (home) - End game**
-  - Must be typed in UPPERCASE
-  - Moves to HOME room
-  - Both QUIT and HOME work identically
-
-### Command Processing Flow ✨ UPDATED in v0.29
-
-1. **Strip GO prefix** - Remove "go" if followed by another word
-2. **Check QUIT/HOME uppercase** - Validate uppercase requirement
-3. **Find command** - Exact/shortcut/prefix matching
-4. **Execute handler** - Route to appropriate action function
-
-### Natural Language Command Processing
-
-**Multi-Word Parsing:**
-```
-"take gummy bears" → strips spaces → matches "gummybears"
-"examine reeses pieces" → strips spaces → matches "reesespieces"
-"use doorbell" → strips spaces → matches "doorbell"
-"go north" → removes "go", processes "north"
-```
-
-**All inputs:**
-- GO prefix stripped first (if present)
-- Converted to lowercase (except QUIT/HOME validation)
-- Spaces stripped after command extraction
-- Matched against typedNames arrays
-
-### Item Interaction
-
-**Take Command:**
-- Validates: includeInGame, visible, locked, has take action
-- Moves to INVENTORY location
-- Sets found = true for scavenger items (markAsFound)
-- Updates scavenger grid if scavenger item
-- Updates status box
-
-**Drop Command:**
-- Checks droppable property
-- Prevents dropping scavenger items
-- Moves to current room location
-- Updates status box
-
-**Examine Command:**
-- Portable items: Must be in inventory
-- Fixed items: Can be in current room OR inventory ✨ FIXED
-- Shows item.actions.examine text
-- **Notes items: Rendered with handwritten style**
-- **Reveal system: Discovers hidden items** ✨ NEW
-
-**Use Command:** ✨ ENHANCED in v0.28
-- Generic handler for items with use actions
-- Validates: item exists, has use action, in room or inventory
-- **Special: Doorbell**
-  - First use: Shows Mrs. McGillicutty dialogue, adds note, turns off light
-  - Subsequent: "You ring and ring, but no one answers."
-- **Special: Door Knocker** ✨ NEW
-  - First use: Unlocks front-porch2foyer door, shows unlock message
-  - Subsequent: "The door is already unlocked."
-- **Special: Brass Key** ✨ NEW
-  - Location check: Must be at TV-ROOM
-  - First use: Unlocks bedroom2tv-room door
-  - Subsequent: "The bedroom door is already unlocked."
-- Other items: Shows item.actions.use.response
-
-**Eat Command:** ✨ NEW in v0.28
-- Validates: item in inventory, eatable === true, has eat action
-- Shows eat response message
-- Removes item via `delete items[itemKey]`
-- Updates status panel (treats count decreases)
-
-### Hidden Item Reveal System ✨ NEW in v0.28
-
-**How it works:**
-1. Item has `revealsItem` property pointing to hidden item key
-2. Hidden item starts with `location: "HIDDEN"`, `visible: false`
-3. When parent examined (in inventory):
-   - Hidden item moves to INVENTORY
-   - Hidden item set to visible: true
-   - Parent marked hasBeenSearched: true
-   - Room state displayed
-4. Prevents re-revealing with hasBeenSearched check
-
-**Example (Frankenstein book):**
-```json
-"frankenstein": {
-  "revealsItem": "oldnote",
-  "hasBeenSearched": false
-}
-
-"oldnote": {
-  "location": "HIDDEN",
-  "visible": false
-}
-```
-
-**Player experience:**
-- Take Frankenstein book
-- Examine book → "...you notice an old yellowed bookmark..."
-- Bookmark auto-added to inventory
-- Room state shown
-- Can examine bookmark separately
-
-### Locked Door System ✨ NEW in v0.28
-
-**Door States:**
-- **Invisible & Locked**: Secret doors (music-room2game-room)
-- **Visible & Locked**: Requires item/puzzle (bedroom, front door initially)
-- **Visible & Unlocked**: Normal traversable doors
-
-**Movement Logic:**
-1. Check if door exists in direction
-2. Check if door is locked
-3. If locked: Show lockedMessage or default locked text
-4. If unlocked: Move to new room
-
-**Exit Display Logic:**
-1. Filter exits by door visibility
-2. Show all visible doors (even if locked)
-3. Format based on room type (interior vs. exterior)
-
-**Unlocking Methods:**
-- USE door_knocker at FRONT-PORCH → unlocks front door
-- USE brass_key at TV-ROOM → unlocks bedroom door
-- Future: Puzzles, combinations, SAY commands
-
-### Interior Room Exit Formatting ✨ NEW in v0.28
-
-**Interior Rooms (9 total):**
-- FOYER, LIBRARY, MUSIC-ROOM, GAME-ROOM, KITCHEN, BEDROOM, STUDY, DINING-ROOM, TV-ROOM
-- Format: "Exits: SOUTH door, NORTH door, EAST door"
-
-**Exterior Rooms:**
-- All other rooms (streets, porches, HOME, etc.)
-- Format: "Exits: north, south, east"
-
-**Benefits:**
-- Clearer navigation in multi-exit rooms
-- Matches house interior aesthetic
-- Maintains lowercase simplicity for outdoor areas
-
-### Room Visit Tracking
-
-**How it works:**
-1. Count visits: `player.core.visitedRooms.filter(r => r === roomId).length`
-2. Select text:
-   - 0 visits: enterText.first
-   - 1 visit: enterText.second (or repeat if not defined)
-   - 2+ visits: enterText.repeat
-3. Append room to visitedRooms array
-
-**Example (NICE-PORCH):**
-- Visit 1: "The porch light is on, casting a warm welcoming glow."
-- Visit 2: "The porch light is off, but you try the bell anyway."
-- Visit 3+: "The porch light is off. No one answers the door."
-
-**Dynamic LOOK Command:**
-- lookAtRoom() checks current game state
-- NICE-PORCH: Describes light based on items.porch_light_nice.visible
-- Other rooms: Standard lookText
-
-## Item Distribution
-
-### Tools/Quest Items (1 total)
-
-1. **brass_key (LIBRARY)** - Unlocks bedroom door at TV-ROOM
-   - Type: tools
-   - Display: brass key (brass **key** in inventory) ✨ v0.29
-   - Use action: Location-based (TV-ROOM only)
-   - Not droppable (quest item)
-
-### Notes/Messages (3 total) ✨ UPDATED in v0.29
-
-1. **oldnote (HIDDEN → revealed by frankenstein)**
-   - Type: notes
-   - Display: old bookmark (old **bookmark** in inventory) ✨ v0.29
-   - Found inside Frankenstein book when examined
-   - Handwritten style rendering
-   - Contains safe combination: 13-97-55 ✨ v0.29
-
-2. **mrsmcgillicuttyslist (NICE-HOUSE → auto-moved to INVENTORY)**
-   - Type: notes
-   - Display: Mrs. McGillicutty's List (Mrs. McGillicutty's **list** in inventory) ✨ v0.29
-   - 9 clues matching the 9 active scavenger items
-   - Displays in handwritten style when examined
-   - Auto-given when doorbell is used first time
-
-3. **passwordpaper (HIDDEN → revealed by safe)** ✨ NEW in v0.29
-   - Type: notes
-   - Display: password paper (**password** paper in inventory) ✨ v0.29
-   - Found inside safe in STUDY
-   - Contains secret door password: "Speak, friend, and enter."
-   - Unlocks secret door in MUSIC-ROOM
-
-### Scavenger Items (11 total, 9 active)
-
-**Active in game (includeInGame: true):**
-1. nvidia - NVidia 5090 Video Card (GAME-ROOM, square 0)
-2. beatles - Beatles Revolver Music CD (MUSIC-ROOM, square 3)
-3. catmug - Cat Mug (DINING-ROOM, square 4)
-4. cuponoodles - Cup O' Noodles (KITCHEN, square 1)
-5. bringingupbaby - Bringing Up Baby DVD (TV-ROOM, square 5)
-6. dog - Odd Dog (BEDROOM, square 2) ✨ v0.29 - moved from STUDY
-7. krugerrand - Krugerrand gold coin (HIDDEN→STUDY, square 8) ✨ v0.29 - revealed by safe
-8. pumpkin - Decorative Pumpkin (FOYER, square 7)
-9. **frankenstein - Frankenstein book (LIBRARY, square 6)** ✨ ENHANCED
-   - Has revealsItem property
-   - Reveals old bookmark when examined
-   - hasBeenSearched prevents re-revealing
-
-**Inactive (includeInGame: false):**
-10. watch - Fancy Watch (BEDROOM) - not currently in game
-11. gamingmouse - Razer Gaming Mouse (GAME-ROOM) - not currently in game
-
-### Candy/Treats (23 total) ✨ UPDATED
-
-**Distribution across rooms:**
-- FOYER: snickers
-- LIBRARY: whatchamacallit
-- DINING-ROOM: 100grand, apple, lemondrops
-- STUDY: 3musketeers, gummybears, lifesavers
-- KITCHEN: butterfinger, cannedcorn, reesespieces
-- MUSIC-ROOM: smarties
-- GAME-ROOM: mars, hersheykisses, popcorn
-- BEDROOM: mounds, jollyrancher, rottentomato, spicedrops
-- TV-ROOM: mrgoodbar, skittles, twizzlers  ✨ UPDATED (hotdog removed)
-
-**Special item:**
-- socks: Not eatable (eatable: false)
-
-**All have:**
-- Type: "candy"
-- Eatable: true (except socks)
-- Eat actions with flavor text
-- Health values
-- removeItem: true
-
-### Fixed Items (9 total) ✨ UPDATED in v0.30
-
-1. **doorbell (NICE-PORCH)** - Has use action, triggers Mrs. McGillicutty interaction
-2. **candy_bag (MUSIC-ROOM)** - Trick-or-treat bag, includeInGame: false (inactive)
-3. porch_light_nice (NICE-PORCH) - Not takeable, visible changes based on doorbell use
-4. **door_knocker (FRONT-PORCH)** - Has use action, unlocks front door
-5. porch_light_front (FRONT-PORCH) - Not visible, not takeable
-6. **safe (STUDY)** - v0.29
-   - Old cast iron safe with combination lock
-   - Opens with SAY 13-97-55
-   - Reveals krugerrand and password paper
-   - hasBeenOpened flag tracks state
-   - Shows "The safe door is open" after opening
-7. **musicsystem (MUSIC-ROOM)** ✨ NEW in v0.30
-   - High-end audio system with sound mode selector
-   - Three SAY options: MUSIC, MOVIE, GAME
-   - SAY GAME reveals secret door
-   - Mounted on north wall
-8. **powerfulpc (GAME-ROOM)** ✨ NEW in v0.30
-   - Gaming PC with humorous specs
-   - Reveals NVidia 5090 when examined
-   - revealsItem property with hasBeenSearched
-9. **dvdcabinet (TV-ROOM)** ✨ NEW in v0.30
-   - Glass-door cabinet with DVDs
-   - Has open action
-   - Reveals "Bringing Up Baby" DVD when opened
-   - hasBeenOpened flag tracks state
-
-## Scoring System
-
-### Current Implementation
-
-**Status Box Display:**
-- Scavenger Items: X / 9 - Count of scavenger items in inventory
-- Treats: X / 20 - Count of candy items in inventory (max display 20)
-
-**Inventory Display:**
-- ITEMS - Shows tools and notes (no count) ✨ UPDATED
-- SCAVENGER ITEMS (X/9) - Shows found/total active scavenger items
-- TREATS (X/20) - Shows collected/limit candy items
-
-**Treats Counting:** ✨ FIXED in v0.28
-- Now correctly counts only candy items (type === "candy")
-- Tools and notes excluded from treats count
-- Uses item type property instead of isScavengerItem
-
-**Not Currently Used:**
-- Point values (items still have them but not displayed)
-- Health score (property exists but not tracked in UI)
-- Total score (not calculated in simplified system)
-
-**Available for Future:**
-- Item points still defined (candy: 1, scavenger: 10)
-- Health values on eatable items
-- Total score calculation possible if needed
-
-## Mrs. McGillicutty Interaction
-
-**Design (v0.27+):**
-- Player stays on NICE-PORCH at all times
-- Uses doorbell to trigger interaction
-- No room entry, no door locking needed
-- NICE-HOUSE preserved but inaccessible (no exits lead to it)
+### Victory Celebration System 🎉 NEW in v0.32
+
+#### Scavenger Item Discovery Message
+- **Congratulatory text** on picking up each scavenger item
+- Format: `** SCAVENGER HUNT ITEM!!! ** (one of nine)`
+- **Flashing animation:**
+  - Bright orange color (#ffa500)
+  - 20px bold font
+  - 2-second opacity animation (1 → 0.3 → 1)
+  - Infinite loop while visible
+- **Word-based count:** "one of nine" instead of "1 / 9"
+- **Single display:** Only shows on TAKE, not in subsequent INVENTORY/EXAMINE
+- Appears above item description and 250px image
+
+#### 9th Item Victory Celebration Animation
+**Sequence:**
+1. Normal "nine of nine" message displays
+2. 3-second pause
+3. **Grid Animation Begins:**
+   - Semi-transparent dark overlay (85% opacity black)
+   - 3×3 grid of all 9 scavenger items
+   - Images sized to 165×165px with 5px gaps
+   - 2px white border around grid
+   - Centered in text area using fixed positioning
+
+**Animation Details:**
+- **Punch-rotate effect:**
+  - Each image starts at 10% scale, 0° rotation, opacity 0
+  - Rotates 360° while scaling to 110% (60% mark)
+  - Settles to 100% scale, opacity 1
+  - 0.6s duration per image
+  - Staggered by 0.15s (9 images = ~1.5s total animation)
+- **Glowing aura:**
+  - Orange/gold drop-shadow filters
+  - Pulsing animation (2s infinite loop)
+  - Starts after punch animation completes
+
+**Victory Text Overlay:**
+- Appears 5 seconds after grid starts
+- Centered over grid with fade-in + scale animation
+- **Content:**
+  ```
+  YOU WON! (48px)
+  You found all NINE
+  SCAVENGER ITEMS!
+
+  Arthur and Mr. Radley (28px)
+  CONGRATULATE YOU!! (28px)
+  ```
+- **Styling:**
+  - Gold color (#ffd700)
+  - Bold font
+  - Chiseled text-shadow effect (black + white highlights)
+  - Additional gold glow
+  - Semi-transparent black background (85%)
+  - 4px gold border with rounded corners
+
+**Dismissal:**
+- Player presses Enter to dismiss
+- Overlay fades out over 0.5s
+- Returns to normal game display
+- Input blocked during celebration (`awaitingCelebrationDismiss` flag)
+
+### Two-Column Inventory Display NEW in v0.32
 
 **Implementation:**
+- Scavenger items display in 2 columns instead of 1
+- Reduces vertical space from 9 lines to 5 lines
+- Prevents text overflow on HOME/QUIT screen
 
-**Doorbell Item (items.json):**
-```json
-"doorbell": {
-  "visible": true,
-  "hasBeenUsed": false,
-  "actions": {
-    "use": {
-      "response": "The door swings open. Mrs. McGillicutty..."
-    }
-  }
-}
+**Technical Details:**
+- Column width: 33 characters
+- Spacing: `&nbsp;` HTML entities (browsers won't collapse)
+- Smart length calculation: Strips HTML tags before measuring
+- Helper function: `formatScavengerTwoColumns(scavengerItems)`
+- Applied to:
+  - INVENTORY command
+  - HOME screen ending
+
+**Layout:**
+```
+SCAVENGER ITEMS (9/9)
+  NVidia 5090 Video Card    Beatles Revolver CD
+  Cup O' Noodles            Cat Mug
+  Odd Dog                   Bringing Up Baby DVD
+  Frankenstein book         Decorative Pumpkin
+  Krugerrand coin
 ```
 
-**handleUseCommand() Logic:**
-1. First use: Display dialogue, add note, turn off light, mark used, call lookAtRoom()
-2. Subsequent: "You ring and ring, but no one answers."
+### Hidden Commands System NEW in v0.32
 
-**Benefits:**
-- More realistic (player doesn't enter house)
-- Simpler code (no auto-take, no door locking)
-- Better narrative flow (matches the text)
-- Player agency (USE instead of automatic)
+#### HINT Command
+- **Purpose:** Reveals all secret commands and aliases
+- **Shortcut:** SECRETS
+- **Display sections:**
+  1. **Hidden/Secret Commands:**
+     - ABOUT - Game information
+     - DEBUG - Testing items
+     - CELEBRATE - Replay victory
+     - RESTART - Reload game
+     - THROW - Easter egg
+     - HINT [secrets] - Shows list
 
-## Room Layout
+  2. **Command Aliases** (2-column format):
+     - Directions: north [n], south [s], east [e], west [w]
+     - Help: help [h, ?]
+     - Common: look [l], examine [x, ex, read], take [t, get, g, grab, pick]
+     - Actions: drop [put, place], inventory [i]
+     - Special: use [u, ring, turn], eat, open [unlock], say [speak, push, press, dial]
+     - System: quit [home]
 
-### All Rooms (16 total)
+- Compact display saves vertical space
+- Uses &nbsp; padding for alignment
 
-**Starting Location:**
-- STREET-01 - Starting point, paths to NICE-PORCH and STREET-02
+#### CELEBRATE Command
+- **Purpose:** Replay victory animation
+- **Requirement:** Must have all 9 scavenger items
+- **Error handling:** Shows "You haven't collected all items yet! Found: X / 9"
+- Immediately triggers full celebration sequence
+- Perfect for showing off ending or testing
 
-**Mrs. McGillicutty's House:**
-- NICE-PORCH - Doorbell interaction, porch light state changes
-- NICE-HOUSE - Preserved but inaccessible (no exits lead here)
+#### RESTART Command
+- **Purpose:** Reload game from beginning
+- **Implementation:** Simple `location.reload()`
+- Resets all items, locations, and game state
+- Same as browser refresh but accessible in-game
+- Header hint: "Type **RESTART** to start a new game"
 
-**Radley House Exterior:**
-- STREET-02 - Connects street to Radley House
-- FRONT-PORCH - Entrance to Radley House (locked door with knocker) ✨ UPDATED
+#### ABOUT Command
+- **Purpose:** Display game information and credits
+- **Storage:** gameData.json → "about" section
+- **Editable:** Change text without touching code
+- **Current content:**
+  - Title: "About The Radley House"
+  - Game description
+  - Credits: "Game created by Poppy/John"
+  - Version number
+- Uses same text array format as startup.welcomeText
 
-**Radley House Interior (9 rooms with scavenger items):**
-- FOYER (square 7) - Entry hall, pumpkin
-- GAME-ROOM (square 0) - nvidia card, secret door north (invisible) ✨ UPDATED
-- KITCHEN (square 1) - cup o' noodles
-- BEDROOM (square 2) - krugerrand coin, locked door south ✨ UPDATED
-- MUSIC-ROOM (square 3) - Beatles CD, secret door north (invisible) ✨ UPDATED
-- DINING-ROOM (square 4) - cat mug
-- TV-ROOM (square 5) - Bringing Up Baby DVD, locked bedroom door north ✨ UPDATED
-- LIBRARY (square 6) - Frankenstein book (reveals bookmark), brass key ✨ UPDATED
-- STUDY (square 8) - odd dog
+#### DEBUG Command (Enhanced)
+- **Purpose:** Testing and development
+- **New features:**
+  - Adds 8 scavenger items (all except pumpkin)
+  - Adds 15 random candy/treats
+  - Marks all as found
+  - Updates inventory and scavenger grid
+- **Message:** "DEBUG: Added 8 scavenger items and 15 treats to inventory. You still need to find the pumpkin!"
+- Perfect for testing end-game scenarios
 
-**Special Rooms:**
-- HOME - End-game location, accessed via QUIT/HOME command
-- INVENTORY - Meta-room for item storage
-- HIDDEN - Meta-location for unrevealed items ✨ NEW
+#### THROW Command (Easter Egg)
+- Hidden command not in HELP
+- Shortcuts: throw, toss, chuck, hurl
+- Always refuses with humorous messages
+- Validates inventory like other commands
+- 5 random rejection responses
 
-## Door Mechanics ✨ NEW in v0.28
+### Header Design 🎃 NEW in v0.32
 
-### Door Configuration
+**Title:** "The Radley House"
+- Font: Cinzel (elegant serif from Google Fonts)
+- Size: 40px
+- Weight: 700 (bold)
+- Color: Bright orange (#ff9500)
+- Letter-spacing: 4px (spread out horizontally)
+- Text-shadow:
+  - Purple glow (0 0 10px and 20px #6a0dad)
+  - Black depth shadow (2px 2px 4px #000)
 
-**12 Doors Total:**
+**Subtitle:** "A well-articulated treasure hunt"
+- Font: Special Elite (typewriter-style) or Courier New
+- Size: 16px
+- Style: Italic
+- Color: Pale purple (#b19cd9)
+- Text-shadow: Subtle purple glow (0 0 5px purple 50% opacity)
+- **Meaning:** Witty reference to text-based gameplay
 
-**Unlocked Doors (9):**
-- street-012street-02 (STREET-01 ↔ STREET-02)
-- street-012nice-porch (STREET-01 ↔ NICE-PORCH)
-- nice-porch2nice-house (NICE-PORCH ↔ NICE-HOUSE, but no exit from NICE-PORCH)
-- street022front-porch (STREET-02 ↔ FRONT-PORCH)
-- foyer2library (FOYER ↔ LIBRARY)
-- foyer2study (FOYER ↔ STUDY)
-- foyer2dining-room (FOYER ↔ DINING-ROOM)
-- And other interior connections
+**Header Hints:**
+- Bottom-left: "Type **RESTART** to start a new game"
+  - Color: #bbb, 10px
+- Bottom-right: "Type HINT for secrets"
+  - Color: #888, 10px
 
-**Locked Doors (2):**
-1. **front-porch2foyer** (FRONT-PORCH ↔ FOYER)
-   - Initially locked
-   - Unlocked by: USE door_knocker at FRONT-PORCH
-   - Message: Door creaks open text
+**Color Scheme:**
+- Orange/Purple/Black Halloween theme
+- Complements scavenger grid background
+- Professional yet playful
 
-2. **bedroom2tv-room** (BEDROOM ↔ TV-ROOM)
-   - Initially locked
-   - Unlocked by: USE brass_key at TV-ROOM
-   - Message: "The bedroom door is locked. You'll need a key to open it."
+### Inline Item Images System ✨
 
-**Secret/Invisible Doors (1):**
-3. **music-room2game-room** (MUSIC-ROOM ↔ GAME-ROOM)
-   - Initially invisible (visible: false) and locked
-   - Future: Button to make visible, puzzle to unlock
-   - Puzzle: "say-friend" (Speak, friend, and enter)
+#### Candy Item Images (150px)
+- 23 candy items with custom 150×150 images
+- Display on EXAMINE and TAKE commands
+- Pattern: Item name → Image → Examine text
+- Auto-scroll after image loads
 
-### Door Properties
+#### Scavenger Item Images (250px)
+- 9 scavenger items with 250×250 images
+- Larger format for important collectibles
+- Same display pattern
+- Items:
+  1. NVidia 5090 Video Card
+  2. Cup O' Noodles
+  3. Odd Dog figure
+  4. Beatles Revolver CD
+  5. Cat Mug
+  6. Bringing Up Baby DVD
+  7. Frankenstein book
+  8. Decorative Pumpkin
+  9. Krugerrand coin
 
-```json
-{
-  "visible": true/false,     // Appears in exits list?
-  "locked": true/false,      // Blocks movement?
-  "open": true/false,        // Door state
-  "lockedMessage": "text",   // Custom locked message
-  "requiresPuzzle": "id"     // For puzzle-based locks
-}
-```
+#### Technical Implementation
+- Smart image loading with `onload` handler
+- Scrolls text area to show full content
+- Separate logic branches for scavenger vs. candy
+- Images stored in assets/scavenger/ and assets/candy/
+- Both 90×90 (grid) and 150/250px (display) versions
 
-## Future Development
+### Visual Scavenger Hunt System ✨
 
-### Ready to Implement
+**3×3 Grid Display:**
+- Grid area: 313×280px in top-right of screen
+- 9 squares representing each scavenger item
+- Background: Radley House silhouette or HOME background
+- Real-time updates as items are discovered
 
-**Secret Door Mechanism:**
-- Add button item to MUSIC-ROOM
-- USE BUTTON → sets music-room2game-room visible: true
-- North exit appears in MUSIC-ROOM
-- Implement SAY command for puzzle
-- SAY FRIEND → unlocks door
+**Item Discovery:**
+- Green checkmark (✓) appears when item found
+- Square position determined by room's `displaySquare` property
+- Items remain visible throughout game
+- Provides visual progress feedback
 
-**Bookmark Password/Clue:**
-- Update old bookmark examine text
-- Add password or puzzle solution
-- Use for safe, door code, or quest progression
+**Background Images:**
+- Changes based on current room
+- HOME: Special HOME background
+- Radley House rooms: Haunted house silhouette
+- Creates atmospheric connection to location
 
-**Image Display on Examine:**
-- icon150 property on all candy items
-- icon90x90, icon250x250 on scavenger items
-- Images exist in assets/
-- Ready for inline or overlay display
+### Status Panel System
 
-**Health System:**
-- Health property on all items
-- Eat actions modify health
-- Display health in status panel
-- Game over at 0 health?
+**Score Section (Centered):**
+- SCORE (no colon)
+- Scavenger Items: X / 9
+- Treats: X / 20
 
-### Potential Enhancements
+**Commands Section:**
+- Shows essential commands with shortcuts
+- Arguments indicated with `?` for clarity:
+  - (h)elp, (l)ook, (i)nventory
+  - (t)ake ?, (d)rop ?, e(x)amine ?
+  - (u)se ?, eat ?, say ?
+- Commands centered under title
 
-**USE Command Expansion:**
-- More keys for more doors
-- Candy bag use action (organize/sort treats)
-- Tool items for puzzles
-- Combination items (use A with B)
-- Context-sensitive uses
+**Compass:**
+- ASCII art directional indicator
+- Shows available exits
+- Positioned for visual balance
 
-**SAY Command:**
-- Verbal puzzle solutions
-- Password entry
-- Spell casting
-- NPC dialogue
+### HOME/QUIT Confirmation System
 
-**Quest Items:**
-- Additional notes with handwritten rendering
-- Maps showing room layout
-- More hidden items in containers
-- Item combinations
+**Two-Step Process:**
+1. First HOME/QUIT: Warning message
+   - Yellow text (#ffcc00)
+   - "!*!*!*! HEY! This will take you back to your home and QUIT THE GAME!"
+   - Underlined emphasis on "QUIT THE GAME"
+2. Second HOME/QUIT: Executes quit
 
-**Room Features:**
-- More locked doors requiring keys
-- Puzzles requiring item combinations
-- Hidden rooms/passages (more invisible doors)
-- Time-based events
-- Random events
+**Auto-Cancel:**
+- ANY other command cancels quit attempt
+- Natural gameplay flow preserved
+- Prevents accidental quits
 
-**Inventory Options:**
-- Toggle compact/detailed view
-- Show item icons
-- Sorting options
-- Search/filter items
+**HOME Room Display:**
+- Moved to HOME room
+- Shows complete inventory summary
+- Lists all collected items:
+  - Scavenger items (two-column format)
+  - Treats (comma-separated)
+- Satisfying conclusion showing player achievements
+
+### Interactive Puzzle Systems
+
+#### SAY Command System
+- Multi-purpose phrase input
+- **Safe combination:** `SAY 27-13-42`
+- **Door passwords:** `SAY friend` (Tolkien reference)
+- **Phone numbers:** `SAY 5551234`
+- Shortcuts: speak, push, press, dial
+- Context-sensitive responses
+
+#### OPEN Command System
+- **Cabinet:** First open reveals hidden DVD
+- **Safe:** Requires combination via SAY
+- Shortcut: unlock
+- State tracking (opened/not opened)
+
+#### Door Lock System
+- Locked doors block movement
+- Keys required to unlock
+- State persists once unlocked
+- Clear feedback on attempt
+
+### Text Formatting System
+
+**HTML Support:**
+- `<b>bold</b>` for emphasis
+- `<br>` for line breaks
+- Color spans for hints
+- Inline images
+
+**Smart Spacing:**
+- Blank line before/after commands
+- Strategic spacing in room descriptions
+- No double-blank issues
+- Professional presentation
+
+### Handwritten Notes System
+
+**Special Display:**
+- Cream/ivory background (#fffef0)
+- Dark text (#2d2d2d)
+- Caveat cursive font (Google Fonts)
+- 20px size
+- Padding and box-shadow for paper effect
+- Preserves line breaks
+
+**Usage:**
+- Clues and atmosphere
+- Used for notes found in game
+- Distinct visual style
+
+## Game Structure
+
+### Rooms (13 total)
+**Exterior:**
+- STREET-01, STREET-02
+- NICE-PORCH (McGillicutty's)
+- FRONT-PORCH, BACK-PORCH (Radley House)
+
+**Interior (Radley House):**
+- FOYER, GAME-ROOM, STUDY, DINING-ROOM
+- MUSIC-ROOM, KITCHEN, TV-ROOM, BEDROOM
+
+**Special:**
+- HOME (end game location)
+
+### Items (38 total)
+**Scavenger Items (9):** Valuable collectibles
+**Candy Items (23):** Halloween treats
+**Quest Items (6):** Keys, notes, puzzle pieces
+
+### Commands (17 total)
+**Movement:** north, south, east, west
+**Observation:** look, examine
+**Inventory:** inventory, take, drop
+**Actions:** use, eat, open, say
+**System:** help, quit/home, hint, restart, about
+**Hidden:** throw, debug, celebrate
+
+## File Structure
+
+### Core Files
+- textAdventure.html (147 lines)
+- textAdventure.css (300+ lines with animations)
+- textAdventure.js (~2600 lines)
+
+### Data Files (HALLOWEEN-GAME/)
+- gameData.json (meta, about, startup)
+- commands.json (17 commands)
+- rooms-w-doors.json (13 rooms, 13 doors, 3 puzzles)
+- items.json (27 regular items)
+- scavengerItems.json (11 scavenger items, 9 active)
+- uiConfig.json (status panel configuration)
+- keyboardShortcuts.json (no shortcuts currently)
+
+### Assets
+- scavenger/ - 9 items × 2 sizes (90×90, 250×250)
+- candy/ - 23 items × 2 sizes (90×90, 150×150)
+- background/ - Room background images
+- Google Fonts: Cinzel, Special Elite, Caveat
+
+## Design Decisions
+
+### Color Palette
+- **Orange:** #ff9500 (title), #ffa500 (celebrations)
+- **Purple:** #6a0dad (dark), #b19cd9 (pale)
+- **Yellow:** #ffcc00 (prompts, hints)
+- **Green:** #00ff00 (main text), #1acdb2 (command output)
+- **Black:** Background
+- **White:** Borders
+
+### Typography
+- **Headers:** Cinzel (elegant serif)
+- **Subtitle:** Special Elite (typewriter)
+- **Body:** Courier New (monospace)
+- **Notes:** Caveat (handwritten cursive)
+- Consistent spacing and sizing
+
+### Layout (950×720px)
+- **Grid:** 607px text, 313px right panel
+- **Header:** 120px
+- **Text area:** Variable height
+- **Scavenger grid:** 280px
+- **Status panel:** Variable
+- **Prompt:** 40px
+
+### Animation Principles
+- Smooth, not jarring
+- Appropriate timing (0.6s punch, 2s pulse)
+- Staggered for visual interest
+- Clear purpose (feedback, celebration)
+- Dismissible by player
+
+## Technical Notes
+
+### State Management
+- `currentRoom` - Player location
+- `items[].location` - Item placement
+- `items[].found` - Discovery tracking
+- `awaitingQuitConfirmation` - Quit flow
+- `awaitingCelebrationDismiss` - Animation control
+
+### Helper Functions
+- `formatScavengerTwoColumns()` - Two-column layout
+- `numberToWord()` - Number to word conversion
+- `showCelebrationGrid()` - Victory animation
+- `restoreNormalDisplay()` - Cleanup
+- `updateScavengerGrid()` - Visual updates
+
+### Performance
+- Minimal DOM manipulation
+- CSS animations (GPU accelerated)
+- Efficient text buffering
+- No external dependencies
+- ~300KB total size
 
 ## Version History
 
-### v0.32 (October 5, 2025 - Evening) ✨ CURRENT
-- ✨ Capitalized all 9 interior room names (FOYER, LIBRARY, DINING ROOM, STUDY, MUSIC ROOM, GAME ROOM, KITCHEN, BEDROOM, TV ROOM)
-- ✨ Added "picked clean" message system for empty interior rooms
-- ✨ Standardized room display order (description → items → exits) with clean single-line spacing
-- ✨ Renamed "door knocker" to "DOOR GONG" throughout game
-- ✨ Implemented dramatic DOOR GONG cascading echo effect (60px → 45px → 30px red text with progressive indentation)
-- ✨ Added "turn" as alias for USE command
-- ✨ Fixed excessive blank lines in room displays
-- ✨ Updated FRONT-PORCH descriptions to reference DOOR GONG
-- ✨ All room names now capitalized in enterText, lookText, and door descriptions
-- ✨ Total edits: ~35 changes across items.json, rooms-w-doors.json, commands.json, textAdventure.js
+**v0.32** (Current) - Victory Celebration & Polish
+- 9th item celebration animation
+- Two-column inventory
+- HINT/CELEBRATE/RESTART/ABOUT commands
+- Header redesign with Halloween theme
+- Enhanced DEBUG command
 
-### v0.31 (October 5, 2025 - Afternoon)
-- ✨ Added inline HTML text formatting system (bold, colors, sizes, shadows)
-- ✨ Implemented custom "cannot take" messages for all 8 fixed items
-- ✨ Improved take command to handle addToInventory: false items
-- ✨ Fixed examine command to work with fixed items in room
-- ✨ Added dramatic effects to doorbell (blue sparkle) and door knocker (red/purple glow)
-- ✨ Bolded keywords throughout room descriptions, hints, and item text
-- ✨ Added yellow hint text (#ffcc00) for player guidance
-- ✨ Fixed droppable properties on porch lights and door knocker
-- ✨ Added common typedNames to porch lights ("light", "porch", "porchlight")
-- ✨ Total formatting updates: 75+ edits across items.json and rooms-w-doors.json
-
-### v0.30 (October 5, 2025 - Morning)
-- ✨ Added OPEN command for containers, cabinets, and doors
-- ✨ Implemented music system puzzle with sound options (MUSIC, MOVIE, GAME)
-- ✨ Enhanced secret door reveal to two-step (SAY GAME reveals, SAY FRIEND unlocks)
-- ✨ Added powerful PC puzzle with removable NVidia 5090 video card
-- ✨ Created DVD cabinet puzzle with "Bringing Up Baby" movie paradox
-- ✨ Implemented dual reveal system (examine vs. open triggers)
-- ✨ Fixed examine reveal logic to skip items with open action
-- ✨ Added musicsystem item (MUSIC-ROOM) with SAY integration
-- ✨ Added powerfulpc item (GAME-ROOM) with examine-based reveal
-- ✨ Added dvdcabinet item (TV-ROOM) with open-based reveal
-- ✨ Updated TV-ROOM description with movie scene and cabinet
-- ✨ Hid nvidia and bringingupbaby scavenger items (revealed by puzzles)
-- ✨ Total items: 46 (added musicsystem, powerfulpc, dvdcabinet)
-- ✨ Total commands: 14 (added OPEN)
-
-### v0.29 (October 4, 2025 - Evening)
-- ✨ Added SAY command for interactive puzzles (say combinations/passwords)
-- ✨ Implemented safe combination puzzle (bookmark → 13-97-55 → open safe)
-- ✨ Created safe item in STUDY with hasBeenOpened state tracking
-- ✨ Updated bookmark with decorative combination display
-- ✨ Added password paper item (revealed by safe)
-- ✨ Implemented secret door password system (SAY FRIEND to unlock)
-- ✨ Added bold keyword highlighting in inventory (inventoryDisplay property)
-- ✨ Swapped krugerrand (BEDROOM→HIDDEN) and dog (STUDY→BEDROOM) locations
-- ✨ Fixed originalLocation preservation for hidden scavenger items
-- ✨ Updated command grid layout (added SAY, moved HOME to corner)
-- ✨ Added safe state check in examine (shows "door is open" after opening)
-- ✨ Total items: 44 (added safe, password paper)
-
-### v0.28 (October 4, 2025 - Morning)
-- ✨ Added GO command prefix support (go north, go take, etc.)
-- ✨ Implemented locked door system (visible but blocks movement)
-- ✨ Added door knocker unlock mechanism for Radley front door
-- ✨ Added brass key puzzle (find in library, use at TV-ROOM)
-- ✨ Implemented hidden item reveal system (bookmark in Frankenstein book)
-- ✨ Created "tools" item type (brass key)
-- ✨ Renamed/reorganized notes (bookmark vs. list)
-- ✨ Implemented EAT command (consume candy, update treats count)
-- ✨ Added interior room exit formatting (SOUTH door, NORTH door)
-- ✨ Set up secret door (music-room2game-room, invisible & locked)
-- ✨ Fixed treats counting to only count candy items
-- ✨ Fixed examine logic for items without take actions in inventory
-- ✨ Reorganized inventory display order (ITEMS, SCAVENGER, TREATS)
-- ✨ Added RING as synonym for USE command
-
-### v0.27 (October 4, 2025)
-- ✨ Added handwritten notes display system with Caveat font
-- ✨ Redesigned status panel with compass and command grid
-- ✨ Implemented room visit tracking with first/second/repeat text
-- ✨ Added HOME/QUIT command (uppercase required)
-- ✨ Implemented USE command system
-- ✨ Refactored Mrs. McGillicutty interaction to use doorbell
-- ✨ Added dynamic lookAtRoom() descriptions
-- ✨ Added blank line spacing between description and exits
-
-### v0.26 (October 2, 2025)
-- Added Mrs. McGillicutty's List item
-- Implemented "notes" item type
-- Enhanced inventory with ITEMS category
-- Auto-take mechanism for quest items
-
-### v0.24 (October 1, 2025 - Afternoon)
-- Added 3×3 visual scavenger grid
-- Implemented type property system (scavenger/candy/fixed)
-- Added droppable property to prevent item loss
-- Redesigned inventory with categories and progress
-- Simplified status box
-- Added room displaySquare mapping
-- Added green checkmark overlay for found items
-- Added white glow effect to scavenger icons
-
-### v0.23 (October 1, 2025 - Morning)
-- Universal typedNames array migration
-- 22 new candy/food items added (29 total)
-- icon150 property for image support
-- Enhanced multi-word command parsing
-
-### v0.22 (September 30, 2025)
-- Location property refactoring
-- INVENTORY as room concept
+**v0.31** - Pre-celebration checkpoint
+**v0.30** - Working game, needs scoring/ending
+**v0.28** - Nearly finished, GUI work
+**Earlier versions** - Core development
 
 ---
 
-*This specification documents the complete locked door system, GO command prefix, hidden item reveal mechanism, EAT command, brass key puzzle, interior room formatting, and expanded item type system for Halloween Text Adventure v0.28.*
+*Last updated: October 6, 2025*
+*Game ready for playtesting and feedback*

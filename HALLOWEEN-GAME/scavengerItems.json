@@ -30,7 +30,7 @@
       "includeInGame": true,
       "type": "scavenger",
       "typedNames": ["beatlesrevolvermusiccd", "beatlesrevolver", "beatles", "revolver", "musiccd", "music", "cd", "album"],
-      "display": "<b>Beatles</b> <b>Revolver</b> Music <b>CD</b>",
+      "display": "<b>Beatles</b> <b>Revolver</b> <b>CD</b>",
       "description": "The <b>Beatles</b> 1966 classic <b>album</b>.",
       "location": "MUSIC-ROOM",
       "points": 10,
@@ -45,7 +45,7 @@
       "actions": {
         "examine": "Wow! What a great <b>album</b>! The <b>Beatles</b> are one of my favorite bands. I can't wait to listen to Eleanor Rigby.",
         "take": {
-          "response": "You put the <b>Beatles</b> <b>Revolver</b> Music <b>CD</b> in your treat bag.",
+          "response": "You put the <b>Beatles</b> <b>Revolver</b> <b>CD</b> in your treat bag.",
           "addToInventory": true,
           "markAsFound": true
         }

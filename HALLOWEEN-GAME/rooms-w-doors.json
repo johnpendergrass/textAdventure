@@ -251,7 +251,7 @@
     "HOME": {
       "name": "Home",
       "enterText": {
-        "first": "You walk home. It's great to be able to rest after all that trick-or-treating.  You pour all your candy out on the dining room table.  What a great haul!",
+        "first": "=========================================================<br><b>You walk home</b>. It's great to be able to rest after all that trick-or-treating.  You can't wait to gorge on all those sweet treats! This was your final haul:",
         "second": ".........  That's about it for this game.  Nothing more to do here.  You might as well choose another mini-game and go have some fun!",
         "repeat": "You are home.  The game is over.  Choose another mini-game."
       },

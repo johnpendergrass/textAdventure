@@ -29,6 +29,9 @@ let keyboardShortcuts = {};
 // Quit confirmation flag
 let awaitingQuitConfirmation = false;
 
+// Celebration flag for 9th scavenger item
+let awaitingCelebrationDismiss = false;
+
 // Game world data
 let rooms = {};
 let doors = {};
@@ -793,6 +796,38 @@ function numberToWord(num) {
   return words[num] || num.toString();
 }
 
+// Helper function to format scavenger items in two columns
+function formatScavengerTwoColumns(scavengerItems) {
+  const columnWidth = 33; // Display width for first column (including indentation)
+  const formattedLines = [];
+
+  // Calculate midpoint for splitting into two columns
+  const midpoint = Math.ceil(scavengerItems.length / 2);
+
+  // Build rows with two columns
+  for (let i = 0; i < midpoint; i++) {
+    const leftItem = scavengerItems[i];
+    const rightItem = scavengerItems[i + midpoint];
+
+    // Format left column item with non-breaking spaces for padding
+    const leftText = `  ${leftItem.display}`;
+
+    // Calculate actual display length (strip HTML tags for length calculation)
+    const leftDisplayLength = leftText.replace(/<[^>]*>/g, '').length;
+    const paddingNeeded = columnWidth - leftDisplayLength;
+    const padding = '&nbsp;'.repeat(Math.max(0, paddingNeeded));
+
+    // Add right column item if it exists
+    if (rightItem) {
+      formattedLines.push(leftText + padding + rightItem.display);
+    } else {
+      formattedLines.push(leftText); // No padding needed if no right item
+    }
+  }
+
+  return formattedLines;
+}
+
 // Show inventory
 function showInventory() {
   // Get items from INVENTORY room
@@ -855,7 +890,7 @@ function showInventory() {
     addToBuffer([{ text: "", type: "flavor" }]);
   }
 
-  // Display scavenger items second, each on own line
+  // Display scavenger items second, in two columns
   if (scavengerItems.length > 0) {
     addToBuffer([
       {
@@ -863,8 +898,11 @@ function showInventory() {
         type: "underlined",
       },
     ]);
-    scavengerItems.forEach((item) => {
-      addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
+
+    // Format items in two columns
+    const formattedLines = formatScavengerTwoColumns(scavengerItems);
+    formattedLines.forEach((line) => {
+      addToBuffer([{ text: line, type: "flavor" }]);
     });
   }
 
@@ -1005,6 +1043,34 @@ function handleTakeCommand(command) {
 
     // Update scavenger grid if item was marked as found
     updateScavengerGrid();
+
+    // Check for celebration if this was a scavenger item
+    if (item.type === "scavenger") {
+      // Count scavenger items now in inventory
+      const scavengerCount = Object.values(items).filter(
+        (i) => i.includeInGame && i.type === "scavenger" && i.location === "INVENTORY"
+      ).length;
+
+      // Total scavenger items in game
+      const totalScavenger = Object.values(items).filter(
+        (i) => i.includeInGame && i.type === "scavenger"
+      ).length;
+
+      // DEBUG: Log the counts
+      console.log(`DEBUG CELEBRATION: Item type: ${item.type}`);
+      console.log(`DEBUG CELEBRATION: Scavenger count in inventory: ${scavengerCount}`);
+      console.log(`DEBUG CELEBRATION: Total scavenger items: ${totalScavenger}`);
+      console.log(`DEBUG CELEBRATION: Should trigger? ${scavengerCount === totalScavenger}`);
+
+      // Special celebration for collecting all items
+      if (scavengerCount === totalScavenger) {
+        console.log(`DEBUG CELEBRATION: Triggering celebration in 3 seconds!`);
+        setTimeout(() => {
+          console.log(`DEBUG CELEBRATION: showCelebrationGrid() called`);
+          showCelebrationGrid();
+        }, 3000);
+      }
+    }
   }
 }
 
@@ -1106,6 +1172,122 @@ function handleThrowCommand(command) {
   const randomMessage = throwMessages[Math.floor(Math.random() * throwMessages.length)];
 
   addToBuffer([{ text: randomMessage, type: "flavor" }]);
+}
+
+// Handle DEBUG command - adds all scavenger items except pumpkin to inventory
+function handleDebugCommand() {
+  // Find all scavenger items except pumpkin
+  const scavengerItems = Object.entries(items).filter(
+    ([key, item]) =>
+      item.includeInGame &&
+      item.type === "scavenger" &&
+      !item.typedNames?.includes("pumpkin")
+  );
+
+  let scavengerCount = 0;
+
+  scavengerItems.forEach(([key, item]) => {
+    // Move to inventory
+    item.location = "INVENTORY";
+    // Mark as found
+    item.found = true;
+    scavengerCount++;
+  });
+
+  // Find candy/treat items and add 15 of them
+  const candyItems = Object.entries(items).filter(
+    ([key, item]) =>
+      item.includeInGame &&
+      item.type === "candy" &&
+      item.location !== "INVENTORY"
+  );
+
+  let candyCount = 0;
+  const candyToAdd = candyItems.slice(0, 15); // Take first 15
+
+  candyToAdd.forEach(([key, item]) => {
+    // Move to inventory
+    item.location = "INVENTORY";
+    // Mark as found if it has that property
+    if (item.found !== undefined) {
+      item.found = true;
+    }
+    candyCount++;
+  });
+
+  // Update game status and scavenger grid
+  updateGameStatus();
+  updateScavengerGrid();
+
+  addToBuffer([
+    { text: `DEBUG: Added ${scavengerCount} scavenger items and ${candyCount} treats to inventory.`, type: "command" },
+    { text: `You still need to find the pumpkin!`, type: "flavor" }
+  ]);
+}
+
+// Handle CELEBRATE command - re-shows celebration if all 9 items collected
+function handleCelebrateCommand() {
+  // Count scavenger items in inventory
+  const scavengerCount = Object.values(items).filter(
+    (item) => item.includeInGame && item.type === "scavenger" && item.location === "INVENTORY"
+  ).length;
+
+  // Total scavenger items in game
+  const totalScavenger = Object.values(items).filter(
+    (item) => item.includeInGame && item.type === "scavenger"
+  ).length;
+
+  if (scavengerCount === totalScavenger) {
+    // Show celebration immediately
+    showCelebrationGrid();
+  } else {
+    addToBuffer([
+      { text: `You haven't collected all the scavenger items yet!`, type: "error" },
+      { text: `Found: ${scavengerCount} / ${totalScavenger}`, type: "flavor" }
+    ]);
+  }
+}
+
+// Handle ABOUT command - shows game information from gameData.json
+function handleAboutCommand() {
+  // Display the about text from gameData
+  if (gameData.about && gameData.about.text) {
+    gameData.about.text.forEach((line) => {
+      addToBuffer([line]);
+    });
+  } else {
+    addToBuffer([
+      { text: "About information not available.", type: "error" }
+    ]);
+  }
+}
+
+// Handle HINT command - shows all hidden/secret commands
+function handleHintCommand() {
+  addToBuffer([
+    { text: "Hidden/Secret Commands:", type: "command" },
+    { text: "", type: "flavor" },
+    { text: "  ABOUT - Game information", type: "flavor" },
+    { text: "  DEBUG - Adds items to inventory for testing", type: "flavor" },
+    { text: "  CELEBRATE - Re-shows the victory animation (if you've won)", type: "flavor" },
+    { text: "  RESTART - Reloads the game from the beginning", type: "flavor" },
+    { text: "  THROW <item> - Try to throw items (doesn't work!)", type: "flavor" },
+    { text: "  HINT [secrets] - Shows this list", type: "flavor" },
+    { text: "", type: "flavor" },
+    { text: "Command Aliases:", type: "command" },
+    { text: "", type: "flavor" },
+    { text: "  north      [n]" + "&nbsp;".repeat(23 - 16) + "look       [l]", type: "flavor" },
+    { text: "  south      [s]" + "&nbsp;".repeat(23 - 16) + "examine    [x, ex, read]", type: "flavor" },
+    { text: "  east       [e]" + "&nbsp;".repeat(24 - 16) + "take       [t, get, g, grab, pick]", type: "flavor" },
+    { text: "  west       [w]" + "&nbsp;".repeat(24 - 16) + "drop       [put, place]", type: "flavor" },
+    { text: "  help       [h, ?]" + "&nbsp;".repeat(24 - 19) + "inventory  [i]", type: "flavor" },
+    { text: "", type: "flavor" },
+    { text: "  use        [u, ring, turn]", type: "flavor" },
+    { text: "  eat", type: "flavor" },
+    { text: "  open       [unlock]", type: "flavor" },
+    { text: "  say        [speak, push, press, dial]", type: "flavor" },
+    { text: "  quit       [home]", type: "flavor" }
+  ]);
 }
 
 // Handle eat command
@@ -1485,8 +1667,6 @@ function handleQuitCommand() {
   if (scavengerItems.length > 0 || candyItems.length > 0) {
     addToBuffer([
       { text: "", type: "flavor" }, // Blank line
-      { text: "You plundered lots of stuff and got lots of treats:", type: "flavor" },
-      { text: "", type: "flavor" }, // Blank line
     ]);
 
     // Count total available scavenger items
@@ -1494,7 +1674,7 @@ function handleQuitCommand() {
       (item) => item.includeInGame && item.type === "scavenger"
     ).length;
 
-    // Display scavenger items
+    // Display scavenger items in two columns
     if (scavengerItems.length > 0) {
       addToBuffer([
         {
@@ -1502,8 +1682,11 @@ function handleQuitCommand() {
           type: "underlined",
         },
       ]);
-      scavengerItems.forEach((item) => {
-        addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
+
+      // Format items in two columns
+      const formattedLines = formatScavengerTwoColumns(scavengerItems);
+      formattedLines.forEach((line) => {
+        addToBuffer([{ text: line, type: "flavor" }]);
       });
     }
 
@@ -1924,6 +2107,101 @@ function lookAtRoom() {
   }
 }
 
+// Show celebration grid overlay for 9th scavenger item
+function showCelebrationGrid() {
+  console.log('showCelebrationGrid() - START');
+
+  // Get all scavenger items in inventory
+  const scavengerItems = Object.values(items).filter(
+    (item) => item.includeInGame && item.type === "scavenger" && item.location === "INVENTORY"
+  );
+
+  console.log(`Found ${scavengerItems.length} scavenger items in inventory`);
+  console.log('Scavenger items:', scavengerItems.map(i => i.display));
+
+  // Sort by room displaySquare (0-8) to show in grid order
+  scavengerItems.sort((a, b) => {
+    const roomA = Object.values(rooms).find(
+      (r) => Object.keys(rooms).find((key) => rooms[key] === r) === a.originalLocation
+    );
+    const roomB = Object.values(rooms).find(
+      (r) => Object.keys(rooms).find((key) => rooms[key] === r) === b.originalLocation
+    );
+    const squareA = roomA?.special?.displaySquare ?? 999;
+    const squareB = roomB?.special?.displaySquare ?? 999;
+    return squareA - squareB;
+  });
+
+  const textDiv = document.querySelector('.text');
+  console.log('Text div found:', textDiv);
+
+  // Create overlay - position over text div using fixed positioning
+  const overlay = document.createElement('div');
+  overlay.className = 'celebration-overlay';
+  overlay.id = 'celebration-overlay';
+  console.log('Overlay created:', overlay);
+
+  // Get text div position for overlay placement
+  const rect = textDiv.getBoundingClientRect();
+  overlay.style.position = 'fixed';
+  overlay.style.top = rect.top + 'px';
+  overlay.style.left = rect.left + 'px';
+  overlay.style.width = rect.width + 'px';
+  overlay.style.height = rect.height + 'px';
+
+  // Create grid
+  let gridHTML = '<div class="celebration-grid">';
+  scavengerItems.forEach((item, index) => {
+    gridHTML += `<img src="${item.icon250x250}"
+                      alt="${item.display}"
+                      style="animation-delay: ${index * 0.15}s">`;
+  });
+  gridHTML += '</div>';
+
+  console.log('Grid HTML:', gridHTML);
+
+  overlay.innerHTML = gridHTML;
+  // Append to body instead of text div
+  document.body.appendChild(overlay);
+
+  console.log('Overlay appended to body');
+  console.log('Overlay position:', overlay.style.position);
+  console.log('Overlay coordinates:', overlay.style.top, overlay.style.left);
+
+  // Add text overlay after 5 seconds
+  setTimeout(() => {
+    const textOverlay = document.createElement('div');
+    textOverlay.className = 'celebration-text';
+    textOverlay.innerHTML = `
+      <div style="font-size: 48px; margin-bottom: 10px;">YOU WON!</div>
+      <div>You found all NINE</div>
+      <div style="margin-bottom: 20px;">SCAVENGER ITEMS!</div>
+      <div style="font-size: 28px;">Arthur and Mr. Radley</div>
+      <div style="font-size: 28px;">CONGRATULATE YOU!!</div>
+    `;
+    overlay.appendChild(textOverlay);
+    console.log('Celebration text overlay added');
+  }, 5000);
+
+  // Set flag to wait for dismissal
+  awaitingCelebrationDismiss = true;
+  console.log('showCelebrationGrid() - END, awaitingCelebrationDismiss =', awaitingCelebrationDismiss);
+}
+
+// Restore normal display after celebration
+function restoreNormalDisplay() {
+  const overlay = document.getElementById('celebration-overlay');
+
+  if (overlay) {
+    overlay.style.opacity = '0';
+    overlay.style.transition = 'opacity 0.5s ease-out';
+    setTimeout(() => {
+      overlay.remove();
+    }, 500);
+  }
+  awaitingCelebrationDismiss = false;
+}
+
 // ========================================
 // === TEXT BUFFER MANAGEMENT ===
 // ========================================
@@ -2299,6 +2577,21 @@ function processCommand(command) {
         case "throw_item":
           handleThrowCommand(command);
           break;
+        case "debug_scavenger":
+          handleDebugCommand();
+          break;
+        case "celebrate_again":
+          handleCelebrateCommand();
+          break;
+        case "show_secrets":
+          handleHintCommand();
+          break;
+        case "restart_game":
+          location.reload();
+          break;
+        case "show_about":
+          handleAboutCommand();
+          break;
         default:
           addToBuffer([
             { text: `Unknown action: ${cmd.action}`, type: "error" },
@@ -2398,6 +2691,13 @@ function handleInput(event) {
   const input = event.target;
 
   if (event.key === "Enter") {
+    // Check if we're waiting for celebration dismissal
+    if (awaitingCelebrationDismiss) {
+      restoreNormalDisplay();
+      input.value = "";
+      return;
+    }
+
     const command = input.value.trim();
 
     if (command) {

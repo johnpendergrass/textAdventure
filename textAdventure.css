@@ -1,5 +1,5 @@
-/* Import Google Font for handwritten notes */
-@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap");
+/* Import Google Fonts for handwritten notes and Halloween header */
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Cinzel:wght@600;700&family=Special+Elite&display=swap");
 
 /* ========================================
    === BASE STYLES ===
@@ -48,6 +48,27 @@ body {
   padding: 10px;
   box-sizing: border-box;
   text-align: center;
+  position: relative;
+}
+
+.header-hint {
+  position: absolute;
+  bottom: 5px;
+  right: 10px;
+  font-size: 10px;
+  color: #888;
+  opacity: 1;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.header-restart {
+  position: absolute;
+  bottom: 5px;
+  left: 10px;
+  font-size: 10px;
+  color: #bbb;
+  opacity: 1;
+  font-family: "Courier New", Courier, monospace;
 }
 
 /* -----------------------------------------
@@ -57,17 +78,25 @@ body {
    ----------------------------------------- */
 
 .header h1 {
-  color: purple;
-  font-family: "Courier New", Courier, monospace; /* match main text font */
-  font-size: 36px; /* adjust size as you like */
-  margin: 12px 0 12px 0; /* bottom margin creates space for h2 */
+  color: #ff9500; /* Bright orange */
+  font-family: "Cinzel", "Georgia", serif;
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: 4px; /* Spread out horizontally */
+  text-shadow:
+    0 0 10px #6a0dad,      /* Purple glow */
+    0 0 20px #6a0dad,      /* Stronger purple */
+    2px 2px 4px #000;      /* Black depth */
+  margin: 10px 0 12px 0;
 }
 
 .header h2 {
-  color: #cccccc; /* light gray (you can pick another color) */
-  font-family: "Courier New", Courier, monospace; /* match main text */
-  font-size: 18px; /* smaller than the h1, bigger than body text */
-  margin: 5px 0 0 0; /* tighten spacing under the h1 */
+  color: #b19cd9; /* Pale purple */
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 16px;
+  font-style: italic;
+  text-shadow: 0 0 5px rgba(106, 13, 173, 0.5);
+  margin: 0;
 }
 
 .text {
@@ -162,6 +191,105 @@ body {
   font-size: 20px;
   font-weight: bold;
   animation: flash 2s ease-in-out infinite;
+}
+
+/* Celebration overlay for 9th scavenger item */
+.celebration-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.celebration-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 165px);
+  grid-template-rows: repeat(3, 165px);
+  gap: 5px;
+  padding: 10px;
+  border: 2px solid white;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.celebration-grid img {
+  width: 165px;
+  height: 165px;
+  object-fit: contain;
+  transform-origin: center center;
+  animation: punchRotate 0.6s ease-out forwards;
+  filter: drop-shadow(0 0 10px rgba(255, 165, 0, 0.8))
+    drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
+}
+
+@keyframes punchRotate {
+  0% {
+    transform: scale(0.1) rotate(0deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1) rotate(360deg);
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+    opacity: 1;
+  }
+}
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px rgba(255, 165, 0, 0.8))
+      drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(255, 165, 0, 1))
+      drop-shadow(0 0 30px rgba(255, 215, 0, 0.8));
+  }
+}
+
+.celebration-grid img {
+  animation: punchRotate 0.6s ease-out forwards,
+    glowPulse 2s ease-in-out infinite 0.6s;
+}
+
+/* Celebration text overlay */
+.celebration-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #ffd700;
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 1.4;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 40px 50px;
+  border: 4px solid #ffd700;
+  border-radius: 15px;
+  opacity: 0;
+  animation: fadeInText 1s ease-in forwards;
+
+  /* Chiseled/carved effect */
+  text-shadow: 3px 3px 6px #000, -1px -1px 2px rgba(255, 255, 255, 0.4),
+    0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+@keyframes fadeInText {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 .prompt {

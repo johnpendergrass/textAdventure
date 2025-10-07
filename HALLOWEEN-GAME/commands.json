@@ -95,6 +95,36 @@
       "type": "action",
       "shortcuts": ["toss", "chuck", "hurl"],
       "action": "throw_item"
+    },
+    "debug": {
+      "includeInGame": true,
+      "type": "system",
+      "shortcuts": [],
+      "action": "debug_scavenger"
+    },
+    "celebrate": {
+      "includeInGame": true,
+      "type": "system",
+      "shortcuts": [],
+      "action": "celebrate_again"
+    },
+    "hint": {
+      "includeInGame": true,
+      "type": "system",
+      "shortcuts": ["secrets"],
+      "action": "show_secrets"
+    },
+    "restart": {
+      "includeInGame": true,
+      "type": "system",
+      "shortcuts": [],
+      "action": "restart_game"
+    },
+    "about": {
+      "includeInGame": true,
+      "type": "system",
+      "shortcuts": [],
+      "action": "show_about"
     }
   }
 }

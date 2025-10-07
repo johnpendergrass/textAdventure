@@ -1,263 +1,241 @@
-# Halloween Text Adventure - Technical Specifications
-# Implementation Details & Architecture Deep Dive
+# The Radley House - Technical Specifications
+## v0.32 - Victory Celebration & Polish Complete
 
-## v0.33 Technical Additions
+Last Updated: October 6, 2025
 
-### Inline Image Display System
+---
 
-**Problem:** Images load asynchronously AFTER scroll-to-bottom, leaving content below viewport.
+## Architecture Overview
 
-**Root Cause:**
+### Technology Stack
+- **Frontend:** Vanilla HTML5, CSS3, JavaScript (ES6)
+- **No frameworks:** Pure web standards for maximum compatibility
+- **No build process:** Direct file editing and browser refresh
+- **Deployment:** GitHub Pages compatible (static files only)
+
+### File Organization
+```
+textAdventure/
+├── textAdventure.html          # Main game shell
+├── textAdventure.css           # All styles and animations
+├── textAdventure.js            # Core game engine (~2600 lines)
+├── HALLOWEEN-GAME/
+│   ├── gameData.json           # Meta, about, startup text
+│   ├── commands.json           # 17 command definitions
+│   ├── rooms-w-doors.json      # 13 rooms, 13 doors, 3 puzzles
+│   ├── items.json              # 27 regular items
+│   ├── scavengerItems.json     # 11 scavenger items (9 active)
+│   ├── uiConfig.json           # Status panel config
+│   └── keyboardShortcuts.json  # (Currently unused)
+└── assets/
+    ├── scavenger/              # 9 items × 2 sizes
+    ├── candy/                  # 23 items × 2 sizes
+    └── background/             # Room backgrounds
+```
+
+---
+
+## Victory Celebration System (v0.32)
+
+### Implementation: showCelebrationGrid()
+
+**Challenge:** Display 3×3 grid of scavenger items over text area without disrupting layout.
+
+**Solution:**
+1. **Fixed positioning:** Calculate text div position with `getBoundingClientRect()`
+2. **Append to body:** Avoids overflow issues from text div's `overflow-y: auto`
+3. **Absolute children:** Grid and text overlay positioned within fixed parent
+4. **CSS animations:** GPU-accelerated transforms for smooth performance
+
+**Code Architecture:**
 ```javascript
-updateDisplay() {
-  textDiv.innerHTML = htmlLines.join("<br>");
-  textDiv.scrollTop = textDiv.scrollHeight; // Scrolls before images load!
+showCelebrationGrid() {
+  // 1. Get text area coordinates
+  const rect = textDiv.getBoundingClientRect();
+
+  // 2. Create fixed overlay at exact position
+  overlay.style.position = 'fixed';
+  overlay.style.top = rect.top + 'px';
+  overlay.style.left = rect.left + 'px';
+
+  // 3. Build grid HTML with staggered animations
+  scavengerItems.forEach((item, index) => {
+    gridHTML += `<img ... style="animation-delay: ${index * 0.15}s">`;
+  });
+
+  // 4. Add text overlay after 5 seconds
+  setTimeout(() => { /* Add victory text */ }, 5000);
+
+  // 5. Set dismissal flag
+  awaitingCelebrationDismiss = true;
 }
 ```
-Browser calculates `scrollHeight` without knowing image dimensions → scroll insufficient.
 
-**Solution:** Add `onload` handler to each image:
+**Animation Sequence:**
+- **punchRotate:** 0.6s per image (scale + rotate)
+- **glowPulse:** 2s infinite (starts after punch)
+- **fadeInText:** 1s for victory message
+- Total: ~8 seconds for full experience
+
+**Performance Notes:**
+- CSS transforms use GPU acceleration
+- Images pre-loaded during gameplay
+- Single DOM append (not 9 separate ones)
+- Smooth 60fps on modern browsers
+
+### Dismissal: restoreNormalDisplay()
+
+**Clean Transition:**
 ```javascript
-const imgTag = `<img src="${item.icon150}"
-  style="display:block; margin:10px 0; max-width:150px;"
-  onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`;
-```
-
-**Why this works:**
-1. Initial scroll happens (lands at wrong position)
-2. Image loads asynchronously
-3. `onload` fires when image ready
-4. Second scroll now knows true scrollHeight with image dimensions
-5. Lands at correct bottom position
-
-**Conditional Image Logic:**
-```javascript
-if (item.icon150 && item.type !== "scavenger") {
-  // Show 150px candy image
-  addToBuffer([display, image150px, examineText]);
-} else if (item.icon250x250 && item.type === "scavenger") {
-  // Show 250px scavenger image
-  addToBuffer([display, image250px, examineText]);
-} else {
-  // Text only (notes, tools, fixed items)
-  addToBuffer([examineText]);
+restoreNormalDisplay() {
+  overlay.style.opacity = '0';
+  overlay.style.transition = 'opacity 0.5s ease-out';
+  setTimeout(() => { overlay.remove(); }, 500);
+  awaitingCelebrationDismiss = false;
 }
 ```
 
-**Applied to 3 locations:**
-- `handleExamineCommand()` - portable items (lines 1487-1503)
-- `handleExamineCommand()` - fixed items (lines 1542-1558)
-- `handleTakeCommand()` - all items (lines 925-964)
+**State Management:**
+- Flag blocks input during animation
+- Checked in `handleInput()` before processing
+- Enter key calls restore function
+- No memory leaks (removes DOM node)
 
-### HOME/QUIT Confirmation Architecture
+---
 
-**Global State Flag:**
+## Two-Column Inventory System (v0.32)
+
+### Problem: Vertical Overflow
+- 9 scavenger items = 9 lines
+- HOME screen text + inventory exceeded viewport
+- Text scrolled out of visible area
+
+### Solution: formatScavengerTwoColumns()
+
+**Algorithm:**
 ```javascript
-let awaitingQuitConfirmation = false; // Line 30
-```
+function formatScavengerTwoColumns(scavengerItems) {
+  const columnWidth = 33;  // Total width for left column
+  const midpoint = Math.ceil(items.length / 2);
 
-**Reset Logic - Placed at START of processCommand():**
-```javascript
-function processCommand(command) {
-  // Strip "go" prefix...
+  for (let i = 0; i < midpoint; i++) {
+    const leftItem = items[i];
+    const rightItem = items[i + midpoint];
 
-  // Reset quit confirmation for any non-quit command
-  const firstWord = command.trim().split(/\s+/)[0];
-  const lowerFirst = firstWord.toLowerCase();
-  if (lowerFirst !== "quit" && lowerFirst !== "home") {
-    awaitingQuitConfirmation = false; // Cancel if doing anything else
+    // Key: Strip HTML tags before measuring length
+    const leftText = `  ${leftItem.display}`;
+    const displayLength = leftText.replace(/<[^>]*>/g, '').length;
+
+    // Use &nbsp; entities (browsers won't collapse)
+    const padding = '&nbsp;'.repeat(columnWidth - displayLength);
+
+    // Combine columns
+    formattedLines.push(leftText + padding + (rightItem?.display || ''));
   }
-
-  // Continue with command processing...
 }
 ```
 
-**Why reset at START:** Ensures ANY command (NORTH, LOOK, etc.) cancels quit before execution.
+**Why This Works:**
+- **HTML tag stripping:** `<b>Beatles</b>` counts as 7 chars, not 14
+- **Non-breaking spaces:** Regular spaces collapse in HTML
+- **Math.ceil:** Handles odd numbers (9 items = 5 rows)
+- **Optional chaining:** Gracefully handles last row when odd
 
-**Two-Step Quit in handleQuitCommand():**
+**Space Savings:**
+- Before: 9 lines
+- After: 5 lines
+- Reduction: 44% vertical space
+
+---
+
+## HINT Command System (v0.32)
+
+### Design Goal
+Provide comprehensive reference for all commands and shortcuts in compact format.
+
+### Implementation: handleHintCommand()
+
+**Two-Section Display:**
+
+1. **Hidden Commands** (vertical list):
+   ```
+   ABOUT - Game information
+   DEBUG - Testing items
+   CELEBRATE - Replay victory
+   ...
+   ```
+
+2. **Command Aliases** (two columns):
+   ```
+   north      [n]         look       [l]
+   south      [s]         examine    [x, ex, read]
+   ...
+   ```
+
+**Column Alignment:**
 ```javascript
-function handleQuitCommand() {
-  if (!awaitingQuitConfirmation) {
-    // First attempt - show warning
-    addToBuffer([{
-      text: "!*!*!*! HEY! This will take you... <u>QUIT THE GAME</u>!",
-      type: "flavor"
-    }]);
-    awaitingQuitConfirmation = true;
-    return; // Don't quit yet!
-  }
-
-  // Second attempt - confirmed, execute quit
-  awaitingQuitConfirmation = false;
-  currentRoom = "HOME";
-  // ... display HOME room
-}
+"  north      [n]" + "&nbsp;".repeat(23 - 16) + "look       [l]"
+"  help       [h, ?]" + "&nbsp;".repeat(24 - 19) + "inventory  [i]"
 ```
 
-### HOME Room Inventory Display
+**Variable Padding:**
+- Left column items have different lengths
+- Each line calculates padding independently
+- `help [h, ?]` is longer, needs fewer spaces
+- Maintains visual alignment across all rows
 
-**Architecture Change:** `handleQuitCommand()` builds custom display instead of calling `displayRoom()`.
+**Why Manual Padding?**
+- HTML collapses multiple spaces
+- CSS `white-space: pre` would affect entire game
+- `&nbsp;` entities preserve exact spacing
+- Full control over layout
 
-**Why custom:** Need to insert dynamic inventory between two text sections.
+---
 
-**Implementation Flow:**
-```javascript
-function handleQuitCommand() {
-  // ... confirmation check
+## Command System Architecture
 
-  const homeRoom = rooms["HOME"];
+### Command Registration (commands.json)
 
-  // Part 1: Opening text
-  addToBuffer([homeRoom.enterText.first]); // "What a great haul!"
-
-  // Part 2: Dynamic inventory (if items exist)
-  if (scavengerItems.length > 0 || candyItems.length > 0) {
-    addToBuffer(["You plundered lots of stuff..."]);
-
-    // Scavenger section
-    if (scavengerItems.length > 0) {
-      addToBuffer([`SCAVENGER ITEMS (${count}/${total})`]);
-      scavengerItems.forEach(item => addToBuffer([item.display]));
-    }
-
-    // Treats section
-    if (candyItems.length > 0) {
-      addToBuffer([`TREATS (${count}/20)`]);
-      const candyList = candyItems.map(i => i.display).join(", ");
-      addToBuffer([candyList]);
-    }
-  }
-
-  // Part 3: Closing text
-  addToBuffer([homeRoom.enterText.second]); // "That's about it..."
-}
-```
-
-**JSON Data Structure Change:**
+**Structure:**
 ```json
-"HOME": {
-  "enterText": {
-    "first": "You walk home... What a great haul!",
-    "second": "......... That's about it for this game..."
+{
+  "command_name": {
+    "includeInGame": true,
+    "type": "action|movement|system",
+    "shortcuts": ["alias1", "alias2"],
+    "action": "handler_name"
   }
 }
 ```
 
-**Reuses Inventory Logic:** Same item filtering and formatting as `showInventory()` function.
+**Command Processing Flow:**
+1. **Input:** Player types command
+2. **findCommand():** Fuzzy matching (exact → shortcut → prefix)
+3. **processCommand():** Routes to handler based on action
+4. **Handler:** Executes command logic
+5. **Buffer:** Results added to text display
 
-### Safe Puzzle Helper Messages
+### Fuzzy Matching Algorithm
 
-**Pattern Match:** Same as doorbell, door_knocker (item-specific special handling).
-
-**In handleUseCommand() and handleOpenCommand():**
 ```javascript
-if (itemKey === "safe") {
-  if (!item.hasBeenOpened) {
-    addToBuffer([{text: "Hint: use SAY command...", type: "flavor"}]);
-  } else {
-    addToBuffer([{text: "Already open...", type: "flavor"}]);
-  }
-  return; // Skip generic handler
-}
-```
+findCommand(cmd) {
+  // 1. Exact match
+  if (commands[cmd]) return { type: "exact", command: cmd };
 
-**Requires placeholder actions in JSON:**
-```json
-"safe": {
-  "actions": {
-    "use": { "response": "placeholder" },
-    "open": "placeholder"
-  }
-}
-```
-
-**Why placeholders needed:** Commands check `if (!item.actions?.use)` before reaching special handler. Placeholder passes validation, special handler takes over.
-
-### Status Panel CSS Centering
-
-**Challenge:** Center titles and values without centering command grid or compass.
-
-**Solution:** Targeted CSS classes:
-```css
-.status-title {
-  text-align: center; /* Centers "SCORE" and "COMMANDS" */
-}
-
-.score-items {
-  text-align: center; /* Centers score numbers */
-}
-
-.command-grid {
-  display: grid; /* Remains left-aligned */
-}
-
-.compass {
-  white-space: pre; /* Preserves manual spacing */
-}
-```
-
-**Command Grid Remains Grid:** No text-align change, stays left-aligned as designed.
-
-## Command Processing Architecture
-
-### Complete Command Flow Pipeline
-```
-User Input: "drop snickers"
-    ↓
-Event Handler (keydown listener on commandInput)
-    ↓
-echoCommand() - Display command in output with blue "command" type
-    ↓
-processCommand() - Main command router
-    ↓
-findCommand() - Parse input, extract first word "drop"
-    ↓
-Lookup commands["drop"] → finds action: "drop_item"
-    ↓
-Command Action Switch in processCommand()
-    ↓
-case "drop_item": handleDropCommand(command)
-    ↓
-Item Validation & State Changes
-  ├─ Parse "snickers" from "drop snickers"
-  ├─ Find item by typedName in INVENTORY
-  ├─ Validate has actions.take (droppable)
-  └─ Change item.location to currentRoom
-    ↓
-updateGameStatus() - Recalculate score components & refresh UI
-  ├─ Filter inventory items
-  ├─ Separate regular vs scavenger by isScavengerItem flag
-  ├─ Sum Treats, Scavenger, Health scores
-  ├─ Update player.core.score with total
-  └─ Generate and display SCORE panel HTML
-```
-
-### Critical Command Parsing Fix
-**Problem Solved:** Original findCommand() tried to match entire input as single command.
-
-**Before (broken):**
-```javascript
-function findCommand(input) {
-  const cmd = input.toLowerCase().trim(); // "drop snickers"
-  if (commands[cmd]) { ... } // Failed - no command named "drop snickers"
-}
-```
-
-**After (working):**
-```javascript
-function findCommand(input) {
-  const fullInput = input.toLowerCase().trim();
-  const cmd = fullInput.split(/\s+/)[0]; // Extract "drop" only
-
-  // Check exact command match
-  if (commands[cmd]) {
-    return { type: "exact", command: cmd };
+  // 2. Shortcut match (priority)
+  for (const [name, data] of Object.entries(commands)) {
+    if (data.shortcuts?.includes(cmd)) {
+      return { type: "shortcut", command: name };
+    }
   }
 
-  // Check shortcuts (aliases)
-  for (const [commandName, commandData] of Object.entries(commands)) {
-    if (commandData.shortcuts && commandData.shortcuts.includes(cmd)) {
-      return { type: "shortcut", command: commandName };
+  // 3. Prefix match (2+ characters)
+  if (cmd.length >= 2) {
+    const matches = Object.keys(commands).filter(name =>
+      name.startsWith(cmd)
+    );
+    if (matches.length === 1) {
+      return { type: "prefix", command: matches[0] };
     }
   }
 
@@ -265,1063 +243,318 @@ function findCommand(input) {
 }
 ```
 
-**Impact:** This single change enabled all multi-word commands (take/drop/examine with item names).
-
-## Item System Technical Implementation
-
-### Data Structure Evolution
-
-**Phase 1 - Original (Minimal):**
-```json
-{
-  "includeInGame": true,
-  "display": "Snickers mini-bar",
-  "location": "FOYER"
-}
-```
-
-**Phase 2 - Added Interaction:**
-```json
-{
-  "includeInGame": true,
-  "typedName": "snickers",
-  "display": "Snickers mini-bar",
-  "location": "FOYER",
-  "visible": true,
-  "locked": false,
-  "actions": { "take": {...}, "examine": "..." }
-}
-```
-
-**Phase 3 - Current (Streamlined with Health):**
-```json
-{
-  "includeInGame": true,
-  "typedName": "snickers",
-  "display": "Snickers mini-bar",
-  "description": "A fun-size Snickers bar",
-  "location": "FOYER",
-  "points": 1,
-  "health": 1,
-  "eatable": true,
-  "visible": true,
-  "locked": false,
-  "actions": {
-    "examine": "It's a Snickers bar, what's not to like?",
-    "take": { "response": "...", "addToInventory": true },
-    "eat": { "response": "...", "addHealth": 5, "removeItem": true }
-  }
-}
-```
-
-**Removed Properties (unused in code):**
-- ~~capacity/quantity~~ - Never referenced
-- ~~itemType~~ - Never checked (replaced with runtime isScavengerItem flag)
-- ~~found~~ - Removed from items.json (kept in scavengerItems.json)
-
-### INVENTORY Room Innovation
-
-**Traditional Approach Problems:**
-```javascript
-// OLD WAY - Complex, error-prone
-player.inventory = ["snickers_bar", "item_01"];
-
-// Check if item in inventory
-if (player.inventory.includes(itemId)) { ... }
-
-// Add to inventory
-player.inventory.push(itemId);
-
-// Remove from inventory
-player.inventory = player.inventory.filter(id => id !== itemId);
-
-// Display inventory - need to lookup each item
-player.inventory.forEach(itemId => {
-  const item = items[itemId];
-  display(item.display);
-});
-```
-
-**Our Solution - INVENTORY as Room:**
-```javascript
-// NEW WAY - Simple, elegant
-
-// INVENTORY room in rooms-w-doors.json
-"INVENTORY": {
-  "name": "Inventory",
-  "enterText": {},
-  "lookText": "",
-  "exits": {},
-  "special": { "inventory-room": true }
-}
-
-// Add to inventory - simple location change
-item.location = "INVENTORY";
-
-// Remove from inventory - simple location change
-item.location = currentRoom;
-
-// Check if in inventory - same as checking any room
-if (item.location === "INVENTORY") { ... }
-
-// Display inventory - same filtering as any room
-const inventoryItems = Object.values(items).filter(item =>
-  item.includeInGame && item.location === "INVENTORY"
-);
-```
-
-**Technical Benefits:**
-1. **No special cases** - Inventory uses same code paths as rooms
-2. **No synchronization** - Single source of truth (item.location)
-3. **No arrays** - Objects with locations, not array management
-4. **Automatic updates** - Changing location updates everywhere instantly
-5. **Simple filtering** - Same pattern for all item queries
-
-### Item Visibility & Interaction Rules
-
-**Display Filtering (Universal Pattern):**
-```javascript
-// Used for rooms, inventory, everywhere
-function getVisibleItems(location) {
-  return Object.values(items).filter(item =>
-    item.includeInGame &&
-    item.location === location &&
-    item.visible
-  );
-}
-```
-
-**Take Command Validation Chain:**
-```javascript
-function handleTakeCommand(command) {
-  // 1. Parse item name from "take snickers" → "snickers"
-  const words = command.trim().split(/\s+/);
-  if (words.length < 2) {
-    return showError("Take what?");
-  }
-  const targetTypedName = words[1].trim();
-
-  // 2. Find matching items with 6-step validation
-  const roomItems = Object.entries(items).filter(([key, item]) =>
-    item.includeInGame &&                    // Step 1: Active item
-    item.location === currentRoom &&    // Step 2: In current room
-    item.visible &&                          // Step 3: Discoverable
-    !item.locked &&                          // Step 4: Not restricted
-    item.typedName === targetTypedName &&    // Step 5: Name match
-    item.actions?.take?.addToInventory === true // Step 6: Takeable
-  );
-
-  // 3. Execute if validation passes
-  if (roomItems.length === 0) {
-    return showError(`You don't see any "${targetTypedName}" here that you can take.`);
-  }
-
-  const [itemKey, item] = roomItems[0];
-
-  // 4. Apply action
-  addToBuffer([
-    { text: item.actions.take.response || `You pick up the ${item.display}.`, type: "flavor" }
-  ]);
-
-  // 5. Update location
-  item.location = "INVENTORY";
-
-  // 6. Mark as found (for scavenger items)
-  if (item.actions.take.markAsFound) {
-    item.found = true;
-  }
-
-  // 7. Update UI
-  updateGameStatus();
-}
-```
-
-**Drop Command Validation (Symmetric):**
-```javascript
-function handleDropCommand(command) {
-  // 1. Parse item name
-  const words = command.trim().split(/\s+/);
-  if (words.length < 2) {
-    return showError("Drop what?");
-  }
-  const targetTypedName = words[1].trim();
-
-  // 2. Find matching items in INVENTORY
-  const inventoryItems = Object.entries(items).filter(([key, item]) =>
-    item.includeInGame &&
-    item.location === "INVENTORY" &&
-    item.typedName === targetTypedName &&
-    item.actions?.take  // Must be portable to be droppable
-  );
-
-  // 3. Execute if found
-  if (inventoryItems.length === 0) {
-    return showError(`You're not carrying any "${targetTypedName}".`);
-  }
-
-  const [itemKey, item] = inventoryItems[0];
-
-  // 4. Apply action
-  addToBuffer([
-    { text: `You drop the ${item.display}.`, type: "flavor" }
-  ]);
-
-  // 5. Update location (reverse of take)
-  item.location = currentRoom;
-
-  // 6. Update UI
-  updateGameStatus();
-}
-```
-
-**Examine Command Logic Tree:**
-```javascript
-function handleExamineCommand(command) {
-  // Parse and find item by typedName
-  const words = command.trim().split(/\s+/);
-  if (words.length < 2) {
-    return showError("Examine what?");
-  }
-  const targetTypedName = words[1].trim();
-
-  // Find item in either current room or inventory
-  const allItems = Object.entries(items).filter(([key, item]) =>
-    item.includeInGame &&
-    item.typedName === targetTypedName &&
-    (item.location === currentRoom || item.location === "INVENTORY")
-  );
-
-  if (allItems.length === 0) {
-    return showError(`You don't see any "${targetTypedName}" here.`);
-  }
-
-  const [itemKey, item] = allItems[0];
-
-  // Check if item has examine action
-  if (!item.actions?.examine) {
-    return showError(`You can't examine the ${item.display}.`);
-  }
-
-  // DECISION TREE: Portable vs Fixed
-  if (item.actions.take) {
-    // PORTABLE ITEM RULE - Must be in inventory
-    if (item.location === "INVENTORY") {
-      // Can examine - it's in your hands
-      addToBuffer([
-        { text: `${item.display}: ${item.actions.examine}`, type: "flavor" }
-      ]);
-    } else {
-      // Can't examine - not holding it yet
-      addToBuffer([
-        { text: `You need to pick up the ${item.display} first to examine it closely.`, type: "error" }
-      ]);
-    }
-  } else {
-    // FIXED ITEM RULE - Must be visible in current room
-    if (item.location === currentRoom && item.visible && !item.locked) {
-      // Can examine - it's here and visible
-      addToBuffer([
-        { text: `${item.display}: ${item.actions.examine}`, type: "flavor" }
-      ]);
-    } else {
-      addToBuffer([
-        { text: `You don't see any "${targetTypedName}" here.`, type: "error" }
-      ]);
-    }
-  }
-}
-```
-
-## Multi-Component Scoring System
-
-### Runtime Item Flagging
-**Problem:** Need to distinguish scavenger items from regular items without cluttering JSON.
-
-**Solution:** Mark items at runtime during load.
-
-```javascript
-// In initGame() function, after loading items
-async function initGame() {
-  // ... other loading code ...
-
-  const itemsData = await loadItems();
-  items = itemsData.items || {};
-
-  // Load and merge scavenger items
-  const scavengerData = await loadScavengerItems();
-  const scavengerItems = scavengerData.scavengerItems || {};
-
-  // CRITICAL: Mark scavenger items with runtime flag
-  Object.values(scavengerItems).forEach(item => {
-    item.isScavengerItem = true;  // Runtime property, not in JSON
-  });
-
-  // Merge into main items object
-  items = { ...items, ...scavengerItems };
-  console.log(`Merged ${Object.keys(scavengerItems).length} scavenger items`);
-
-  // ... rest of initialization ...
-}
-```
-
-**Benefits:**
-- JSON files stay clean (no itemType field)
-- Clear separation at runtime
-- Easy to check: `if (item.isScavengerItem)`
-- Scales to multiple item categories if needed
-
-### Score Component Calculation
-
-**Complete updateGameStatus() Function:**
-```javascript
-function updateGameStatus() {
-  const statusDiv = document.querySelector(".status");
-
-  // 1. Get inventory items
-  const inventory = Object.values(items).filter(item =>
-    item.includeInGame && item.location === "INVENTORY"
-  );
-
-  // 2. Calculate separate score components
-  let regularItemsScore = 0;
-  let scavengerScore = 0;
-
-  inventory.forEach(item => {
-    const points = item.points || 0;
-    if (item.isScavengerItem) {
-      scavengerScore += points;  // Scavenger items (11-20 pts each)
-    } else {
-      regularItemsScore += points;  // Regular items (0-1 pts each)
-    }
-  });
-
-  // 3. Get health score from player
-  const healthScore = player?.core?.health || 0;
-
-  // 4. Calculate total score
-  const totalScore = regularItemsScore + scavengerScore + healthScore;
-
-  // 5. Update player.core.score for persistence
-  if (player.core) {
-    player.core.score = totalScore;
-  }
-
-  // 6. Generate inventory HTML for right panel
-  let inventoryHTML = "";
-  inventory.forEach((item) => {
-    const points = item.points || 0;
-    inventoryHTML += `<div>${item.display} (+${points})</div>`;
-  });
-
-  // 7. Generate score breakdown HTML for left panel
-  let statsHTML = "";
-  statsHTML += `<div>Treats: ${regularItemsScore}</div>`;
-  statsHTML += `<div>Scavenger: ${scavengerScore}</div>`;
-  statsHTML += `<div>Health: ${healthScore}</div>`;
-  statsHTML += `<div>───────────</div>`;
-  statsHTML += `<div>Score: ${totalScore}</div>`;
-
-  // 8. Update DOM
-  statusDiv.innerHTML = `
-    <div class="status-section">
-      <div class="status-title">SCORE:</div>
-      ${statsHTML}
-    </div>
-
-    <div class="status-section">
-      <div class="status-title">INVENTORY:</div>
-      ${inventoryHTML}
-    </div>
-
-    <div class="status-section">
-      <div class="status-title">COMMANDS:</div>
-      ${commandsList.map((cmd) => `<div>${cmd}</div>`).join("")}
-    </div>
-  `;
-}
-```
-
-**Why This Design:**
-1. **Separation of concerns** - Each score component has clear meaning
-2. **Gameplay decisions** - Eating candy trades health for treat collection
-3. **Progress tracking** - Each component shows different achievement
-4. **Extensibility** - Easy to add new score components (time bonus, puzzle points, etc.)
-
-### Player Data Structure
-
-**CONFIG_FALLBACKS.player (Fixed Structure):**
-```javascript
-player: {
-  core: {
-    score: 0,          // Total score (sum of components)
-    health: 100,       // Current health (default 100)
-    inventory: [],     // Unused (kept for compatibility)
-    currentRoom: "STREET-01",
-    visitedRooms: []
-  },
-  gameStats: {
-    treats: { current: 0, max: 40 },
-    houses: { current: 0, max: 12 }  // Legacy, may remove
-  }
-}
-```
-
-**Runtime Player Data (from gameData.json):**
-```javascript
-const runtimePlayerData = {
-  core: {
-    score: gameData.startup?.playerStats?.score || 0,
-    health: gameData.startup?.playerStats?.health || 100,  // Default 100
-    inventory: processedGameData.playerInventory,
-    currentRoom: gameData.startup?.playerStats?.currentRoom || "STREET-01",
-    visitedRooms: gameData.startup?.playerStats?.visitedRooms || []
-  },
-  gameStats: {
-    treats: gameData.startup?.playerStats?.treats || {current: 0, max: 40},
-    houses: gameData.startup?.playerStats?.houses || {current: 0, max: 12}
-  }
-};
-```
-
-**Player Initialization Logic:**
-```javascript
-// Check if player.json exists and has content
-const savedPlayer = await loadPlayer();
-
-if (Object.keys(savedPlayer).length === 0) {
-  // New game or missing player.json - use runtime data
-  player = runtimePlayerData;
-  console.log('New game: Built player data from gameData.startup');
-} else {
-  // Continue game - use saved data
-  player = savedPlayer;
-  console.log('Continue game: Using saved player data');
-}
-```
-
-**Critical Fix:** CONFIG_FALLBACKS.player must match runtimePlayerData structure, otherwise fallback will be used instead of runtime data even when player.json doesn't exist.
-
-## Configuration & Loading System
-
-### Fallback Command Architecture
-**Problem:** Browser caching prevented commands.json updates from loading.
-
-**Solution:** Dual command system with fallbacks.
-
-**Implementation:**
-```javascript
-// 1. CONFIG_FALLBACKS at top of file (lines 79-149)
-const CONFIG_FALLBACKS = {
-  commands: {
-    help: { type: "system", shortcuts: ["h", "?"], action: "show_help" },
-    look: { type: "action", shortcuts: ["l"], action: "examine_room" },
-    inventory: { type: "system", shortcuts: ["i"], action: "show_inventory" },
-    north: { type: "movement", shortcuts: ["n"], action: "move_north" },
-    south: { type: "movement", shortcuts: ["s"], action: "move_south" },
-    east: { type: "movement", shortcuts: ["e"], action: "move_east" },
-    west: { type: "movement", shortcuts: ["w"], action: "move_west" },
-    take: { type: "action", shortcuts: ["get", "grab", "pick"], action: "take_item" },
-    examine: { type: "action", shortcuts: ["x", "ex"], action: "examine_item" },
-    drop: { type: "action", shortcuts: ["put", "place"], action: "drop_item" }
-  },
-  // ... other fallbacks ...
-};
-
-// 2. Try to load from JSON
-async function loadCommands() {
-  try {
-    const response = await fetch(`${CONFIG_LOCATION}/commands.json`);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
-    console.log('Successfully loaded commands.json');
-    return data;
-  } catch (error) {
-    console.log('Using fallback commands');
-    return CONFIG_FALLBACKS.commands;  // Use hardcoded fallback
-  }
-}
-
-// 3. In initGame()
-const commandsData = await loadCommands();
-commands = commandsData.commands || {};
-```
-
-**Result:** Commands work regardless of cache state or JSON loading issues.
-
-### JSON File Loading Pipeline
-All JSON files follow this pattern:
-
-```javascript
-async function loadXXX() {
-  const filename = 'xxx.json';
-  try {
-    // 1. Fetch from server
-    const response = await fetch(`${CONFIG_LOCATION}/${filename}`);
-
-    // 2. Check HTTP status
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    // 3. Parse JSON
-    const data = await response.json();
-
-    // 4. Log success
-    console.log(`Successfully loaded ${filename} from ${CONFIG_LOCATION}`);
-
-    // 5. Return data
-    return data;
-
-  } catch (error) {
-    // 6. Handle errors gracefully
-    displayConfigError(filename, CONFIG_LOCATION, error, isCritical, hasFallback);
-
-    // 7. Return fallback if available
-    if (hasFallback) {
-      console.log(`Using fallback ${filename} defaults`);
-      return CONFIG_FALLBACKS.xxx;
-    }
-
-    // 8. Return empty structure if no fallback
-    return { xxx: {} };
-  }
-}
-```
-
-**Files with fallbacks:**
-- commands.json → CONFIG_FALLBACKS.commands
-- player.json → CONFIG_FALLBACKS.player
-- gameState.json → CONFIG_FALLBACKS.gameState
-- uiConfig.json → CONFIG_FALLBACKS.uiConfig
-- keyboardShortcuts.json → CONFIG_FALLBACKS.keyboardShortcuts
-
-**Files without fallbacks (critical):**
-- rooms-w-doors.json (game cannot run without rooms)
-- items.json (returns empty object)
-- scavengerItems.json (returns empty object)
-
-## Real-Time UI Synchronization
-
-### Status Panel Update System
-**When updateGameStatus() is called:**
-1. After handleTakeCommand() success
-2. After handleDropCommand() success
-3. During game initialization
-4. Future: After handleEatCommand() when implemented
-
-**No manual synchronization needed** - changing item.location automatically reflects in next updateGameStatus() call.
-
-### Text Buffer Management
-```javascript
-function addToBuffer(messages) {
-  // messages is array of {text, type} objects
-  messages.forEach(message => {
-    textBuffer.push({
-      text: message.text,
-      type: message.type  // "command", "flavor", "error"
-    });
-  });
-  updateDisplay();  // Render to DOM
-}
-```
-
-**Message Types & Styling:**
-- **command**: Blue text (#4a9eff) - Commands and prompts
-- **flavor**: White text - Descriptions and responses
-- **error**: Red/orange text - Invalid commands and failures
-
-### Display Update Flow
-```
-User Action (take/drop)
-    ↓
-Handler function modifies item.location
-    ↓
-Handler calls updateGameStatus()
-    ↓
-updateGameStatus() recalculates:
-  ├─ Inventory contents (filter by location)
-  ├─ Score components (regular vs scavenger)
-  ├─ Total score (sum + health)
-  └─ player.core.score (persistence)
-    ↓
-Generate HTML strings:
-  ├─ inventoryHTML (items with +X)
-  ├─ statsHTML (score breakdown)
-  └─ commandsHTML (commands list)
-    ↓
-Update DOM via innerHTML
-    ↓
-User sees updated panels instantly
-```
-
-## Browser Compatibility & Development Challenges
-
-### Caching Issues Solved
-**Problem:** Commands.json changes not reflected in browser after refresh.
-
-**Root Cause:** Aggressive browser caching of localhost resources.
-
-**Solutions Implemented:**
-1. **Fallback commands** in JavaScript file (CONFIG_FALLBACKS)
-2. **Multiple development server ports** (8000-8005) for cache busting
-3. **JSON syntax validation** before deployment
-4. **Hard refresh instructions** for users (Ctrl+Shift+R)
-
-### Development Server Strategy
-```bash
-# Port rotation for cache busting during development
-python3 -m http.server 8000  # Initial development
-# Make changes to commands.json
-python3 -m http.server 8001  # After commands.json changes
-# Browser fetches from new port = cache miss
-python3 -m http.server 8002  # After more changes
-# etc.
-```
-
-### JSON Validation Pipeline
-```bash
-# Validate all JSON files before deployment
-python3 -c "import json; json.load(open('HALLOWEEN-GAME/commands.json'))"
-python3 -c "import json; json.load(open('HALLOWEEN-GAME/items.json'))"
-python3 -c "import json; json.load(open('HALLOWEEN-GAME/scavengerItems.json'))"
-python3 -c "import json; json.load(open('HALLOWEEN-GAME/rooms-w-doors.json'))"
-python3 -c "import json; json.load(open('HALLOWEEN-GAME/uiConfig.json'))"
-python3 -c "import json; json.load(open('HALLOWEEN-GAME/gameData.json'))"
-```
-
-## Performance Considerations
-
-### Item Filtering Optimization
-**Efficient - Single Pass:**
-```javascript
-const roomItems = Object.values(items).filter(item =>
-  item.includeInGame &&
-  item.location === currentRoom &&
-  item.visible
-);
-```
-
-**Avoided - Multiple Passes:**
-```javascript
-// DON'T DO THIS - inefficient multiple iterations
-const activeItems = items.filter(item => item.includeInGame);
-const roomItems = activeItems.filter(item => item.location === currentRoom);
-const visibleItems = roomItems.filter(item => item.visible);
-```
-
-### Memory Management
-- **No duplicate objects**: Items exist once in global `items` object
-- **Reference-based operations**: Only change properties, never copy items
-- **Minimal DOM updates**: Status panel updated only when inventory changes
-- **Event delegation**: Single keydown listener handles all input
-- **Object.values() caching**: Could be optimized if needed, but not bottleneck
-
-### Potential Optimizations (Future)
-```javascript
-// Current: Recalculate inventory every updateGameStatus()
-const inventory = Object.values(items).filter(item =>
-  item.includeInGame && item.location === "INVENTORY"
-);
-
-// Future: Cache inventory, invalidate on changes
-let cachedInventory = null;
-let inventoryDirty = true;
-
-function getInventory() {
-  if (inventoryDirty) {
-    cachedInventory = Object.values(items).filter(item =>
-      item.includeInGame && item.location === "INVENTORY"
-    );
-    inventoryDirty = false;
-  }
-  return cachedInventory;
-}
-
-function invalidateInventory() {
-  inventoryDirty = true;
-}
-```
-
-**Not needed yet** - performance is excellent with current item count (~17 items).
-
-## Error Handling & Validation
-
-### Item Command Validation Errors
-```javascript
-// Clear, user-friendly error messages for each failure case
-
-// Missing item name
-if (words.length < 2) {
-  return showError("Take what?");
-}
-
-// Item not found
-if (allItems.length === 0) {
-  return showError(`You don't see any "${targetName}" here.`);
-}
-
-// Item can't be examined
-if (!item.actions?.examine) {
-  return showError(`You can't examine the ${item.display}.`);
-}
-
-// Item not in inventory (portable items)
-if (item.actions.take && item.location !== "INVENTORY") {
-  return showError(`You need to pick up the ${item.display} first to examine it closely.`);
-}
-
-// Item not droppable
-if (!item.actions?.take) {
-  return showError(`You can't drop the ${item.display}.`);
-}
-```
-
-### Graceful Degradation
-- **Missing JSON files**: Use hardcoded fallbacks
-- **Invalid commands**: Clear error messages, never crash
-- **Missing items**: Helpful "not found" responses
-- **Network issues**: Local fallback data
-- **Malformed JSON**: Catch and display config errors
-- **Missing properties**: Use optional chaining (?.) and defaults (||)
-
-## Future Technical Considerations
-
-### Extensibility Points
-
-**Adding New Commands:**
-1. Add to `commands.json` with action name
-2. Add to `CONFIG_FALLBACKS.commands` for reliability
-3. Add case to `processCommand()` switch statement
-4. Implement handler function (e.g., handleEatCommand)
-5. Update `showHelp()` text
-
-**Adding New Item Properties:**
-1. Define property in JSON schema (items.json & scavengerItems.json)
-2. Update validation logic if property gates behavior
-3. Handle in display functions if property affects UI
-4. Document in specifications
-
-**Adding New Score Components:**
-1. Calculate component in updateGameStatus()
-2. Add to total score calculation
-3. Add display line in statsHTML
-4. Update player.core if persistent value
-
-### Scalability Architecture
-- **Room system**: Supports unlimited rooms via JSON (currently 16)
-- **Item system**: Property-driven, no code changes for new items
-- **Command system**: Pluggable architecture for new interactions
-- **Display system**: Template-driven HTML generation, easily customizable
-- **Score system**: Component-based, easy to add new scoring types
-
-### Database Migration Path (Future)
-Current file-based system could migrate to database without code changes:
-
-```javascript
-// Current: File-based
-const items = await loadItems();
-
-// Future: Database-based
-const items = await db.query('SELECT * FROM items WHERE includeInGame = true');
-
-// Future: Local Storage
-const items = JSON.parse(localStorage.getItem('items'));
-
-// Future: IndexedDB
-const items = await db.items.toArray();
-```
-
-All current logic would remain unchanged due to consistent data structure.
-
-### Testing Strategy
-**Manual Testing Checklist:**
-- [ ] Take command works with all item types
-- [ ] Drop command works in all rooms
-- [ ] Examine command distinguishes portable/fixed items
-- [ ] Score components calculate correctly
-- [ ] player.core.score updates after take/drop
-- [ ] Health score displays current health value
-- [ ] Inventory panel shows (+X) points
-- [ ] Commands load from JSON and fallback
-- [ ] Browser refresh preserves game state (if player.json saved)
-
-**Future: Automated Testing**
-```javascript
-// Example test cases for future implementation
-describe('Item Commands', () => {
-  test('take command moves item to inventory', () => {
-    const item = items['snickers_bar'];
-    item.location = 'FOYER';
-    handleTakeCommand('take snickers');
-    expect(item.location).toBe('INVENTORY');
-  });
-
-  test('drop command moves item to current room', () => {
-    currentRoom = 'LIBRARY';
-    const item = items['snickers_bar'];
-    item.location = 'INVENTORY';
-    handleDropCommand('drop snickers');
-    expect(item.location).toBe('LIBRARY');
-  });
-
-  test('score components calculate correctly', () => {
-    items['snickers_bar'].location = 'INVENTORY';  // 1 pt
-    items['item_01'].location = 'INVENTORY';       // 11 pts
-    player.core.health = 100;                           // 100 pts
-    updateGameStatus();
-    expect(player.core.score).toBe(112);
-  });
-});
-```
-
-## Visual Scavenger Hunt Implementation (DESIGNED)
-
-### 3×3 Grid Layout Calculations
-
-**Scavenger box dimensions:**
-```
-Container allocation (from CSS grid): 313px × 280px
-- Border: 2px × 4 sides = 4px width, 4px height
-- Padding: 3px × 4 sides = 6px width, 6px height (reduced from 10px)
-- Usable content area: 303px × 270px
-
-Grid layout (3 columns × 3 rows):
-- Grid gaps: 3px × 2 horizontal = 6px, 3px × 2 vertical = 6px
-- Cell width: (303 - 6) / 3 = 99px
-- Cell height: (270 - 6) / 3 = 90px
-- Perfect fit for 90×90px images with minimal margin
-```
-
-### CSS Implementation
-
-**Scavenger box grid styling:**
-```css
-.scavenger {
-  grid-area: scavenger;
-  border: 2px solid white;
-  padding: 3px;  /* Changed from 10px for grid layout */
-  box-sizing: border-box;
-
-  /* Grid layout */
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 3px;
-
-  font-family: "Courier New", Courier, monospace;
-  overflow: hidden;  /* No scrolling needed for fixed grid */
-}
-
-.scavenger-item {
-  border: 1px solid #666;
-  background: #1a1a1a;
-
-  /* Center image in cell */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  /* Optional hover effect */
-  transition: border-color 0.2s;
-}
-
-.scavenger-item:hover {
-  border-color: #ffcc00;
-}
-
-.scavenger-item img {
-  max-width: 90px;
-  max-height: 90px;
-  object-fit: contain;  /* Maintain aspect ratio */
-  display: block;
-}
-```
-
-### HTML Structure
-
-**Grid cells in scavenger div:**
-```html
-<div class="scavenger">
-  <div class="scavenger-item" data-index="0">
-    <img src="assets/scavenger/_90x90blank.png" alt="Item 1">
-  </div>
-  <div class="scavenger-item" data-index="1">
-    <img src="assets/scavenger/_90x90blank.png" alt="Item 2">
-  </div>
-  <!-- ... 7 more cells for 3×3 grid ... -->
-</div>
-```
-
-### JavaScript Implementation
-
-**Update grid based on found items:**
-```javascript
-function updateScavengerGrid() {
-  // Get scavenger items in order
-  const scavengerItems = Object.values(items)
-    .filter(item => item.isScavengerItem)
-    .slice(0, 9);  // Take only first 9 for 3×3 grid
-
-  scavengerItems.forEach((item, index) => {
-    const cell = document.querySelector(`.scavenger-item[data-index="${index}"]`);
-    if (!cell) return;
-
-    const img = cell.querySelector('img');
-    if (item.found) {
-      // Show actual item image
-      img.src = `assets/scavenger/${item.imageFile}`;
-      img.alt = item.display;
-    } else {
-      // Show placeholder
-      img.src = 'assets/scavenger/_90x90blank.png';
-      img.alt = '???';
-    }
-  });
-}
-
-// Call from updateGameStatus() to keep grid in sync
-function updateGameStatus() {
-  // ... existing score/inventory code ...
-
-  // Update scavenger grid
-  updateScavengerGrid();
-}
-```
-
-**Add imageFile property to scavenger items:**
-```json
-{
-  "item_01": {
-    "includeInGame": true,
-    "typedName": "dog",
-    "display": "Dog figurine",
-    "imageFile": "dog90x90.png",  // NEW property
-    "location": "KITCHEN",
-    "points": 11,
-    "found": false,
-    "isScavengerItem": true
-  }
-}
-```
-
-## Candy Image Display Implementation (OPTIONS)
-
-### Option 1: Inline Text Buffer Display
-
-**Simplest approach - insert image directly into text:**
-```javascript
-function handleExamineCommand(command) {
-  // ... existing examination code ...
-
-  // For candy items, show image inline
-  if (item.eatable && item.imageFile) {
-    addToBuffer([
-      {
-        text: `<img src="assets/candy/${item.imageFile}" style="display:block; margin:10px auto; max-width:250px; max-height:250px;">`,
-        type: "flavor"
-      },
-      { text: `${item.display}: ${item.actions.examine}`, type: "flavor" }
-    ]);
-  } else {
-    addToBuffer([
-      { text: `${item.display}: ${item.actions.examine}`, type: "flavor" }
-    ]);
-  }
-}
-```
-
-**Pros:** Minimal code, works immediately, no CSS changes
-**Cons:** Scrolls away with text buffer
-
-### Option 2: Temporary Overlay Display
-
-**Prominent display over status box:**
-```css
-.candy-overlay {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  width: 313px;
-  height: 360px;
-  background: rgba(0, 0, 0, 0.95);
-  border: 2px solid #ffcc00;
-  display: none;
-  z-index: 100;
-  padding: 20px;
-  box-sizing: border-box;
-
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.candy-overlay img {
-  max-width: 250px;
-  max-height: 250px;
-  margin-bottom: 15px;
-}
-
-.candy-overlay .description {
-  color: white;
-  text-align: center;
-  font-family: "Courier New", monospace;
-  font-size: 14px;
-}
-```
-
-```javascript
-function showCandyOverlay(imagePath, description) {
-  const overlay = document.querySelector('.candy-overlay');
-  overlay.innerHTML = `
-    <img src="${imagePath}" alt="Candy">
-    <div class="description">${description}</div>
-  `;
-  overlay.style.display = 'flex';
-}
-
-function processCommand(command) {
-  // Clear overlay at start of every command
-  const overlay = document.querySelector('.candy-overlay');
-  if (overlay) overlay.style.display = 'none';
-
-  // ... rest of command processing ...
-}
-```
-
-**Pros:** Prominent, doesn't scroll away, auto-clears
-**Cons:** More code, needs HTML div added, covers status temporarily
-
-### Option 3: Split Scavenger Box
-
-**Top section for images, bottom for grid:**
-```css
-.scavenger {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.scavenger-image {
-  height: 100px;
-  border: 1px solid #666;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #1a1a1a;
-}
-
-.scavenger-grid {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 3px;
-}
-```
-
-**Pros:** Permanent display area, doesn't scroll or overlay
-**Cons:** Reduces grid size, more complex layout
+**Why This Matters:**
+- Typing "n" triggers "north" (shortcut)
+- Typing "ex" triggers "examine" (prefix)
+- Typing "e" is ambiguous (east or examine) → uses shortcut priority
+- Natural, forgiving UX
+
+### New Commands Added (v0.32)
+
+**ABOUT:**
+- **Storage:** gameData.json → "about" section
+- **Rationale:** Non-developers can edit game info
+- **Format:** Same as startup.welcomeText (array of text objects)
+- **Handler:** Simple loop through text array
+
+**RESTART:**
+- **Implementation:** `location.reload()`
+- **Why:** Simplest way to reset all state
+- **Alternative considered:** Manual state reset (rejected as error-prone)
+
+**CELEBRATE:**
+- **Implementation:** Calls `showCelebrationGrid()` directly
+- **Validation:** Checks scavenger count before allowing
+- **Use case:** Demos, testing, showing off to friends
+
+**HINT:**
+- **Implementation:** Static text display
+- **Alternative considered:** Dynamic command list generation (rejected as overkill)
+- **Trade-off:** Manual updates when commands change vs. complex code
 
 ---
 
-*This technical specification provides the implementation details needed to understand, maintain, and extend the Halloween Text Adventure codebase. The architecture emphasizes simplicity, consistency, and extensibility while solving real-world development challenges like browser caching, score tracking, state management, and visual feedback systems.*
+## State Management
+
+### Global State Variables
+```javascript
+let currentRoom = "STREET-01";          // Player location
+let items = {};                          // All game items
+let rooms = {};                          // All rooms
+let doors = {};                          // Door states
+let awaitingQuitConfirmation = false;   // QUIT flow
+let awaitingCelebrationDismiss = false; // Animation flow
+```
+
+### Item State Tracking
+```javascript
+items['pumpkin'] = {
+  location: "FOYER",           // Current location
+  found: false,                // Scavenger tracking
+  visible: true,               // Can player see it?
+  locked: false,               // Is it locked?
+  hasBeenOpened: false,        // One-time state
+  // ... other properties
+}
+```
+
+### State Transitions
+
+**Item Collection:**
+```
+1. Player types TAKE PUMPKIN
+2. Validation (is item here? can we take it?)
+3. Update: item.location = "INVENTORY"
+4. Update: item.found = true (if scavenger)
+5. Check: Is this 9th item?
+6. Trigger: showCelebrationGrid() if yes
+7. Update: UI panels (status, scavenger grid)
+```
+
+**Door Unlocking:**
+```
+1. Player moves NORTH
+2. Check: Is door locked?
+3. Check: Does player have key?
+4. Update: door.locked = false
+5. Update: door.open = true
+6. Move: currentRoom = destination
+```
+
+---
+
+## CSS Animation System (v0.32)
+
+### Keyframe Animations
+
+**Punch-Rotate (Victory Grid):**
+```css
+@keyframes punchRotate {
+  0% {
+    transform: scale(0.1) rotate(0deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1) rotate(360deg);  /* Overshoot */
+  }
+  100% {
+    transform: scale(1) rotate(360deg);    /* Settle */
+    opacity: 1;
+  }
+}
+```
+
+**Why 60% Overshoot?**
+- Creates "bounce" effect
+- More satisfying than linear growth
+- Draws eye to each item
+- Classic animation principle
+
+**Glow Pulse (Victory Grid):**
+```css
+@keyframes glowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px orange);
+  }
+  50% {
+    filter: drop-shadow(0 0 20px orange);
+  }
+}
+```
+
+**Stacked Animations:**
+```css
+animation: punchRotate 0.6s ease-out forwards,
+           glowPulse 2s ease-in-out infinite 0.6s;
+```
+- First: Punch-rotate once
+- Second: Glow pulse forever (starts after punch)
+- `forwards`: Keeps end state
+- `infinite`: Loops continuously
+
+**Flash (Scavenger Discovery):**
+```css
+@keyframes flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+```
+- 2s duration
+- Infinite loop
+- Attached to `.scavenger-found` class
+
+### Text Shadow Effects
+
+**Chiseled Title:**
+```css
+text-shadow:
+  0 0 10px #6a0dad,      /* Purple glow */
+  0 0 20px #6a0dad,      /* Stronger purple */
+  2px 2px 4px #000;      /* Black depth */
+```
+
+**Why Multiple Shadows?**
+- Layering creates depth
+- Glow + shadow = 3D effect
+- Works on black background
+- Readable at any size
+
+---
+
+## Performance Considerations
+
+### Text Buffer System
+- **Problem:** Directly appending to DOM is slow
+- **Solution:** Buffer text lines, batch update
+- **Implementation:** `addToBuffer([])` → `updateTextDisplay()`
+
+### Image Loading
+- **Problem:** Layout shift when images load
+- **Solution:** `onload` handler scrolls after dimensions known
+- **Code:** `onload="document.querySelector('.text').scrollTop = ..."`
+
+### Animation Performance
+- **Transforms:** Use `transform` (GPU) not `left/top` (CPU)
+- **Opacity:** Animating opacity is efficient
+- **Will-change:** Not needed (modern browsers optimize automatically)
+
+### Memory Management
+- **Celebration cleanup:** `overlay.remove()` not `overlay.style.display = 'none'`
+- **Event listeners:** Minimal use, centralized handling
+- **Image assets:** Reasonably sized (~20KB each)
+
+---
+
+## Data Structure Decisions
+
+### Why Separate items.json and scavengerItems.json?
+
+**Rationale:**
+1. **Conceptual separation:** Different item types, different purposes
+2. **Easier editing:** Scavenger items have extra properties (displaySquare, icon250x250)
+3. **Merge at runtime:** `mergeScavengerItems()` combines them
+4. **Historical:** Scavenger system added later
+
+**Alternative Considered:**
+- Single items.json with `type: "scavenger"` flag
+- **Rejected:** Harder to navigate large file
+
+### Why gameData.json for ABOUT text?
+
+**Rationale:**
+1. **Non-technical editing:** No code knowledge required
+2. **Consistency:** Same format as welcomeText
+3. **Future-proof:** Easy to add more configurable text sections
+
+**How It Works:**
+```javascript
+gameData.about.text.forEach(line => addToBuffer([line]));
+```
+
+Simple loop, no special parsing needed.
+
+---
+
+## Future Enhancement Possibilities
+
+### Technical Debt
+- None currently identified
+- Code is clean and maintainable
+
+### Potential Features (Technical Notes)
+
+**Save Game System:**
+- **Implementation:** localStorage.setItem('gameState', JSON.stringify(state))
+- **Load:** Parse JSON, restore item locations and flags
+- **Challenge:** Version compatibility (what if items change?)
+
+**Sound Effects:**
+- **Library:** Howler.js or Web Audio API
+- **Triggers:** Item pickup, door unlock, celebration
+- **Challenge:** Asset size (keep under 1MB total)
+
+**Achievements:**
+- **Storage:** Same as save game (localStorage)
+- **Tracking:** New state object `achievements = {}`
+- **Display:** Modal overlay similar to celebration
+
+**Mobile Support:**
+- **Challenge:** Text input on mobile keyboards
+- **Solution:** Virtual button panel for common commands?
+- **Alternative:** Optimize for landscape orientation
+
+**Accessibility:**
+- **Screen readers:** Add ARIA labels
+- **Keyboard nav:** Already supported (text input)
+- **High contrast:** CSS variables for theme swapping
+
+---
+
+## Development Workflow
+
+### Testing Checklist
+1. Full playthrough (collect all items)
+2. Test DEBUG → CELEBRATE → RESTART sequence
+3. Verify HOME screen layout (no overflow)
+4. Test all hidden commands
+5. Check animations on different browsers
+6. Verify mobile/responsive behavior
+
+### Git Workflow
+- Checkpoint before major features
+- v0.31: "BEFORE FINAL CELEBRATION" (safe rollback)
+- Descriptive commit messages
+- Keep working directory clean
+
+### Documentation Maintenance
+- Update specifications.md after major features
+- Create ToBeContinued file each session
+- Keep only 3 most recent ToBeContinued files
+- Technical notes in specifications-technical.md
+
+---
+
+## Browser Compatibility
+
+### Tested Browsers
+- Chrome/Edge (Chromium): ✅ Full support
+- Firefox: ✅ Full support
+- Safari: ✅ Full support (minor text-shadow differences)
+
+### Required Features
+- ES6 JavaScript (arrow functions, template literals)
+- CSS Grid
+- CSS Animations
+- fetch API (for JSON loading)
+- localStorage (for future save system)
+
+### Fallbacks
+- Google Fonts: Generic fallbacks specified
+- Images: Alt text for screen readers
+- Animations: Game still playable without (graceful degradation)
+
+---
+
+## Code Quality Notes
+
+### Naming Conventions
+- **Functions:** camelCase (`handleTakeCommand`)
+- **Variables:** camelCase (`scavengerItems`)
+- **Constants:** Not used (no true constants in this codebase)
+- **CSS classes:** kebab-case (`scavenger-found`)
+
+### Code Organization
+- **Sections:** Clearly marked with comment headers
+- **Function length:** Mostly under 50 lines
+- **Commenting:** Strategic, not excessive
+- **DRY principle:** Helper functions for repeated logic
+
+### Refactoring Opportunities
+- None currently critical
+- `formatScavengerTwoColumns()` could be generalized
+- Consider extracting animation configs to constants
+
+---
+
+*Last updated: October 6, 2025*
+*All systems functional and well-documented*
