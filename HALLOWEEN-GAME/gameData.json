@@ -19,21 +19,12 @@
   },
 
   "startup": {
-    "room": "STREET-01",
-    "welcomeText": [
-      {"text": "Welcome to Text Adventure - Halloween Edition!", "type": "flavor"},
-      {"text": "", "type": "flavor"},
-      {"text": "It is nearly 8:00 PM, Trick or Treat nearly over. You are tired from hauling around this heavy bag of candy all night.", "type": "flavor"},
-      {"text": "", "type": "flavor"},
-      {"text": "Your last house is Mrs. McGillicutty's. Nice house. Good, the porch light is still on. Probably has some candy left.", "type": "flavor"},
-      {"text": "", "type": "flavor"},
-      {"text": "<span style='color: #ffcc00;'>[hint: Type <b>help</b> or <b>h</b> for a list of commands (which are also shown in the bottom-right of the screen!)]</span>", "type": "flavor"},
-      {"text": "", "type": "flavor"}
-    ],
+    "room": "START",
+    "welcomeText": [],
     "playerStats": {
       "score": 0,
       "health": 100,
-      "currentRoom": "STREET-01",
+      "currentRoom": "START",
       "visitedRooms": [],
       "treats": {"current": 0, "max": 40},
       "houses": {"current": 0, "max": 12}

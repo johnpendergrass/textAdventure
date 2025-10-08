@@ -11,19 +11,35 @@
       }
     },
 
+    "START": {
+      "name": "Halloween Night",
+      "enterText": {
+        "first": "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-size: 1.2em;'><b>Welcome to The Radley House!</b></span><br><br>This is a text based game where you wander around and try to discover things.<br><br>----------------------------------------------------------<br><br>It is late on Halloween night and twilight is creeping in. All along the street the porchlights are off, as if the dark houses are saying 'enough is enough'.<br><br>It looks like Halloween is officially over... wait? is that a light on over there? Just down the street, to the <b>east</b>. It looks like it might be Mrs. McGillicutty's house!<br><br><span style='color: #ffcc00;'>[hint: type <b>go east</b> (or just <b>e</b>) to go down the street.]</span>",
+        "repeat": "You are at the start of your Halloween adventure. The street continues to the <b>east</b> towards Mrs. McGillicutty's house."
+      },
+      "lookText": "It is Halloween night and getting dark. You can see some houses down the street to the <b>east</b>.",
+      "exits": {
+        "east": { "to": "STREET-01", "door": "start2street-01" }
+      },
+      "special": {
+        "starting-location": true,
+        "backgroundPic": "assets/background/darkstreet250x250.png"
+      }
+    },
+
     "STREET-01": {
       "name": "Street",
       "enterText": {
-        "first": "You are on the street. Mrs. McGillicutty's front porch is to the <b>north</b>.  The sidewalk continues to the <b>east</b>.<br><br><span style=\"color: #ffcc00;\">[hint: type <b>go north</b> (or just <b>n</b>) to go to the house, <b>east</b> (or <b>e</b>) to keep walking.]</span>",
-        "repeat": "You are on the street. The path to Mrs. McGillicutty's house is to the <b>north</b>.  The sidewalk continues to the <b>east</b>."
+        "first": "You walk east down the street and stop in front of Mrs. McGillicutty's house. That light you saw looks like it is coming from her porch. Nice house. Nice of her to leave the porch light on. Probably has some candy left!<br><br>Wow, she really went all out on the decorations this year! Fancy Halloween lighting! Those ghosts are old school! Her well-lit front porch is to the <b>north</b>. The sidewalk continues to the <b>east</b> or <b>west</b>.<br><br><span style=\"color: #ffcc00;\">[hint: In this game you will type commands (<b>go north</b>, <b>look</b>, etc) and sometimes two words (<b>get key</b>, etc) to control your player. Words in <b>bold</b> will often be commands or words you can type.]</span>",
+        "repeat": "You are on the street. The path to Mrs. McGillicutty's house is to the <b>north</b>.  The sidewalk continues to the <b>east</b> and <b>west</b>."
       },
       "lookText": "You are on the street. Mrs. McGillicutty's front porch is to the <b>north</b>.  The sidewalk continues to the <b>east</b>. It is getting darker, but this house is cheerful and welcoming. <span style='color: #ffcc00;'>[Hint: type <b>'go north'</b> to revisit Mrs. McGillicutty's house, or <b>'go east'</b> to head on down the road.]</span>",
       "exits": {
+        "west":  { "to": "START",      "door": "start2street-01" },
         "north": { "to": "NICE-PORCH", "door": "street-012nice-porch" },
         "east":  { "to": "STREET-02",  "door": "street-012street-02" }
       },
       "special": {
-        "starting-location": true,
         "backgroundPic": "assets/background/McGillicuttyHouse250x250.png"
       }
     },
@@ -31,7 +47,7 @@
     "STREET-02": {
       "name": "Street",
       "enterText": {
-        "first": "You walk down the street to the Radley House.  Such an imposing decrepit old house! Sort of a cross between the Addams Family mansion and Notre Dame Cathedral. Gothic!<br><br>To the <b>north</b> is the Radley's front porch. or... maybe it would be safer to just walk <b>west</b>, back to Mrs. McGillicutty's house?",
+        "first": "You walk down the street to <span style='font-family: Cinzel, serif; color: #ff9500; font-size: 1.3em; font-weight: 700; letter-spacing: 2px; text-shadow: 0 0 5px #6a0dad, 1px 1px 2px #000;'>THE RADLEY HOUSE</span>.<br><br>Such an imposing decrepit old house! Sort of a cross between the Addams Family mansion and Notre Dame Cathedral. Gothic!<br><br>To the <b>north</b> is the Radley's front porch. or... maybe it would be safer to just walk <b>west</b>, back to Mrs. McGillicutty's house?",
         "repeat": "You are in front of the Radley House again. Its not so bad once you get used to it.... if you're a ghost!"
       },
       "lookText": "You are in front of the Radley House again. Its not so bad once you get used to it I guess.",
@@ -47,7 +63,7 @@
     "NICE-PORCH": {
       "name": "Nice Porch",
       "enterText": {
-        "first": "You are standing on Mrs. McGillicutty's porch. The porch light is on, casting a warm welcoming glow.<br><br><span style=\"color: #ffcc00;\">[hint: type <b>ring doorbell</b> or <b>use doorbell</b> to ring the doorbell.]<br><br>[hint: If a word is bolded (<b>south</b>) it generally means it can be typed for some purpose.]</span><br><br>The door is to the <b>north</b>.",
+        "first": "You are standing on Mrs. McGillicutty's porch. The porch light is on, casting a warm welcoming glow.<br><br><span style=\"color: #ffcc00;\">[hint: type <b>ring doorbell</b> or <b>use doorbell</b> to ring the doorbell.]</span><br><br>The door is to the <b>north</b>.",
         "second": "The porch light is off, but you try the bell anyway. No one answers.",
         "repeat": "The porch light is off. No one answers the door."
       },
@@ -265,6 +281,14 @@
   },
 
   "doors": {
+      "start2street-01": {
+        "between": ["START", "STREET-01"],
+        "description": "The street continues towards Mrs. McGillicutty's house.",
+        "visible": true,
+        "locked": false,
+        "open": true
+      },
+
       "street-012street-02": {
         "between": ["STREET-01", "STREET-02"],
         "description": "It is a sidewalk.",
