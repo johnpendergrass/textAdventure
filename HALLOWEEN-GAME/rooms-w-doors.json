@@ -249,10 +249,10 @@
     "TV-ROOM": {
       "name": "TV ROOM",
       "enterText": {
-        "first": "You enter the TV ROOM. A large flat-screen TV mounted on the wall is playing a movie - the classic 1938 screwball comedy 'Bringing Up Baby.' On the screen, Cary Grant and Katharine Hepburn are in the middle of a hilarious scene involving a leopard.<br><br>Against the opposite wall stands an elegant wooden <b>cabinet</b> with glass doors. Through the glass, you can see shelves lined with DVD cases. Your eyes are drawn to a DVD of 'Bringing Up Baby' on the second shelf. Wait... how is the movie playing if the DVD is right there in the cabinet? <span style='color: #ffcc00;'>[hint: you could try to <b>open cabinet</b>.]</span>",
-        "repeat": "You are in the TV ROOM. The movie is still playing on the TV, and the DVD cabinet stands against the wall."
+        "first": "You enter the TV ROOM. A large flat-screen TV mounted on the wall is playing a show - the 2016 Netflix series 'Stranger Things.' On the screen, kids on bikes are racing through a dark forest, flashlights cutting through the fog.<br><br>Against the opposite wall stands an elegant wooden <b>cabinet</b> with glass doors. Through the glass, you can see shelves lined with DVD cases. Your eyes are drawn to a DVD of 'Stranger Things' on the second shelf. Wait... how is the show playing if the DVD is right there in the cabinet? <span style='color: #ffcc00;'>[hint: you could try to <b>open cabinet</b>.]</span>",
+        "repeat": "You are in the TV ROOM. The show is still playing on the TV, and the DVD cabinet stands against the wall."
       },
-      "lookText": "You are in the TV ROOM. A large TV is mounted on one wall, currently playing 'Bringing Up Baby.' An elegant DVD cabinet with glass doors stands against the opposite wall.",
+      "lookText": "You are in the TV ROOM. A large TV is mounted on one wall, currently playing 'Stranger Things.' An elegant DVD cabinet with glass doors stands against the opposite wall.",
       "exits": {
         "south": { "to": "STUDY",       "door": "study2tv-room" },
         "north": { "to": "BEDROOM", "door": "bedroom2tv-room" },

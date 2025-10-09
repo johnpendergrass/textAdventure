@@ -274,9 +274,9 @@
       "visible": true,
       "locked": false,
       "hasBeenOpened": false,
-      "revealsItem": "bringingupbaby",
+      "revealsItem": "strangerthings",
       "actions": {
-        "examine": "A handsome wooden <b>cabinet</b> with glass doors. Through the glass you can see shelves lined with DVD cases - classics, comedies, thrillers. You spot 'Bringing Up Baby' on the second shelf.",
+        "examine": "A handsome wooden <b>cabinet</b> with glass doors. Through the glass you can see shelves lined with DVD cases - classics, comedies, thrillers. You spot 'Stranger Things' on the second shelf.",
         "open": "You pull open the glass doors. The DVDs are now accessible.",
         "take": {
           "response": "It's a piece of furniture. You cannot take it. But you could <b>examine</b> it or <b>open</b> it.",
@@ -362,7 +362,7 @@
       "visible": true,
       "locked": false,
       "actions": {
-        "examine": "Mrs. McGillicutty's Scavenger Hunt Clues\n\nDear Trick-or-Treater,\n\nHere is a <b>list</b> to help you find the hidden treasures:\n\n1. Video game hardware helper\n2. Food from the sea\n3. Atomic 79\n4. Fab Four\n5. Scary Feline\n6. Playful tiger\n7. Not a monster\n8. gourd\n9. Odd pup\n\nGood luck on your hunt!\n\n- Mrs. M",
+        "examine": "Mrs. McGillicutty's Scavenger Hunt Clues\n\nDear Trick-or-Treater,\n\nHere is a <b>list</b> to help you find the hidden treasures:\n\n1. Video game hardware helper\n2. Food from the sea\n3. Atomic 79\n4. Graveyard smash\n5. Scary Feline\n6. Schwinn Sting-Ray\n7. Not a monster\n8. gourd\n9. Odd pup\n\nGood luck on your hunt!\n\n- Mrs. M",
         "take": {
           "response": "You carefully fold the <b>list</b> and put it in your pocket.",
           "addToInventory": true

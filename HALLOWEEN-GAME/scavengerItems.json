@@ -26,12 +26,12 @@
         }
       }
     },
-    "beatles": {
+    "monstermash": {
       "includeInGame": true,
       "type": "scavenger",
-      "typedNames": ["beatlesrevolvermusiccd", "beatlesrevolver", "beatles", "revolver", "musiccd", "music", "cd", "album"],
-      "display": "<b>Beatles</b> <b>Revolver</b> <b>CD</b>",
-      "description": "The <b>Beatles</b> 1966 classic <b>album</b>.",
+      "typedNames": ["monstermash", "monster", "mash", "bobby", "pickett", "bobbypickett", "cd", "music", "graveyard"],
+      "display": "<b>Monster Mash</b> <b>CD</b>",
+      "description": "The 1962 <b>Monster Mash</b> song by Bobby Pickett - a twisted horror song.",
       "location": "MUSIC-ROOM",
       "points": 10,
       "health": 0,
@@ -40,12 +40,12 @@
       "found": false,
       "visible": true,
       "locked": false,
-      "icon90x90": "assets/scavenger/beatles90x90.png",
-      "icon250x250": "assets/scavenger/beatles250x250.png",
+      "icon90x90": "assets/scavenger/monsterMashCD90x90.png",
+      "icon250x250": "assets/scavenger/monsterMashCD250x250.png",
       "actions": {
-        "examine": "Wow! What a great <b>album</b>! The <b>Beatles</b> are one of my favorite bands. I can't wait to listen to Eleanor Rigby.",
+        "examine": "A scary, vampire themed horror song that kids play repeately when they want to REALLY annoy their parents. 'I was working in the lab, late one night... We did the Monster Mash!'",
         "take": {
-          "response": "You put the <b>Beatles</b> <b>Revolver</b> <b>CD</b> in your treat bag.",
+          "response": "You put the <b>Monster Mash</b> <b>CD</b> in your treat bag.",
           "addToInventory": true,
           "markAsFound": true
         }
@@ -125,12 +125,12 @@
         }
       }
     },
-    "bringingupbaby": {
+    "strangerthings": {
       "includeInGame": true,
       "type": "scavenger",
-      "typedNames": ["bringingupbaby", "bringingup", "baby", "dvd", "movie", "carygrant", "katherinehepburn"],
-      "display": "Bringing Up Baby <b>DVD</b>",
-      "description": "A <b>DVD</b> of the 1938 classic <b>movie</b> <b>Bringing Up Baby</b>, starring Cary Grant and Katharine Hepburn.",
+      "typedNames": ["strangerthings", "stranger", "things", "dvd", "show", "series", "milliebobbybrown", "millie", "netflix"],
+      "display": "Stranger Things <b>DVD</b>",
+      "description": "A <b>DVD</b> of the 2016 Netflix series <b>Stranger Things</b>, starring Millie Bobby Brown and more.",
       "location": "HIDDEN",
       "originalLocation": "TV-ROOM",
       "points": 10,
@@ -140,10 +140,10 @@
       "found": false,
       "visible": false,
       "locked": false,
-      "icon90x90": "assets/scavenger/bringingUpBaby90x90.png",
-      "icon250x250": "assets/scavenger/bringingUpBaby250x250.png",
+      "icon90x90": "assets/scavenger/strangerThings90x90.png",
+      "icon250x250": "assets/scavenger/strangerThings250x250.png",
       "actions": {
-        "examine": "An old style clamshell case <b>DVD</b> of the 1938 classic <b>movie</b> <b>Bringing Up Baby</b>. Not scratched at all!",
+        "examine": "An old style clamshell case <b>DVD</b> of the 2016 Netflix series <b>Stranger Things</b>. Not scratched at all!<br><br><span style='color: #ffdd77; animation: slowBlink 3s ease-in-out infinite;'>(LEGAL DISCLAIMER:'Stranger Things' is a trademark of Netflix Inc. and is brought to you by paid subscription only by Netflix. Click <u>HERE</u> to subscribe. Season 5, Volume 1 COMING SOON on November 26, 2025! Hold onto your walkie-talkies and mark your calendar!)</span>",
         "take": {
           "response": "You put the <b>DVD</b> in your treat bag.",
           "addToInventory": true,
@@ -270,7 +270,7 @@
       "icon90x90": "assets/scavenger/frankenstein90x90.png",
       "icon250x250": "assets/scavenger/frankenstein250x250.png",
       "actions": {
-        "examine": "The <b>book</b> is a First Edition of the classic 'Frankenstein' <b>novel</b> by Mary Shelley. It looks like it might fall apart if not handled gently. As you riffle through the pages you notice an old yellowed <b>bookmark</b> inside the cover. You take the <b>bookmark</b>.",
+        "examine": "The <b>book</b> is a First Edition of the classic 'Frankenstein' <b>novel</b> by Mary Shelley. It looks like it might fall apart if not handled gently. You notice something stuck between the pages.",
         "take": {
           "response": "You put the <b>book</b> in your bag to read later.",
           "addToInventory": true,

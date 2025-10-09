@@ -1000,7 +1000,11 @@ function handleTakeCommand(command) {
 
     addToBuffer([
       {
-        text: `<span class="scavenger-found">** SCAVENGER HUNT ITEM!!! ** (${countWord} of ${totalWord})</span>`,
+        text: takeAction.response || `You pick up the ${item.display}.`,
+        type: "flavor",
+      },
+      {
+        text: `<img src="${item.icon250x250}" style="display:block; margin:10px 0; max-width:250px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`,
         type: "flavor",
       },
       {
@@ -1008,11 +1012,11 @@ function handleTakeCommand(command) {
         type: "flavor",
       },
       {
-        text: takeAction.response || `You pick up the ${item.display}.`,
+        text: `<span class="scavenger-found">** SCAVENGER HUNT ITEM!!! ** (${countWord} of ${totalWord})</span>`,
         type: "flavor",
       },
       {
-        text: `<img src="${item.icon250x250}" style="display:block; margin:10px 0; max-width:250px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`,
+        text: "",
         type: "flavor",
       },
       {
@@ -1044,6 +1048,12 @@ function handleTakeCommand(command) {
 
     // Update scavenger grid if item was marked as found
     updateScavengerGrid();
+
+    // For scavenger items, show room description after taking
+    if (item.type === "scavenger") {
+      addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+      lookAtRoom();
+    }
 
     // Check for celebration if this was a scavenger item
     if (item.type === "scavenger") {
@@ -1220,10 +1230,32 @@ function handleDebugCommand() {
   updateGameStatus();
   updateScavengerGrid();
 
-  addToBuffer([
-    { text: `DEBUG: Added ${scavengerCount} scavenger items and ${candyCount} treats to inventory.`, type: "command" },
-    { text: `You still need to find the pumpkin!`, type: "flavor" }
-  ]);
+  // Check if we now have all 9 scavenger items (in case player already had pumpkin)
+  const totalScavengerInInventory = Object.values(items).filter(
+    (item) => item.includeInGame && item.type === "scavenger" && item.location === "INVENTORY"
+  ).length;
+
+  const totalScavenger = Object.values(items).filter(
+    (item) => item.includeInGame && item.type === "scavenger"
+  ).length;
+
+  // Conditional message based on whether all items collected
+  if (totalScavengerInInventory === totalScavenger) {
+    addToBuffer([
+      { text: `DEBUG: Added ${scavengerCount} scavenger items and ${candyCount} treats to inventory.`, type: "command" },
+      { text: `You now have all 9 scavenger items! Celebration incoming...`, type: "flavor" }
+    ]);
+
+    // Trigger celebration
+    setTimeout(() => {
+      showCelebrationGrid();
+    }, 3000);
+  } else {
+    addToBuffer([
+      { text: `DEBUG: Added ${scavengerCount} scavenger items and ${candyCount} treats to inventory.`, type: "command" },
+      { text: `You still need to find the pumpkin - check the FOYER.`, type: "flavor" }
+    ]);
+  }
 }
 
 // Handle CELEBRATE command - re-shows celebration if all 9 items collected
