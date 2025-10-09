@@ -217,7 +217,10 @@ const CONFIG_FALLBACKS = {
         { text: "FALLBACK: initGame.json could not be loaded.", type: "error" },
         { text: "Using system defaults.", type: "error" },
         { text: "", type: "flavor" },
-        { text: "<span style='color: #ffcc00;'>[hint: Type <b>help</b> or <b>h</b> for a list of commands (which are also shown in the bottom-right of the screen!)]</span>", type: "flavor" },
+        {
+          text: "<span style='color: #ffcc00;'>[hint: Type <b>help</b> or <b>h</b> for a list of commands (which are also shown in the bottom-right of the screen!)]</span>",
+          type: "flavor",
+        },
       ],
       availableCommands: [
         "help",
@@ -685,7 +688,7 @@ function displayRoom(roomId = currentRoom) {
   if (roomItems.length > 0) {
     addToBuffer([
       { text: "", type: "flavor" }, // Blank line before items
-      { text: "You see:", type: "command" }
+      { text: "You see:", type: "command" },
     ]);
     roomItems.forEach((item) => {
       addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
@@ -793,7 +796,18 @@ function showHelp() {
 
 // Helper function to convert numbers to words for scavenger hunt
 function numberToWord(num) {
-  const words = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+  const words = [
+    "Zero",
+    "One",
+    "Two",
+    "Three",
+    "Four",
+    "Five",
+    "Six",
+    "Seven",
+    "Eight",
+    "Nine",
+  ];
   return words[num] || num.toString();
 }
 
@@ -814,9 +828,9 @@ function formatScavengerTwoColumns(scavengerItems) {
     const leftText = `  ${leftItem.display}`;
 
     // Calculate actual display length (strip HTML tags for length calculation)
-    const leftDisplayLength = leftText.replace(/<[^>]*>/g, '').length;
+    const leftDisplayLength = leftText.replace(/<[^>]*>/g, "").length;
     const paddingNeeded = columnWidth - leftDisplayLength;
-    const padding = '&nbsp;'.repeat(Math.max(0, paddingNeeded));
+    const padding = "&nbsp;".repeat(Math.max(0, paddingNeeded));
 
     // Add right column item if it exists
     if (rightItem) {
@@ -985,8 +999,10 @@ function handleTakeCommand(command) {
     // Scavenger items with 250px images
     // Count how many scavenger items are now in inventory (including this one being added)
     const scavengerCount = Object.values(items).filter(
-      (i) => i.includeInGame && i.type === "scavenger" &&
-             (i.location === "INVENTORY" || i === item)
+      (i) =>
+        i.includeInGame &&
+        i.type === "scavenger" &&
+        (i.location === "INVENTORY" || i === item)
     ).length;
 
     // Total scavenger items in game
@@ -1004,15 +1020,23 @@ function handleTakeCommand(command) {
         type: "flavor",
       },
       {
-        text: `<img src="${item.icon250x250}" style="display:block; margin:10px 0; max-width:250px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`,
-        type: "flavor",
-      },
-      {
         text: "",
         type: "flavor",
       },
       {
-        text: `<span class="scavenger-found">** SCAVENGER HUNT ITEM!!! ** (${countWord} of ${totalWord})</span>`,
+        text: `<div style="display: flex; align-items: flex-start; gap: 80px; margin: 10px 0;">
+      <img src="${item.icon250x250}" style="width: 250px; height: 250px; flex-shrink: 0;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">
+      <div style="text-align: center; line-height: 1.2; padding-top: 25px;">
+        <span class="scavenger-found" style="display: block;">*********</span>
+        <span class="scavenger-found" style="display: block;">SCAVENGER</span>
+        <span class="scavenger-found" style="display: block;">HUNT</span>
+        <span class="scavenger-found" style="display: block;">&nbsp;ITEM</span>
+        <span class="scavenger-found" style="display: block;">*********</span>
+        <span class="scavenger-found" style="display: block; margin-top: 5px;">&nbsp;${countWord}</span>
+        <span class="scavenger-found" style="display: block;">&nbsp;of</span>
+        <span class="scavenger-found" style="display: block;">&nbsp;${totalWord}</span>
+      </div>
+    </div>`,
         type: "flavor",
       },
       {
@@ -1059,7 +1083,10 @@ function handleTakeCommand(command) {
     if (item.type === "scavenger") {
       // Count scavenger items now in inventory
       const scavengerCount = Object.values(items).filter(
-        (i) => i.includeInGame && i.type === "scavenger" && i.location === "INVENTORY"
+        (i) =>
+          i.includeInGame &&
+          i.type === "scavenger" &&
+          i.location === "INVENTORY"
       ).length;
 
       // Total scavenger items in game
@@ -1069,9 +1096,17 @@ function handleTakeCommand(command) {
 
       // DEBUG: Log the counts
       console.log(`DEBUG CELEBRATION: Item type: ${item.type}`);
-      console.log(`DEBUG CELEBRATION: Scavenger count in inventory: ${scavengerCount}`);
-      console.log(`DEBUG CELEBRATION: Total scavenger items: ${totalScavenger}`);
-      console.log(`DEBUG CELEBRATION: Should trigger? ${scavengerCount === totalScavenger}`);
+      console.log(
+        `DEBUG CELEBRATION: Scavenger count in inventory: ${scavengerCount}`
+      );
+      console.log(
+        `DEBUG CELEBRATION: Total scavenger items: ${totalScavenger}`
+      );
+      console.log(
+        `DEBUG CELEBRATION: Should trigger? ${
+          scavengerCount === totalScavenger
+        }`
+      );
 
       // Special celebration for collecting all items
       if (scavengerCount === totalScavenger) {
@@ -1180,7 +1215,8 @@ function handleThrowCommand(command) {
   ];
 
   // Pick a random message
-  const randomMessage = throwMessages[Math.floor(Math.random() * throwMessages.length)];
+  const randomMessage =
+    throwMessages[Math.floor(Math.random() * throwMessages.length)];
 
   addToBuffer([{ text: randomMessage, type: "flavor" }]);
 }
@@ -1232,7 +1268,10 @@ function handleDebugCommand() {
 
   // Check if we now have all 9 scavenger items (in case player already had pumpkin)
   const totalScavengerInInventory = Object.values(items).filter(
-    (item) => item.includeInGame && item.type === "scavenger" && item.location === "INVENTORY"
+    (item) =>
+      item.includeInGame &&
+      item.type === "scavenger" &&
+      item.location === "INVENTORY"
   ).length;
 
   const totalScavenger = Object.values(items).filter(
@@ -1242,8 +1281,14 @@ function handleDebugCommand() {
   // Conditional message based on whether all items collected
   if (totalScavengerInInventory === totalScavenger) {
     addToBuffer([
-      { text: `DEBUG: Added ${scavengerCount} scavenger items and ${candyCount} treats to inventory.`, type: "command" },
-      { text: `You now have all 9 scavenger items! Celebration incoming...`, type: "flavor" }
+      {
+        text: `DEBUG: Added ${scavengerCount} scavenger items and ${candyCount} treats to inventory.`,
+        type: "command",
+      },
+      {
+        text: `You now have all 9 scavenger items! Celebration incoming...`,
+        type: "flavor",
+      },
     ]);
 
     // Trigger celebration
@@ -1252,8 +1297,14 @@ function handleDebugCommand() {
     }, 3000);
   } else {
     addToBuffer([
-      { text: `DEBUG: Added ${scavengerCount} scavenger items and ${candyCount} treats to inventory.`, type: "command" },
-      { text: `You still need to find the pumpkin - check the FOYER.`, type: "flavor" }
+      {
+        text: `DEBUG: Added ${scavengerCount} scavenger items and ${candyCount} treats to inventory.`,
+        type: "command",
+      },
+      {
+        text: `You still need to find the pumpkin - check the FOYER.`,
+        type: "flavor",
+      },
     ]);
   }
 }
@@ -1262,7 +1313,10 @@ function handleDebugCommand() {
 function handleCelebrateCommand() {
   // Count scavenger items in inventory
   const scavengerCount = Object.values(items).filter(
-    (item) => item.includeInGame && item.type === "scavenger" && item.location === "INVENTORY"
+    (item) =>
+      item.includeInGame &&
+      item.type === "scavenger" &&
+      item.location === "INVENTORY"
   ).length;
 
   // Total scavenger items in game
@@ -1275,8 +1329,11 @@ function handleCelebrateCommand() {
     showCelebrationGrid();
   } else {
     addToBuffer([
-      { text: `You have not won yet!  You must collect all nine scaventer items to win.`, type: "error" },
-      { text: `Found: ${scavengerCount} / ${totalScavenger}`, type: "flavor" }
+      {
+        text: `You have not won yet!  You must collect all nine scavenger items to win.`,
+        type: "error",
+      },
+      { text: `Found: ${scavengerCount} / ${totalScavenger}`, type: "flavor" },
     ]);
   }
 }
@@ -1289,9 +1346,7 @@ function handleAboutCommand() {
       addToBuffer([line]);
     });
   } else {
-    addToBuffer([
-      { text: "About information not available.", type: "error" }
-    ]);
+    addToBuffer([{ text: "About information not available.", type: "error" }]);
   }
 }
 
@@ -1302,24 +1357,51 @@ function handleHintCommand() {
     { text: "", type: "flavor" },
     { text: "  ABOUT - Game information", type: "flavor" },
     { text: "  DEBUG - Adds items to inventory for testing", type: "flavor" },
-    { text: "  CELEBRATE - Re-shows the victory animation (if you've won)", type: "flavor" },
+    {
+      text: "  CELEBRATE - Re-shows the victory animation (if you've won)",
+      type: "flavor",
+    },
     { text: "  RESTART - Reloads the game from the beginning", type: "flavor" },
-    { text: "  THROW <item> - Try to throw items (doesn't work!)", type: "flavor" },
+    {
+      text: "  THROW <item> - Try to throw items (doesn't work!)",
+      type: "flavor",
+    },
     { text: "  HINT [secrets] - Shows this list", type: "flavor" },
     { text: "", type: "flavor" },
     { text: "Command Aliases:", type: "command" },
     { text: "", type: "flavor" },
-    { text: "  north      [n]" + "&nbsp;".repeat(23 - 16) + "look       [l]", type: "flavor" },
-    { text: "  south      [s]" + "&nbsp;".repeat(23 - 16) + "examine    [x, ex, read]", type: "flavor" },
-    { text: "  east       [e]" + "&nbsp;".repeat(24 - 16) + "take       [t, get, g]", type: "flavor" },
-    { text: "  west       [w]" + "&nbsp;".repeat(24 - 16) + "drop", type: "flavor" },
-    { text: "  help       [h, ?]" + "&nbsp;".repeat(24 - 19) + "inventory  [i]", type: "flavor" },
+    {
+      text: "  north      [n]" + "&nbsp;".repeat(23 - 16) + "look       [l]",
+      type: "flavor",
+    },
+    {
+      text:
+        "  south      [s]" +
+        "&nbsp;".repeat(23 - 16) +
+        "examine    [x, ex, read]",
+      type: "flavor",
+    },
+    {
+      text:
+        "  east       [e]" +
+        "&nbsp;".repeat(24 - 16) +
+        "take       [t, get, g]",
+      type: "flavor",
+    },
+    {
+      text: "  west       [w]" + "&nbsp;".repeat(24 - 16) + "drop",
+      type: "flavor",
+    },
+    {
+      text: "  help       [h, ?]" + "&nbsp;".repeat(24 - 19) + "inventory  [i]",
+      type: "flavor",
+    },
     { text: "", type: "flavor" },
     { text: "  use        [u, ring, turn]", type: "flavor" },
     { text: "  eat", type: "flavor" },
     { text: "  open       [unlock]", type: "flavor" },
     { text: "  say        [speak, push, press, dial]", type: "flavor" },
-    { text: "  quit       [home]", type: "flavor" }
+    { text: "  quit       [home]", type: "flavor" },
   ]);
 }
 
@@ -1627,16 +1709,20 @@ function handleOpenCommand(command) {
   if (itemKey === "safe") {
     if (!item.hasBeenOpened) {
       // Safe is locked - show hint
-      addToBuffer([{
-        text: "The <b>safe</b> requires a combination. Type <b>'SAY ##-##-##'</b> to unlock the safe.",
-        type: "flavor"
-      }]);
+      addToBuffer([
+        {
+          text: "The <b>safe</b> requires a combination. Type <b>'SAY ##-##-##'</b> to unlock the safe.",
+          type: "flavor",
+        },
+      ]);
     } else {
       // Safe already opened
-      addToBuffer([{
-        text: "The <b>safe</b> door is open. You can see the items inside.",
-        type: "flavor"
-      }]);
+      addToBuffer([
+        {
+          text: "The <b>safe</b> door is open. You can see the items inside.",
+          type: "flavor",
+        },
+      ]);
     }
     return;
   }
@@ -1653,8 +1739,8 @@ function handleQuitCommand() {
     addToBuffer([
       {
         text: "<span style='color: #ffcc00;'>!*!*!*! HEY! This will take you back to your home and <u>QUIT THE GAME</u>! Type <b>HOME</b> or <b>QUIT</b> again to confirm you want to do this.</span>",
-        type: "flavor"
-      }
+        type: "flavor",
+      },
     ]);
     awaitingQuitConfirmation = true;
     return;
@@ -1794,15 +1880,21 @@ function handleExamineCommand(command) {
         // Candy items with 150px images
         addToBuffer([
           { text: item.display, type: "flavor" },
-          { text: `<img src="${item.icon150}" style="display:block; margin:10px 0; max-width:150px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`, type: "flavor" },
-          { text: item.actions.examine, type: textType }
+          {
+            text: `<img src="${item.icon150}" style="display:block; margin:10px 0; max-width:150px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`,
+            type: "flavor",
+          },
+          { text: item.actions.examine, type: textType },
         ]);
       } else if (item.icon250x250 && item.type === "scavenger") {
         // Scavenger items with 250px images
         addToBuffer([
           { text: item.display, type: "flavor" },
-          { text: `<img src="${item.icon250x250}" style="display:block; margin:10px 0; max-width:250px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`, type: "flavor" },
-          { text: item.actions.examine, type: textType }
+          {
+            text: `<img src="${item.icon250x250}" style="display:block; margin:10px 0; max-width:250px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`,
+            type: "flavor",
+          },
+          { text: item.actions.examine, type: textType },
         ]);
       } else {
         addToBuffer([{ text: item.actions.examine, type: textType }]);
@@ -1849,15 +1941,21 @@ function handleExamineCommand(command) {
           // Candy items with 150px images
           addToBuffer([
             { text: item.display, type: "flavor" },
-            { text: `<img src="${item.icon150}" style="display:block; margin:10px 0; max-width:150px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`, type: "flavor" },
-            { text: item.actions.examine, type: textType }
+            {
+              text: `<img src="${item.icon150}" style="display:block; margin:10px 0; max-width:150px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`,
+              type: "flavor",
+            },
+            { text: item.actions.examine, type: textType },
           ]);
         } else if (item.icon250x250 && item.type === "scavenger") {
           // Scavenger items with 250px images
           addToBuffer([
             { text: item.display, type: "flavor" },
-            { text: `<img src="${item.icon250x250}" style="display:block; margin:10px 0; max-width:250px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`, type: "flavor" },
-            { text: item.actions.examine, type: textType }
+            {
+              text: `<img src="${item.icon250x250}" style="display:block; margin:10px 0; max-width:250px;" onload="document.querySelector('.text').scrollTop = document.querySelector('.text').scrollHeight;">`,
+              type: "flavor",
+            },
+            { text: item.actions.examine, type: textType },
           ]);
         } else {
           addToBuffer([{ text: item.actions.examine, type: textType }]);
@@ -2017,16 +2115,20 @@ function handleUseCommand(command) {
     // Special handling for safe
     if (!item.hasBeenOpened) {
       // Safe is locked - show hint
-      addToBuffer([{
-        text: "The <b>safe</b> requires a combination. Type <b>'SAY ##-##-##'</b> to unlock the safe.",
-        type: "flavor"
-      }]);
+      addToBuffer([
+        {
+          text: "The <b>safe</b> requires a combination. Type <b>'SAY ##-##-##'</b> to unlock the safe.",
+          type: "flavor",
+        },
+      ]);
     } else {
       // Safe already opened
-      addToBuffer([{
-        text: "The <b>safe</b> door is open. You can see the items inside.",
-        type: "flavor"
-      }]);
+      addToBuffer([
+        {
+          text: "The <b>safe</b> door is open. You can see the items inside.",
+          type: "flavor",
+        },
+      ]);
     }
   } else {
     // Generic use action for other items
@@ -2103,7 +2205,7 @@ function lookAtRoom() {
   if (roomItems.length > 0) {
     addToBuffer([
       { text: "", type: "flavor" }, // Blank line before items
-      { text: "You see:", type: "command" }
+      { text: "You see:", type: "command" },
     ]);
     roomItems.forEach((item) => {
       addToBuffer([{ text: `  ${item.display}`, type: "flavor" }]);
@@ -2142,45 +2244,55 @@ function lookAtRoom() {
 
 // Show celebration grid overlay for 9th scavenger item
 function showCelebrationGrid() {
-  console.log('showCelebrationGrid() - START');
+  console.log("showCelebrationGrid() - START");
 
   // Get all scavenger items in inventory
   const scavengerItems = Object.values(items).filter(
-    (item) => item.includeInGame && item.type === "scavenger" && item.location === "INVENTORY"
+    (item) =>
+      item.includeInGame &&
+      item.type === "scavenger" &&
+      item.location === "INVENTORY"
   );
 
   console.log(`Found ${scavengerItems.length} scavenger items in inventory`);
-  console.log('Scavenger items:', scavengerItems.map(i => i.display));
+  console.log(
+    "Scavenger items:",
+    scavengerItems.map((i) => i.display)
+  );
 
   // Sort by room displaySquare (0-8) to show in grid order
   scavengerItems.sort((a, b) => {
     const roomA = Object.values(rooms).find(
-      (r) => Object.keys(rooms).find((key) => rooms[key] === r) === a.originalLocation
+      (r) =>
+        Object.keys(rooms).find((key) => rooms[key] === r) ===
+        a.originalLocation
     );
     const roomB = Object.values(rooms).find(
-      (r) => Object.keys(rooms).find((key) => rooms[key] === r) === b.originalLocation
+      (r) =>
+        Object.keys(rooms).find((key) => rooms[key] === r) ===
+        b.originalLocation
     );
     const squareA = roomA?.special?.displaySquare ?? 999;
     const squareB = roomB?.special?.displaySquare ?? 999;
     return squareA - squareB;
   });
 
-  const textDiv = document.querySelector('.text');
-  console.log('Text div found:', textDiv);
+  const textDiv = document.querySelector(".text");
+  console.log("Text div found:", textDiv);
 
   // Create overlay - position over text div using fixed positioning
-  const overlay = document.createElement('div');
-  overlay.className = 'celebration-overlay';
-  overlay.id = 'celebration-overlay';
-  console.log('Overlay created:', overlay);
+  const overlay = document.createElement("div");
+  overlay.className = "celebration-overlay";
+  overlay.id = "celebration-overlay";
+  console.log("Overlay created:", overlay);
 
   // Get text div position for overlay placement
   const rect = textDiv.getBoundingClientRect();
-  overlay.style.position = 'fixed';
-  overlay.style.top = rect.top + 'px';
-  overlay.style.left = rect.left + 'px';
-  overlay.style.width = rect.width + 'px';
-  overlay.style.height = rect.height + 'px';
+  overlay.style.position = "fixed";
+  overlay.style.top = rect.top + "px";
+  overlay.style.left = rect.left + "px";
+  overlay.style.width = rect.width + "px";
+  overlay.style.height = rect.height + "px";
 
   // Create grid
   let gridHTML = '<div class="celebration-grid">';
@@ -2189,22 +2301,22 @@ function showCelebrationGrid() {
                       alt="${item.display}"
                       style="animation-delay: ${index * 0.15}s">`;
   });
-  gridHTML += '</div>';
+  gridHTML += "</div>";
 
-  console.log('Grid HTML:', gridHTML);
+  console.log("Grid HTML:", gridHTML);
 
   overlay.innerHTML = gridHTML;
   // Append to body instead of text div
   document.body.appendChild(overlay);
 
-  console.log('Overlay appended to body');
-  console.log('Overlay position:', overlay.style.position);
-  console.log('Overlay coordinates:', overlay.style.top, overlay.style.left);
+  console.log("Overlay appended to body");
+  console.log("Overlay position:", overlay.style.position);
+  console.log("Overlay coordinates:", overlay.style.top, overlay.style.left);
 
   // Add text overlay after 5 seconds
   setTimeout(() => {
-    const textOverlay = document.createElement('div');
-    textOverlay.className = 'celebration-text';
+    const textOverlay = document.createElement("div");
+    textOverlay.className = "celebration-text";
     textOverlay.innerHTML = `
       <div style="font-size: 48px; margin-bottom: 10px;">YOU WON!</div>
       <div>You found all NINE</div>
@@ -2213,21 +2325,24 @@ function showCelebrationGrid() {
       <div style="font-size: 28px;">CONGRATULATE YOU!!</div>
     `;
     overlay.appendChild(textOverlay);
-    console.log('Celebration text overlay added');
+    console.log("Celebration text overlay added");
   }, 5000);
 
   // Set flag to wait for dismissal
   awaitingCelebrationDismiss = true;
-  console.log('showCelebrationGrid() - END, awaitingCelebrationDismiss =', awaitingCelebrationDismiss);
+  console.log(
+    "showCelebrationGrid() - END, awaitingCelebrationDismiss =",
+    awaitingCelebrationDismiss
+  );
 }
 
 // Restore normal display after celebration
 function restoreNormalDisplay() {
-  const overlay = document.getElementById('celebration-overlay');
+  const overlay = document.getElementById("celebration-overlay");
 
   if (overlay) {
-    overlay.style.opacity = '0';
-    overlay.style.transition = 'opacity 0.5s ease-out';
+    overlay.style.opacity = "0";
+    overlay.style.transition = "opacity 0.5s ease-out";
     setTimeout(() => {
       overlay.remove();
     }, 500);
@@ -2753,7 +2868,12 @@ function handleInput(event) {
       // Only show hint if last action wasn't also an empty Enter (prevent spam)
       if (!lastWasEmptyEnter) {
         addToBuffer([{ text: "", type: "flavor" }]);
-        addToBuffer([{ text: "<span style='color: #ffcc00;'>I'll remind you of where you are now - but... btw... you can always use the scroll bar to scroll back in your game to see what happened earlier!</span>", type: "flavor" }]);
+        addToBuffer([
+          {
+            text: "<span style='color: #ffcc00;'>I'll remind you of where you are now - but... btw... you can always use the scroll bar to scroll back in your game to see what happened earlier!</span>",
+            type: "flavor",
+          },
+        ]);
         addToBuffer([{ text: "", type: "flavor" }]);
         lookAtRoom();
         lastWasEmptyEnter = true; // Set flag to prevent repeated hints

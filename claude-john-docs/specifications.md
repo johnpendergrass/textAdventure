@@ -1,37 +1,175 @@
-# Halloween Text Adventure - Complete Specifications
-# v0.32 - Victory Celebration & Polish Complete
+# The Radley House - Game Specifications
+# v0.35 - Scavenger Display Redesign & Content Updates
 
 ## Project Overview
 
 **Game Title:** The Radley House
 **Subtitle:** A well-articulated treasure hunt
-**Version:** 0.32 (Victory Celebration Complete)
-**Total Project Size:** ~300KB (with all assets, images, and fonts)
+**Version:** 0.35 (Scavenger Display Redesign)
+**Total Project Size:** ~350KB (with all assets, images, and fonts)
 **Source Files:** 8 core files + 7 data JSON files + 38 items + documentation + images
 **Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking, victory celebration animations, handwritten notes, locked doors, hidden items, interactive puzzles, two-column inventory, and comprehensive command system
 **Target Platform:** Web browsers (GitHub Pages compatible)
 **Current State:** Fully functional text adventure with rich visual feedback, victory celebration, polished UI, hidden commands, and comprehensive player guidance
 
+---
+
 ## Major Features
 
-### Victory Celebration System 🎉 NEW in v0.32
+### Scavenger Item Display System ✨ NEW in v0.35
 
-#### Scavenger Item Discovery Message
-- **Congratulatory text** on picking up each scavenger item
-- Format: `** SCAVENGER HUNT ITEM!!! ** (one of nine)`
-- **Flashing animation:**
-  - Bright orange color (#ffa500)
-  - 20px bold font
-  - 2-second opacity animation (1 → 0.3 → 1)
-  - Infinite loop while visible
-- **Word-based count:** "one of nine" instead of "1 / 9"
-- **Single display:** Only shows on TAKE, not in subsequent INVENTORY/EXAMINE
-- Appears above item description and 250px image
+#### Side-by-Side Layout
+When taking a scavenger item, the display now shows:
+- **250×250px item image** on the left
+- **Stacked text badge** on the right
 
-#### 9th Item Victory Celebration Animation
+**Badge Format:**
+```
+*********
+SCAVENGER
+  HUNT
+   ITEM
+*********
+   one
+   of
+  nine
+```
+
+**Technical Implementation:**
+- Flexbox layout (`display: flex; align-items: flex-start;`)
+- Gap: 20px between image and badge
+- Badge padding-top: 60px (vertical centering)
+- Each line is a separate span with `scavenger-found` class
+- Manual `&nbsp;` spacing for staggered indent effect
+- Flashing animation on all badge text
+
+**Display Sequence:**
+1. Take response text
+2. Blank line
+3. **Image + Badge (side-by-side)**
+4. Blank line
+5. Examine text
+6. Blank line
+7. Auto-LOOK (room description, items, exits)
+
+**Space Requirements:**
+- Text area width: 607px (577px usable)
+- Image + gap + badge: ~390px (fits comfortably)
+
+#### Scavenger Item Discovery Animations
+- **Flashing badge animation:**
+  - Duration: 2s
+  - Easing: ease-in-out
+  - Loop: infinite
+  - Effect: opacity 1.0 → 0.3 → 1.0
+  - Color: #ffa500 (bright orange/gold)
+  - Applied to all badge spans
+
+### Auto-LOOK After Scavenger Pickup NEW in v0.35
+
+**Behavior:**
+After collecting any scavenger item, automatically displays:
+- Blank line
+- Room description ("You are in the LIBRARY")
+- Items in room ("YOU SEE: brass key")
+- Exits ("EXITS: east, north")
+
+**Purpose:**
+- Smooth continuation of gameplay
+- Reorients player after item pickup
+- Shows what else is available to explore
+- No manual LOOK command needed
+
+### Empty Enter Key Handler NEW in v0.35
+
+**Behavior:**
+- **First empty Enter:** Shows helpful hint + auto-executes LOOK
+- **Subsequent empty Enters:** Silent (anti-spam)
+- **Reset:** Any actual command resets the flag
+
+**Hint Message:**
+```
+I'll remind you of where you are now - but... btw... you can always use the
+scroll bar to scroll back in your game to see what happened earlier!
+```
+
+**Purpose:**
+- Helps confused/stuck players
+- Teaches scroll functionality
+- Reorients player without punishment
+- Prevents accidental spam
+
+### Content Updates - v0.35
+
+#### Beatles → Monster Mash
+**Monster Mash CD** (MUSIC-ROOM)
+- Bobby Pickett, 1962
+- Clue: "Graveyard smash"
+- Description: "The 1962 Monster Mash song by Bobby Pickett - a twisted horror song"
+- Examine: "A scary, vampire themed horror song that kids play repeatedly when they want to REALLY annoy their parents. 'I was working in the lab, late one night... We did the Monster Mash!'"
+- Images: monsterMashCD90x90.png, monsterMashCD250x250.png
+- Points: 10
+
+#### Bringing Up Baby → Stranger Things
+**Stranger Things DVD** (TV-ROOM)
+- Netflix 2016 series, starring Millie Bobby Brown
+- Clue: "Schwinn Sting-Ray" (bikes featured in show)
+- Description: "A DVD of the 2016 Netflix series Stranger Things"
+- Examine: "An old style clamshell case DVD of the 2016 Netflix series Stranger Things. Not scratched at all!"
+- **Legal Disclaimer** (slow-blinking animation):
+  ```
+  (LEGAL DISCLAIMER:'Stranger Things' is a trademark of Netflix Inc.
+  and is brought to you by paid subscription only by Netflix.
+  Click HERE to subscribe. Season 5, Volume 1 COMING SOON on November 26, 2025!
+  Hold onto your walkie-talkies and mark your calendar!)
+  ```
+- Images: strangerThings90x90.png, strangerThings250x250.png
+- Points: 10
+
+#### Mrs. McGillicutty's List Updates
+Changed clues:
+- "Fab Four" → "Graveyard smash" (Monster Mash)
+- "Playful tiger" → "Schwinn Sting-Ray" (Stranger Things)
+
+#### TV ROOM Description Updates
+- Changed from "Bringing Up Baby" movie to "Stranger Things" show
+- New description: "kids on bikes are racing through a dark forest, flashlights cutting through the fog"
+- Look text: "currently playing 'Stranger Things'"
+- DVD cabinet reveals "strangerthings" item (not "bringingupbaby")
+
+### FOYER Entrance Effect NEW in v0.35
+
+**Staggered "cautiously" text:**
+```
+You c
+     a
+      u
+       t
+        i
+         o
+          u
+           s
+            l
+             y enter the Radley House FOYER...
+```
+
+Implementation: `<br>&nbsp;` tags with incrementing spaces (c=0, a=5, u=6, etc.)
+Purpose: Dramatic emphasis for entering the scary house
+
+### Room Name Capitalization NEW in v0.35
+
+All house room names standardized to UPPERCASE:
+- FOYER, LIBRARY, DINING ROOM, STUDY
+- MUSIC ROOM, GAME ROOM, KITCHEN
+- BEDROOM, TV ROOM
+
+Consistent display throughout game text.
+
+### 9th Item Victory Celebration Animation
+
 **Sequence:**
 1. Normal "nine of nine" message displays
-2. 3-second pause
+2. 3-second delay
 3. **Grid Animation Begins:**
    - Semi-transparent dark overlay (85% opacity black)
    - 3×3 grid of all 9 scavenger items
@@ -77,161 +215,79 @@
 - Returns to normal game display
 - Input blocked during celebration (`awaitingCelebrationDismiss` flag)
 
-### Two-Column Inventory Display NEW in v0.32
+### Two-Column Inventory Display
 
 **Implementation:**
 - Scavenger items display in 2 columns instead of 1
 - Reduces vertical space from 9 lines to 5 lines
 - Prevents text overflow on HOME/QUIT screen
 
-**Technical Details:**
-- Column width: 33 characters
-- Spacing: `&nbsp;` HTML entities (browsers won't collapse)
-- Smart length calculation: Strips HTML tags before measuring
-- Helper function: `formatScavengerTwoColumns(scavengerItems)`
-- Applied to:
-  - INVENTORY command
-  - HOME screen ending
-
 **Layout:**
 ```
 SCAVENGER ITEMS (9/9)
-  NVidia 5090 Video Card    Beatles Revolver CD
+  NVidia 5090 Video Card    Monster Mash CD
   Cup O' Noodles            Cat Mug
-  Odd Dog                   Bringing Up Baby DVD
+  Odd Dog                   Stranger Things DVD
   Frankenstein book         Decorative Pumpkin
   Krugerrand coin
 ```
 
-### Hidden Commands System NEW in v0.32
+### Hidden Commands System
 
 #### HINT Command
 - **Purpose:** Reveals all secret commands and aliases
 - **Shortcut:** SECRETS
-- **Display sections:**
-  1. **Hidden/Secret Commands:**
-     - ABOUT - Game information
-     - DEBUG - Testing items
-     - CELEBRATE - Replay victory
-     - RESTART - Reload game
-     - THROW - Easter egg
-     - HINT [secrets] - Shows list
-
-  2. **Command Aliases** (2-column format):
-     - Directions: north [n], south [s], east [e], west [w]
-     - Help: help [h, ?]
-     - Common: look [l], examine [x, ex, read], take [t, get, g, grab, pick]
-     - Actions: drop [put, place], inventory [i]
-     - Special: use [u, ring, turn], eat, open [unlock], say [speak, push, press, dial]
-     - System: quit [home]
-
-- Compact display saves vertical space
-- Uses &nbsp; padding for alignment
+- Displays two-column formatted list of all command shortcuts
 
 #### CELEBRATE Command
 - **Purpose:** Replay victory animation
 - **Requirement:** Must have all 9 scavenger items
-- **Error handling:** Shows "You haven't collected all items yet! Found: X / 9"
-- Immediately triggers full celebration sequence
-- Perfect for showing off ending or testing
+- **Error:** "You have not won yet! You must collect all nine scaventer items to win."
+- Shows count: "Found: X / 9"
 
 #### RESTART Command
 - **Purpose:** Reload game from beginning
-- **Implementation:** Simple `location.reload()`
-- Resets all items, locations, and game state
-- Same as browser refresh but accessible in-game
+- Implementation: `location.reload()`
 - Header hint: "Type **RESTART** to start a new game"
 
-#### ABOUT Command
-- **Purpose:** Display game information and credits
-- **Storage:** gameData.json → "about" section
-- **Editable:** Change text without touching code
-- **Current content:**
-  - Title: "About The Radley House"
-  - Game description
-  - Credits: "Game created by Poppy/John"
-  - Version number
-- Uses same text array format as startup.welcomeText
-
-#### DEBUG Command (Enhanced)
+#### DEBUG Command (Enhanced in v0.35)
 - **Purpose:** Testing and development
-- **New features:**
-  - Adds 8 scavenger items (all except pumpkin)
-  - Adds 15 random candy/treats
-  - Marks all as found
-  - Updates inventory and scavenger grid
-- **Message:** "DEBUG: Added 8 scavenger items and 15 treats to inventory. You still need to find the pumpkin!"
-- Perfect for testing end-game scenarios
+- Adds 8 scavenger items (all except pumpkin)
+- Adds 15 random candy/treats
+- Marks all as found
+- Updates inventory and scavenger grid
+- **NEW:** Checks if all 9 items collected after adding
+- **NEW:** Triggers celebration if player already had pumpkin
+- **Messages:**
+  - With pumpkin: "You now have all 9 scavenger items! Celebration incoming..."
+  - Without pumpkin: "You still need to find the pumpkin - check the FOYER."
+
+#### ABOUT Command
+- Display game information and credits
+- Editable in gameData.json
 
 #### THROW Command (Easter Egg)
 - Hidden command not in HELP
 - Shortcuts: throw, toss, chuck, hurl
 - Always refuses with humorous messages
-- Validates inventory like other commands
-- 5 random rejection responses
 
-### Header Design 🎃 NEW in v0.32
+### Command Shortcuts Cleanup NEW in v0.35
 
-**Title:** "The Radley House"
-- Font: Cinzel (elegant serif from Google Fonts)
-- Size: 40px
-- Weight: 700 (bold)
-- Color: Bright orange (#ff9500)
-- Letter-spacing: 4px (spread out horizontally)
-- Text-shadow:
-  - Purple glow (0 0 10px and 20px #6a0dad)
-  - Black depth shadow (2px 2px 4px #000)
+**Valid Shortcuts (matching commands.json):**
+- take: [t, get, g] ❌ NOT: grab, pick
+- examine: [x, ex, read]
+- drop: [] ❌ NO shortcuts (not put, place)
+- help: [h, ?]
+- use: [u, ring, turn]
+- say: [speak, push, press, dial]
+- open: [unlock]
 
-**Subtitle:** "A well-articulated treasure hunt"
-- Font: Special Elite (typewriter-style) or Courier New
-- Size: 16px
-- Style: Italic
-- Color: Pale purple (#b19cd9)
-- Text-shadow: Subtle purple glow (0 0 5px purple 50% opacity)
-- **Meaning:** Witty reference to text-based gameplay
+**Fixed Locations:**
+- showHelp() function display
+- handleHintCommand() alias list
+- CONFIG_FALLBACKS command definitions
 
-**Header Hints:**
-- Bottom-left: "Type **RESTART** to start a new game"
-  - Color: #bbb, 10px
-- Bottom-right: "Type HINT for secrets"
-  - Color: #888, 10px
-
-**Color Scheme:**
-- Orange/Purple/Black Halloween theme
-- Complements scavenger grid background
-- Professional yet playful
-
-### Inline Item Images System ✨
-
-#### Candy Item Images (150px)
-- 23 candy items with custom 150×150 images
-- Display on EXAMINE and TAKE commands
-- Pattern: Item name → Image → Examine text
-- Auto-scroll after image loads
-
-#### Scavenger Item Images (250px)
-- 9 scavenger items with 250×250 images
-- Larger format for important collectibles
-- Same display pattern
-- Items:
-  1. NVidia 5090 Video Card
-  2. Cup O' Noodles
-  3. Odd Dog figure
-  4. Beatles Revolver CD
-  5. Cat Mug
-  6. Bringing Up Baby DVD
-  7. Frankenstein book
-  8. Decorative Pumpkin
-  9. Krugerrand coin
-
-#### Technical Implementation
-- Smart image loading with `onload` handler
-- Scrolls text area to show full content
-- Separate logic branches for scavenger vs. candy
-- Images stored in assets/scavenger/ and assets/candy/
-- Both 90×90 (grid) and 150/250px (display) versions
-
-### Visual Scavenger Hunt System ✨
+### Visual Scavenger Hunt System
 
 **3×3 Grid Display:**
 - Grid area: 313×280px in top-right of screen
@@ -241,229 +297,209 @@ SCAVENGER ITEMS (9/9)
 
 **Item Discovery:**
 - Green checkmark (✓) appears when item found
+- 90×90px image displays in grid
 - Square position determined by room's `displaySquare` property
 - Items remain visible throughout game
-- Provides visual progress feedback
 
-**Background Images:**
-- Changes based on current room
-- HOME: Special HOME background
-- Radley House rooms: Haunted house silhouette
-- Creates atmospheric connection to location
-
-### Status Panel System
-
-**Score Section (Centered):**
-- SCORE (no colon)
-- Scavenger Items: X / 9
-- Treats: X / 20
-
-**Commands Section:**
-- Shows essential commands with shortcuts
-- Arguments indicated with `?` for clarity:
-  - (h)elp, (l)ook, (i)nventory
-  - (t)ake ?, (d)rop ?, e(x)amine ?
-  - (u)se ?, eat ?, say ?
-- Commands centered under title
-
-**Compass:**
-- ASCII art directional indicator
-- Shows available exits
-- Positioned for visual balance
-
-### HOME/QUIT Confirmation System
-
-**Two-Step Process:**
-1. First HOME/QUIT: Warning message
-   - Yellow text (#ffcc00)
-   - "!*!*!*! HEY! This will take you back to your home and QUIT THE GAME!"
-   - Underlined emphasis on "QUIT THE GAME"
-2. Second HOME/QUIT: Executes quit
-
-**Auto-Cancel:**
-- ANY other command cancels quit attempt
-- Natural gameplay flow preserved
-- Prevents accidental quits
-
-**HOME Room Display:**
-- Moved to HOME room
-- Shows complete inventory summary
-- Lists all collected items:
-  - Scavenger items (two-column format)
-  - Treats (comma-separated)
-- Satisfying conclusion showing player achievements
-
-### Interactive Puzzle Systems
-
-#### SAY Command System
-- Multi-purpose phrase input
-- **Safe combination:** `SAY 27-13-42`
-- **Door passwords:** `SAY friend` (Tolkien reference)
-- **Phone numbers:** `SAY 5551234`
-- Shortcuts: speak, push, press, dial
-- Context-sensitive responses
-
-#### OPEN Command System
-- **Cabinet:** First open reveals hidden DVD
-- **Safe:** Requires combination via SAY
-- Shortcut: unlock
-- State tracking (opened/not opened)
-
-#### Door Lock System
-- Locked doors block movement
-- Keys required to unlock
-- State persists once unlocked
-- Clear feedback on attempt
-
-### Text Formatting System
-
-**HTML Support:**
-- `<b>bold</b>` for emphasis
-- `<br>` for line breaks
-- Color spans for hints
-- Inline images
-
-**Smart Spacing:**
-- Blank line before/after commands
-- Strategic spacing in room descriptions
-- No double-blank issues
-- Professional presentation
-
-### Handwritten Notes System
-
-**Special Display:**
-- Cream/ivory background (#fffef0)
-- Dark text (#2d2d2d)
-- Caveat cursive font (Google Fonts)
-- 20px size
-- Padding and box-shadow for paper effect
-- Preserves line breaks
-
-**Usage:**
-- Clues and atmosphere
-- Used for notes found in game
-- Distinct visual style
+---
 
 ## Game Structure
 
+### Scavenger Hunt Items (9 Total)
+
+**Current List:**
+
+1. **NVidia 5090 Video Card** (GAME-ROOM)
+   - Clue: "Video game hardware helper"
+   - Hidden, revealed by examining powerful PC
+   - Points: 10
+
+2. **Cup O'Noodles** (KITCHEN)
+   - Clue: "Food from the sea"
+   - Visible from start
+   - Points: 10
+
+3. **Krugerrand Gold Coin** (STUDY)
+   - Clue: "Atomic 79" (gold's atomic number)
+   - Hidden in safe, requires combination 13-97-55
+   - Points: 10
+
+4. **Monster Mash CD** (MUSIC-ROOM) 🆕
+   - Clue: "Graveyard smash"
+   - Bobby Pickett, 1962
+   - Visible from start
+   - Points: 10
+
+5. **Cat Mug** (DINING-ROOM)
+   - Clue: "Scary Feline"
+   - Black ceramic cat-shaped mug
+   - Visible from start
+   - Points: 10
+
+6. **Stranger Things DVD** (TV-ROOM) 🆕
+   - Clue: "Schwinn Sting-Ray" (bikes in show)
+   - Netflix 2016 series
+   - Hidden in DVD cabinet
+   - Points: 10
+
+7. **Frankenstein Book** (LIBRARY)
+   - Clue: "Not a monster" (Frankenstein is the doctor)
+   - First Edition 1818 novel
+   - Visible from start
+   - Contains bookmark with safe combination
+   - Points: 10
+
+8. **Decorative Pumpkin** (FOYER)
+   - Clue: "gourd"
+   - Glass hand-blown pumpkin
+   - Visible from start
+   - Points: 10
+
+9. **Odd Dog** (BEDROOM)
+   - Clue: "Odd pup"
+   - King Charles Cavalier ceramic figurine
+   - Requires brass key from LIBRARY
+   - Points: 10
+
 ### Rooms (13 total)
+
 **Exterior:**
+- START - Halloween Night (starting location)
 - STREET-01, STREET-02
 - NICE-PORCH (McGillicutty's)
-- FRONT-PORCH, BACK-PORCH (Radley House)
+- FRONT-PORCH (Radley House)
 
 **Interior (Radley House):**
-- FOYER, GAME-ROOM, STUDY, DINING-ROOM
-- MUSIC-ROOM, KITCHEN, TV-ROOM, BEDROOM
+- FOYER, LIBRARY, DINING ROOM, STUDY
+- MUSIC ROOM, GAME ROOM, KITCHEN
+- BEDROOM, TV ROOM
 
 **Special:**
 - HOME (end game location)
 
-### Items (38 total)
-**Scavenger Items (9):** Valuable collectibles
-**Candy Items (23):** Halloween treats
-**Quest Items (6):** Keys, notes, puzzle pieces
-
 ### Commands (17 total)
-**Movement:** north, south, east, west
-**Observation:** look, examine
-**Inventory:** inventory, take, drop
-**Actions:** use, eat, open, say
-**System:** help, quit/home, hint, restart, about
-**Hidden:** throw, debug, celebrate
 
-## File Structure
+**Movement:** north/n, south/s, east/e, west/w
+**Observation:** look/l, examine/x/ex/read
+**Inventory:** inventory/i, take/t/get/g, drop
+**Actions:** use/u/ring/turn, eat, open/unlock, say/speak/push/press/dial
+**System:** help/h/?, quit/home, hint/secrets, restart, about
+**Hidden:** throw/toss/chuck/hurl, debug, celebrate
 
-### Core Files
-- textAdventure.html (147 lines)
-- textAdventure.css (300+ lines with animations)
-- textAdventure.js (~2600 lines)
+---
 
-### Data Files (HALLOWEEN-GAME/)
-- gameData.json (meta, about, startup)
-- commands.json (17 commands)
-- rooms-w-doors.json (13 rooms, 13 doors, 3 puzzles)
-- items.json (27 regular items)
-- scavengerItems.json (11 scavenger items, 9 active)
-- uiConfig.json (status panel configuration)
-- keyboardShortcuts.json (no shortcuts currently)
+## Visual Design
 
-### Assets
-- scavenger/ - 9 items × 2 sizes (90×90, 250×250)
-- candy/ - 23 items × 2 sizes (90×90, 150×150)
-- background/ - Room background images
-- Google Fonts: Cinzel, Special Elite, Caveat
+### Layout Dimensions
 
-## Design Decisions
+**Overall Game Panel**: 950px × 720px
+
+**Grid Layout:**
+- Left column: 607px (text area + prompt)
+- Right column: 313px (scavenger grid + status)
+- Gap: 10px
+
+**Text Area Usable Width**: 577px (607px - 30px padding)
 
 ### Color Palette
-- **Orange:** #ff9500 (title), #ffa500 (celebrations)
-- **Purple:** #6a0dad (dark), #b19cd9 (pale)
-- **Yellow:** #ffcc00 (prompts, hints)
-- **Green:** #00ff00 (main text), #1acdb2 (command output)
-- **Black:** Background
-- **White:** Borders
 
-### Typography
-- **Headers:** Cinzel (elegant serif)
-- **Subtitle:** Special Elite (typewriter)
-- **Body:** Courier New (monospace)
-- **Notes:** Caveat (handwritten cursive)
-- Consistent spacing and sizing
+**Primary Colors:**
+- Background: `#0a0a0a` (near black)
+- Text (standard): `#00ff00` (bright green)
+- Borders: `#ffffff` (white)
+- Error text: `#ff0000` (red)
+- Hint text: `#ffcc00` (yellow-gold)
 
-### Layout (950×720px)
-- **Grid:** 607px text, 313px right panel
-- **Header:** 120px
-- **Text area:** Variable height
-- **Scavenger grid:** 280px
-- **Status panel:** Variable
-- **Prompt:** 40px
+**Accent Colors:**
+- Scavenger found: `#ffa500` (bright orange/gold) - flashing
+- Title: `#ff9500` (orange) with purple glow (`#6a0dad`)
+- Legal disclaimer: `#ffdd77` (warm golden-yellow) - slow blinking
 
-### Animation Principles
-- Smooth, not jarring
-- Appropriate timing (0.6s punch, 2s pulse)
-- Staggered for visual interest
-- Clear purpose (feedback, celebration)
-- Dismissible by player
+### Animations
+
+**Flash Animation** (scavenger-found):
+- Duration: 2s, infinite loop
+- Effect: opacity 1.0 → 0.3 → 1.0
+
+**Slow Blink Animation** (legal disclaimers): 🆕
+- Duration: 3s, infinite loop
+- Effect: opacity 1.0 → 0.5 → 1.0
+- Used for Stranger Things disclaimer
+
+**Punch Rotate** (celebration):
+- Duration: 0.6s per item
+- Staggered start (0.15s delay each)
+- Effect: scale + rotate
+
+---
 
 ## Technical Notes
 
+### File Structure
+
+```
+textAdventure/
+├── textAdventure.js         # Main game logic (~2900 lines)
+├── textAdventure.css        # Styling + animations
+├── index.html              # Game container
+├── HALLOWEEN-GAME/         # Game data (JSON)
+│   ├── gameData.json
+│   ├── commands.json
+│   ├── rooms-w-doors.json
+│   ├── items.json
+│   └── scavengerItems.json
+├── assets/
+│   ├── scavenger/          # 90x90 + 250x250 images
+│   └── background/
+└── claude-john-docs/
+```
+
 ### State Management
+
 - `currentRoom` - Player location
 - `items[].location` - Item placement
 - `items[].found` - Discovery tracking
 - `awaitingQuitConfirmation` - Quit flow
 - `awaitingCelebrationDismiss` - Animation control
+- `lastWasEmptyEnter` - Empty Enter spam prevention 🆕
 
-### Helper Functions
+### Key Helper Functions
+
 - `formatScavengerTwoColumns()` - Two-column layout
 - `numberToWord()` - Number to word conversion
 - `showCelebrationGrid()` - Victory animation
-- `restoreNormalDisplay()` - Cleanup
+- `lookAtRoom()` - Room description display
 - `updateScavengerGrid()` - Visual updates
 
-### Performance
-- Minimal DOM manipulation
-- CSS animations (GPU accelerated)
-- Efficient text buffering
-- No external dependencies
-- ~300KB total size
+---
 
 ## Version History
 
-**v0.32** (Current) - Victory Celebration & Polish
+**v0.35** (Current) - Scavenger Display Redesign & Content Updates
+- Side-by-side scavenger item display (image + badge)
+- Empty Enter key handler with helpful hint
+- Beatles → Monster Mash replacement
+- Bringing Up Baby → Stranger Things replacement
+- Mrs. McGillicutty's list clue updates
+- Room name capitalization standardization
+- FOYER "cautiously" staggered text effect
+- Gong handle text fixes
+- Command shortcuts cleanup
+- Auto-LOOK after scavenger pickup
+- DEBUG command celebration trigger
+- CELEBRATE error message update
+
+**v0.32** - Victory Celebration & Polish
 - 9th item celebration animation
 - Two-column inventory
 - HINT/CELEBRATE/RESTART/ABOUT commands
 - Header redesign with Halloween theme
-- Enhanced DEBUG command
 
 **v0.31** - Pre-celebration checkpoint
 **v0.30** - Working game, needs scoring/ending
-**v0.28** - Nearly finished, GUI work
 **Earlier versions** - Core development
 
 ---
 
-*Last updated: October 6, 2025*
-*Game ready for playtesting and feedback*
+*Last updated: October 9, 2025*
+*Game ready for Halloween 2025*
