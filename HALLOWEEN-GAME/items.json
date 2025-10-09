@@ -54,7 +54,8 @@
           "response": "Ding-dong! You hear footsteps approaching from inside."
         },
         "use": {
-          "response": "<span style='font-size: 24px; font-weight: bold; color: #00BFFF; text-shadow: 0 0 10px #00BFFF, 0 0 20px #87CEEB, 0 0 30px #FFFFFF, 2px 2px 4px rgba(0,0,0,0.3);'>Ding Dong!</span> You hear footsteps approaching from inside. The door to the nice house swings open. Mrs. McGillicutty appears. Her face is painted green, and she is wearing a pointy witch hat. 'Elphaba!' you think. <br><br>She offers you two candies, and then leans over and whispers <i>'Mr. Radley and his son Aurhur next door are having a scavenger hunt. You might find this <b>list</b> useful during that game!'</i><br><br>You take the <b>list</b> she offers. 'Good luck dear!' she says, and closes the door. <span style='color: #ffcc00;'>[Hint: typing <b>'(i)nventory</b> or <b>e(x)amine</b> can help you manage your stuff.]</span>"
+          "response": "<span style='font-size: 24px; font-weight: bold; color: #00BFFF; text-shadow: 0 0 10px #00BFFF, 0 0 20px #87CEEB, 0 0 30px #FFFFFF, 2px 2px 4px rgba(0,0,0,0.3);'>Ding Dong!</span> You hear footsteps approaching from inside. The door to the house swings open. Mrs. McGillicutty appears. Her face is painted green, and she is wearing a pointy witch hat. 'Elphaba!' you think. <br><br>She offers you two candies, and then leans over and whispers <i>'Mr. Radley and his son Aurhur next door are having a scavenger hunt. You might find this <b>list</b> useful during that game!'</i><br><br>You take the <b>list</b> she offers. 'Good luck dear!' she says, and closes the door. <span style='color: #ffcc00;'>[Hint: typing <b>(i)nventory</b> or <br><b>e(x)amine what?</b> might be useful. - <b>(l)ook</b> also!]</span>",
+          "addToInventory": ["list"]
         },
         "take": {
           "response": "You cannot take it. It's attached to the house. But you could <b>ring</b> it or <b>use</b> it.",
@@ -98,11 +99,12 @@
         "gong",
         "doorgong",
         "brassgong",
+        "gonghandle",
         "handle",
         "brasshandle",
         "brassgonghandle"
       ],
-      "display": "Door <b>gong</b> <b>handle</b>",
+      "display": "<b>gong</b> <b>handle</b>",
       "description": "A brass handle that activates the door <b>gong</b>, which sounds inside the house.",
       "location": "FRONT-PORCH",
       "points": 0,
@@ -398,6 +400,7 @@
       "type": "candy",
       "typedNames": [
         "snickers",
+        "snicker",
         "snickersbar",
         "caramelbar"
       ],

@@ -45,7 +45,7 @@
     "take": {
       "includeInGame": true,
       "type": "action",
-      "shortcuts": ["t", "get", "g", "grab", "pick"],
+      "shortcuts": ["t", "get", "g"],
       "action": "take_item"
     },
     "examine": {
@@ -57,7 +57,7 @@
     "drop": {
       "includeInGame": true,
       "type": "action",
-      "shortcuts": ["put", "place"],
+      "shortcuts": [],
       "action": "drop_item"
     },
     "quit": {
@@ -111,7 +111,7 @@
     "hint": {
       "includeInGame": true,
       "type": "system",
-      "shortcuts": ["secrets"],
+      "shortcuts": [],
       "action": "show_secrets"
     },
     "restart": {

@@ -15,6 +15,7 @@ let textBuffer = [];
 // Command History System
 let commandHistory = [];
 let historyIndex = -1;
+let lastWasEmptyEnter = false;
 
 // Commands loaded from JSON
 let commands = {};
@@ -154,17 +155,17 @@ const CONFIG_FALLBACKS = {
     },
     take: {
       type: "action",
-      shortcuts: ["get", "grab", "pick"],
+      shortcuts: ["t", "get", "g"],
       action: "take_item",
     },
     examine: {
       type: "action",
-      shortcuts: ["x", "ex"],
+      shortcuts: ["x", "ex", "read"],
       action: "examine_item",
     },
     drop: {
       type: "action",
-      shortcuts: ["put", "place"],
+      shortcuts: [],
       action: "drop_item",
     },
   },
@@ -783,7 +784,7 @@ function showHelp() {
       type: "flavor",
     },
     {
-      text: "Actions: look (l), inventory (i), help (h), take (get), examine (x), drop (put)",
+      text: "Actions: look (l), inventory (i), help (h), take (get), examine (x), drop",
       type: "flavor",
     },
     { text: "", type: "flavor" },
@@ -1242,7 +1243,7 @@ function handleCelebrateCommand() {
     showCelebrationGrid();
   } else {
     addToBuffer([
-      { text: `You haven't collected all the scavenger items yet!`, type: "error" },
+      { text: `You have not won yet!  You must collect all nine scaventer items to win.`, type: "error" },
       { text: `Found: ${scavengerCount} / ${totalScavenger}`, type: "flavor" }
     ]);
   }
@@ -1278,8 +1279,8 @@ function handleHintCommand() {
     { text: "", type: "flavor" },
     { text: "  north      [n]" + "&nbsp;".repeat(23 - 16) + "look       [l]", type: "flavor" },
     { text: "  south      [s]" + "&nbsp;".repeat(23 - 16) + "examine    [x, ex, read]", type: "flavor" },
-    { text: "  east       [e]" + "&nbsp;".repeat(24 - 16) + "take       [t, get, g, grab, pick]", type: "flavor" },
-    { text: "  west       [w]" + "&nbsp;".repeat(24 - 16) + "drop       [put, place]", type: "flavor" },
+    { text: "  east       [e]" + "&nbsp;".repeat(24 - 16) + "take       [t, get, g]", type: "flavor" },
+    { text: "  west       [w]" + "&nbsp;".repeat(24 - 16) + "drop", type: "flavor" },
     { text: "  help       [h, ?]" + "&nbsp;".repeat(24 - 19) + "inventory  [i]", type: "flavor" },
     { text: "", type: "flavor" },
     { text: "  use        [u, ring, turn]", type: "flavor" },
@@ -2701,6 +2702,9 @@ function handleInput(event) {
     const command = input.value.trim();
 
     if (command) {
+      // Reset empty Enter flag when actual command is entered
+      lastWasEmptyEnter = false;
+
       // Echo the command to the text buffer
       echoCommand(command);
 
@@ -2711,6 +2715,18 @@ function handleInput(event) {
       addToHistory(command, wasValid);
 
       // Clear the input
+      input.value = "";
+    } else {
+      // Handle empty Enter press - show helpful reminder and execute LOOK
+      // Only show hint if last action wasn't also an empty Enter (prevent spam)
+      if (!lastWasEmptyEnter) {
+        addToBuffer([{ text: "", type: "flavor" }]);
+        addToBuffer([{ text: "<span style='color: #ffcc00;'>I'll remind you of where you are now - but... btw... you can always use the scroll bar to scroll back in your game to see what happened earlier!</span>", type: "flavor" }]);
+        addToBuffer([{ text: "", type: "flavor" }]);
+        lookAtRoom();
+        lastWasEmptyEnter = true; // Set flag to prevent repeated hints
+      }
+      // Clear input regardless
       input.value = "";
     }
   } else if (event.key === "ArrowUp") {

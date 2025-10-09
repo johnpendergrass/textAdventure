@@ -14,7 +14,7 @@
     "START": {
       "name": "Halloween Night",
       "enterText": {
-        "first": "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-size: 1.2em;'><b>Welcome to The Radley House!</b></span><br><br>This is a text based game where you wander around and try to discover things.<br><br>----------------------------------------------------------<br><br>It is late on Halloween night and twilight is creeping in. All along the street the porchlights are off, as if the dark houses are saying 'enough is enough'.<br><br>It looks like Halloween is officially over... wait? is that a light on over there? Just down the street, to the <b>east</b>. It looks like it might be Mrs. McGillicutty's house!<br><br><span style='color: #ffcc00;'>[hint: type <b>go east</b> (or just <b>e</b>) to go down the street.]</span>",
+        "first": "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-size: 1.2em;'><b>Welcome to The Radley House!</b></span><br><br>This is a text based game where you wander around and try to discover things.<br><br>----------------------------------------------------------<br><br>It is late on Halloween night and twilight is creeping in. All along the street the porchlights are off, as if the dark houses are saying 'enough is enough'.<br><br>It looks like Halloween is officially over.....<br><br>... wait? is that a light on over there? Just down the street, to the <b>east</b>?<br><br><span style='color: #ffcc00;'>[hint: type <b>go east</b> to walk down the street.]</span>",
         "repeat": "You are at the start of your Halloween adventure. The street continues to the <b>east</b> towards Mrs. McGillicutty's house."
       },
       "lookText": "It is Halloween night and getting dark. You can see some houses down the street to the <b>east</b>.",
@@ -30,7 +30,7 @@
     "STREET-01": {
       "name": "Street",
       "enterText": {
-        "first": "You walk east down the street and stop in front of Mrs. McGillicutty's house. That light you saw looks like it is coming from her porch. Nice house. Nice of her to leave the porch light on. Probably has some candy left!<br><br>Wow, she really went all out on the decorations this year! Fancy Halloween lighting! Those ghosts are old school! Her well-lit front porch is to the <b>north</b>. The sidewalk continues to the <b>east</b> or <b>west</b>.<br><br><span style=\"color: #ffcc00;\">[hint: In this game you will type commands (<b>go north</b>, <b>look</b>, etc) and sometimes two words (<b>get key</b>, etc) to control your player. Words in <b>bold</b> will often be commands or words you can type.]</span>",
+        "first": "You walk east to investigate the light. Why, it's Mrs. McGillicutty's house! Cheery house. Nice of her to leave the porch light on. Probably has some candy left!<br><br>Wow, she really went all out on the decorations this year! Fancy Halloween lighting! Those ghosts are old school! Her well-lit front porch is to the <b>north</b>. The sidewalk continues to the <b>east</b> or <b>west</b>.<br><br><span style=\"color: #ffcc00;\">[hint: in this game you will type commands (like <b>north</b>) and sometimes two word commands (like <b>get key</b>) to control your player. Words in <b>bold</b> will often be commands or words you can type.]</span>",
         "repeat": "You are on the street. The path to Mrs. McGillicutty's house is to the <b>north</b>.  The sidewalk continues to the <b>east</b> and <b>west</b>."
       },
       "lookText": "You are on the street. Mrs. McGillicutty's front porch is to the <b>north</b>.  The sidewalk continues to the <b>east</b>. It is getting darker, but this house is cheerful and welcoming. <span style='color: #ffcc00;'>[Hint: type <b>'go north'</b> to revisit Mrs. McGillicutty's house, or <b>'go east'</b> to head on down the road.]</span>",
@@ -63,7 +63,7 @@
     "NICE-PORCH": {
       "name": "Nice Porch",
       "enterText": {
-        "first": "You are standing on Mrs. McGillicutty's porch. The porch light is on, casting a warm welcoming glow.<br><br><span style=\"color: #ffcc00;\">[hint: type <b>ring doorbell</b> or <b>use doorbell</b> to ring the doorbell.]</span><br><br>The door is to the <b>north</b>.",
+        "first": "You are standing on Mrs. McGillicutty's porch. The porch light is on, casting a warm welcoming glow.<br><br><span style=\"color: #ffcc00;\">[hint: type <b>ring doorbell</b> or <b>use doorbell</b> to ring the doorbell, or type <b>examine doorbell</b> to get more information about it.]<br><br>[hint: Use <b>look</b> to remind you of where you are.]</span>",
         "second": "The porch light is off, but you try the bell anyway. No one answers.",
         "repeat": "The porch light is off. No one answers the door."
       },
@@ -97,7 +97,7 @@
     "FRONT-PORCH": {
       "name": "Front Porch",
       "enterText": {
-        "first": "You go up the walkway to the front porch of the Radley House. The porchlight is dirty yellow, flickering. Not a soul in sight. There is a brass door <b>gong</b> handle to the right of the door.<br><br><span style='color: #ffcc00;'>[hint: type <b>use gong</b> or <b>use handle</b> to sound the <b>gong</b>.]</span>",
+        "first": "You go up the walkway to the front porch of the Radley House. The porchlight is dirty yellow, flickering. Not a soul in sight. There is a brass <b>gong handle</b> to the right of the door.<br><br><span style='color: #ffcc00;'>[hint: type <b>use gong</b> or <b>use handle</b> to sound the <b>gong</b>.]</span>",
         "repeat": "You are on the Radley's front porch. Porchlight still flickering and buzzing. The <b>gong</b> handle is very ornate. What!! Is that a rat?"
       },
       "lookText": "You are on the Radley's front porch.  The door <b>gong</b> handle is right in front of you. Dark. Dank. And spooky. Entry into the house is to the <b>north</b>.  The sidewalk is behind you to the <b>south</b>.",
@@ -111,9 +111,9 @@
     },
 
     "FOYER": {
-      "name": "Foyer",
+      "name": "FOYER",
       "enterText": {
-        "first": "You enter the Radley House FOYER. It reminds you of a scene from that Downton Abbey show...  there are doors everywhere!<br><br><span style='color: #ffcc00;'>[hint: type <b>take &lt;item&gt;</b> or <b>get &lt;item&gt;</b> to pick up items you find.]</span>",
+        "first": "You c<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y enter the Radley House FOYER. It reminds you of a scene from that Downton Abbey show...  there are doors everywhere!<br><br><span style='color: #ffcc00;'>[hint: type <b>take &lt;item&gt;</b> or <b>get &lt;item&gt;</b> to pick up items you find.]</span>",
         "repeat": "You are in the FOYER."
       },
       "lookText": "You are in the FOYER.  Doors lead all directions!",
@@ -130,7 +130,7 @@
     },
 
     "LIBRARY": {
-      "name": "Library",
+      "name": "LIBRARY",
       "enterText": {
         "first": "You enter the LIBRARY. Wow! Tall bookshelves line the walls, and the floor is covered in a thick carpet.  There are several armchairs scattered around the room.  An open book lies on a table near the window. <span style='color: #ffcc00;'>[hint: you can <b>examine</b> items you find here.]</span>",
         "repeat": "You are in the LIBRARY."
@@ -147,7 +147,7 @@
     },
 
     "DINING-ROOM": {
-      "name": "Dining Room",
+      "name": "DINING ROOM",
       "enterText": {
         "first": "You enter the DINING ROOM.",
         "repeat": "You are in the DINING ROOM."
@@ -165,7 +165,7 @@
     },
 
     "STUDY": {
-      "name": "Study",
+      "name": "STUDY",
       "enterText": {
         "first": "You enter the STUDY. <span style='color: #ffcc00;'>[hint: try to <b>examine</b> things you see in rooms.]</span>",
         "repeat": "You are in the STUDY."
@@ -182,7 +182,7 @@
     },
 
     "MUSIC-ROOM": {
-      "name": "Music Room",
+      "name": "MUSIC ROOM",
       "enterText": {
         "first": "You enter the MUSIC ROOM. <span style='color: #ffcc00;'>[hint: don't forget to <b>look</b> around to see what's in each room.]</span>",
         "repeat": "You are in the MUSIC ROOM."
@@ -199,7 +199,7 @@
     },
 
     "GAME-ROOM": {
-      "name": "Game Room",
+      "name": "GAME ROOM",
       "enterText": {
         "first": "You enter the GAME ROOM.",
         "repeat": "You are in the GAME ROOM."
@@ -215,7 +215,7 @@
     },
 
     "KITCHEN": {
-      "name": "Kitchen",
+      "name": "KITCHEN",
       "enterText": {
         "first": "You enter the KITCHEN.",
         "repeat": "You are in the KITCHEN."
@@ -231,7 +231,7 @@
     },
 
     "BEDROOM": {
-      "name": "Bedroom",
+      "name": "BEDROOM",
       "enterText": {
         "first": "You enter the BEDROOM.",
         "repeat": "You are in the BEDROOM."
@@ -247,9 +247,9 @@
     },
 
     "TV-ROOM": {
-      "name": "TV Room",
+      "name": "TV ROOM",
       "enterText": {
-        "first": "You enter the TV ROOM. A large flat-screen TV mounted on the wall is playing a movie - the classic 1938 screwball comedy 'Bringing Up Baby.' On the screen, Cary Grant and Katharine Hepburn are in the middle of a hilarious scene involving a leopard. Against the opposite wall stands an elegant wooden <b>cabinet</b> with glass doors. Through the glass, you can see shelves lined with DVD cases. Your eyes are drawn to a DVD of 'Bringing Up Baby' on the second shelf. Wait... how is the movie playing if the DVD is right there in the cabinet? <span style='color: #ffcc00;'>[hint: you could try to <b>open cabinet</b>.]</span>",
+        "first": "You enter the TV ROOM. A large flat-screen TV mounted on the wall is playing a movie - the classic 1938 screwball comedy 'Bringing Up Baby.' On the screen, Cary Grant and Katharine Hepburn are in the middle of a hilarious scene involving a leopard.<br><br>Against the opposite wall stands an elegant wooden <b>cabinet</b> with glass doors. Through the glass, you can see shelves lined with DVD cases. Your eyes are drawn to a DVD of 'Bringing Up Baby' on the second shelf. Wait... how is the movie playing if the DVD is right there in the cabinet? <span style='color: #ffcc00;'>[hint: you could try to <b>open cabinet</b>.]</span>",
         "repeat": "You are in the TV ROOM. The movie is still playing on the TV, and the DVD cabinet stands against the wall."
       },
       "lookText": "You are in the TV ROOM. A large TV is mounted on one wall, currently playing 'Bringing Up Baby.' An elegant DVD cabinet with glass doors stands against the opposite wall.",
