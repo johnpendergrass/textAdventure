@@ -1,11 +1,12 @@
 # The Radley House - Game Specifications
-# v0.36 - Safe Puzzle & Item Updates
+# v0.19.1 - Release Candidate
 
 ## Project Overview
 
 **Game Title:** The Radley House
 **Subtitle:** A well-articulated treasure hunt
-**Version:** 0.37 (Wrigley's Doublemint Gum Replacement)
+**Version:** 0.19.1 (Release Candidate)
+**Status:** ✅ READY FOR RELEASE! (pending final testing)
 **Total Project Size:** ~350KB (with all assets, images, and fonts)
 **Source Files:** 8 core files + 7 data JSON files + 38 items + documentation + images
 **Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking, victory celebration animations, handwritten notes, locked doors, hidden items, interactive puzzles, two-column inventory, and comprehensive command system
@@ -305,6 +306,70 @@ SCAVENGER ITEMS (9/9)
 
 ---
 
+## v0.19.1 New Features
+
+### Cheerful Doorbell Color 🆕
+**Problem:** Doorbell "Ding Dong!" used light blue (#00BFFF) - not welcoming enough for friendly Mrs. McGillicutty.
+**Solution:** Changed to bright golden yellow (#FFD700) with sunny glow effect.
+- Location: `items.json` line 57 (doorbell use action)
+- Creates warm, cheerful, welcoming appearance
+
+### Context-Aware FOYER Hints 🆕
+**Problem:** Static hint about picking up items wasn't helpful for players without the scavenger list.
+**Solution:** Two different hints based on list status.
+
+**With List (examined):**
+```
+[hint: type take <item> or get <item> to pick up items you find.]
+```
+
+**Without List (or not examined):**
+```
+[Hint: You will need to obtain and examine the scavenger hunt list from Mrs. McGillicutty to find the items!]
+```
+(Displayed in **bold** for emphasis)
+
+- Implementation: `textAdventure.js` lines 679-698
+- Added `hasBeenExamined` flag to mrsmcgillicuttyslist
+- Conditional logic checks both possession AND examination
+
+### SAY Command Time Penalty Fix 🆕
+**Problem:** ALL SAY commands consumed 1 minute, even nonsensical ones like "SAY BLAHBLAH".
+**Solution:** Invalid SAY commands now show error with NO time penalty.
+
+**Valid SAY commands that consume time:**
+- SAY 666 (opens safe)
+- SAY friend (unlocks secret door)
+- SAY music/movie/game (stereo buttons)
+
+**Invalid SAY commands (no time penalty):**
+- Shows error: `"blahblah" doesn't really do anything.`
+- Location: `textAdventure.js` lines 1884-1889
+
+### HOME/QUIT Zero Time Penalty 🆕
+**Problem:** HOME/QUIT had 2-minute timer, typed twice = 4 minutes penalty!
+**Solution:** Changed to 0 minutes (matches other system commands).
+- Location: `commands.json` line 77
+- Now consistent with help, look, inventory, score, etc.
+
+### DVD Cabinet Examination Requirement 🆕
+**Problem:** Players could open cabinet immediately without discovering it first.
+**Solution:** Gate opening behind examination (matching other puzzle patterns).
+
+**Implementation:**
+- Added `hasBeenExamined: false` to dvdcabinet (`items.json` line 278)
+- Hint moved from TV-ROOM enterText to cabinet examine text
+- Gate logic in handleOpenCommand (`textAdventure.js` lines 1935-1942)
+- Flag set when examined (`textAdventure.js` lines 2357-2360)
+- **Failed open attempts have NO time penalty**
+
+**Flow:**
+1. Enter TV-ROOM → see cabinet mentioned
+2. Examine cabinet → see hint about opening
+3. Open cabinet → get Stranger Things DVD
+
+---
+
 ## Game Structure
 
 ### Scavenger Hunt Items (9 Total)
@@ -343,7 +408,7 @@ SCAVENGER ITEMS (9/9)
 6. **Stranger Things DVD** (TV-ROOM) 🆕
    - Clue: "Schwinn Sting-Ray" (bikes in show)
    - Netflix 2016 series
-   - Hidden in DVD cabinet
+   - Hidden in DVD cabinet (must examine cabinet before opening - v0.19.1)
    - Points: 10
 
 7. **Frankenstein Book** (LIBRARY)
@@ -479,7 +544,23 @@ textAdventure/
 
 ## Version History
 
-**v0.37** (Current) - Wrigley's Doublemint Gum Replacement
+**v0.19.1** (Current) - RELEASE CANDIDATE! 🎉
+- Doorbell color changed to cheerful golden yellow (#FFD700)
+- FOYER hints now context-aware (list status dependent)
+- SAY command fixed (no time penalty for invalid phrases)
+- HOME/QUIT zero time penalty (was 4 minutes total!)
+- DVD cabinet examination requirement added
+- **STATUS:** Feature complete, ready for release after final testing
+
+**v0.39** - Puzzle Gating, Context-Aware HOME Messages, UI Improvements
+- Scavenger items gated by list examination
+- Six context-aware HOME messages (on time/late × items collected)
+- Puzzle examination requirements (stereo, parchment)
+- Premium apple enhancement (-4 timer)
+- HOME screen always shows inventory
+- Multiple bug fixes
+
+**v0.37** - Wrigley's Doublemint Gum Replacement
 - Replaced Cup O' Noodles with Wrigley's Doublemint Gum (KITCHEN)
 - Updated Mrs. McGillicutty's list clue #2: "Food from the sea" → "Double your fun"
 - New images: wrigleysOldDoublemintGumPack90x90.png, wrigleysOldDoublemintGumPack250x250.png
@@ -524,6 +605,79 @@ textAdventure/
 
 ---
 
+## Current Scoring System ⚠️ NOT IMPLEMENTED
+
+### Status: COUNTS ONLY - No Point Calculation
+
+**The game displays "SCORE" but only shows item COUNTS, not actual points.**
+
+#### What Exists:
+- All items have a `points` property defined in JSON
+- `player.score` variable initialized in gameData.json
+- UI panel titled "SCORE"
+
+#### What's Missing:
+- ❌ No score calculation when items collected
+- ❌ No score update in handleTakeCommand()
+- ❌ No final score display on HOME/QUIT screen
+- ❌ Status panel shows counts instead of points
+
+### Current vs. Desired Display
+
+**Current (v0.37):**
+```
+SCORE
+Scavenger Items: 3 / 9
+Treats:          5 / 20
+```
+
+**Desired:**
+```
+SCORE: 35 / 108
+Scavenger Items: 3 / 9 (30 pts)
+Treats:          5 / 20 (5 pts)
+```
+
+### Point Values Defined (But Not Used)
+
+**Scavenger Items:** 10 points each
+- Total possible: 90 points (9 items)
+
+**Candy/Treats:** 1 point each
+- Total possible: ~18 points (~18 items)
+
+**Maximum Score:** ~108 points
+
+### Code Locations for Implementation
+
+1. **Score Update:** textAdventure.js:1076-1083 (handleTakeCommand)
+   - Add: `player.score += (item.points || 0);`
+
+2. **Display Update:** textAdventure.js:2548-2553 (updateGameStatus)
+   - Show actual score instead of just counts
+
+3. **Final Score:** HOME/QUIT screen
+   - Add score breakdown and grade/ranking
+
+### Planned Enhancements
+
+**Bonus Points:**
+- All 9 scavenger items: +10 bonus
+- Collect 20 treats: +5 bonus
+- Perfect game bonuses
+
+**Scoring Tiers:**
+- 100-108: A+ (Perfect!)
+- 90-99: A (Excellent!)
+- 80-89: B (Very Good!)
+- 70-79: C (Good!)
+- 60-69: D (Acceptable)
+- 0-59: F (Try Again!)
+
+**Next Major Task:** Implement full scoring system with point calculation and display.
+
+---
+
 ## Safe Puzzle System 🆕 v0.36
 
 ### Requirements to Open Safe
@@ -552,5 +706,5 @@ textAdventure/
 
 ---
 
-*Last updated: October 10, 2025*
-*Game ready for Halloween 2025*
+*Last updated: October 10, 2025 - v0.19.1 Release Candidate*
+*The Radley House is READY for Halloween 2025!* 🎃👻🏚️

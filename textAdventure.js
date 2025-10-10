@@ -5,6 +5,11 @@
 // Configuration files location - change this to load different game configs
 const CONFIG_LOCATION = "HALLOWEEN-GAME";
 
+// Time-based scoring constants (easy to change!)
+const GAME_START_TIME = { hours: 19, minutes: 57 }; // 7:57 PM
+const GAME_DEADLINE = { hours: 20, minutes: 30 }; // 8:30 PM
+const MAX_CONSECUTIVE_EATS = 5;
+
 // ========================================
 // === GAME STATE VARIABLES ===
 // ========================================
@@ -38,6 +43,15 @@ let rooms = {};
 let doors = {};
 let items = {};
 let currentRoom = "STREET-01";
+
+// Time-based scoring state
+let gameTime = {
+  hours: 19,
+  minutes: 57,
+  totalMinutes: 1197, // 19*60 + 57 = 1197 (7:57 PM)
+};
+let consecutiveEatsCounter = 0;
+let lastCommandSucceeded = false; // Track if last command succeeded (for timer)
 
 // ========================================
 // === ERROR HANDLING FUNCTIONS ===
@@ -633,7 +647,8 @@ function displayRoom(roomId = currentRoom) {
     const porchLight = items.porch_light_nice;
     if (porchLight && porchLight.visible === true) {
       // Light is still on (doorbell hasn't been used) - always show "first" text
-      enterText = room.enterText?.first || room.lookText || `You are in ${room.name}`;
+      enterText =
+        room.enterText?.first || room.lookText || `You are in ${room.name}`;
     } else {
       // Light is off (doorbell has been used) - show "second" or "repeat"
       enterText =
@@ -660,6 +675,27 @@ function displayRoom(roomId = currentRoom) {
   }
 
   addToBuffer([{ text: enterText, type: "flavor" }]);
+
+  // Special handling for FOYER - show different hints based on list status
+  if (roomId === "FOYER") {
+    const list = items.mrsmcgillicuttyslist;
+    const hasListInInventory = list && list.location === "INVENTORY";
+    const hasExaminedList = list && list.hasBeenExamined === true;
+
+    if (hasListInInventory && hasExaminedList) {
+      // Show original hint about picking up items
+      addToBuffer([
+        { text: "", type: "flavor" }, // Blank line
+        { text: "<span style='color: #ffcc00;'>[hint: type <b>take &lt;item&gt;</b> or <b>get &lt;item&gt;</b> to pick up items you find.]</span>", type: "flavor" }
+      ]);
+    } else {
+      // Show scavenger hunt hint
+      addToBuffer([
+        { text: "", type: "flavor" }, // Blank line
+        { text: "<span style='color: #ffcc00;'><b>[Hint: You will need to obtain and examine the scavenger hunt list from Mrs. McGillicutty to find the items!]</b></span>", type: "flavor" }
+      ]);
+    }
+  }
 
   // Add room to visited rooms tracking
   player.core.visitedRooms.push(roomId);
@@ -788,8 +824,15 @@ function movePlayer(direction) {
 
   // Move to new room
   currentRoom = exit.to;
+
+  // Reset consecutive eat counter on any movement
+  consecutiveEatsCounter = 0;
+
   updateScavengerBackground(currentRoom);
   displayRoom(currentRoom);
+
+  // Mark command as successful
+  lastCommandSucceeded = true;
 }
 
 // Show help command
@@ -824,6 +867,39 @@ function numberToWord(num) {
     "Nine",
   ];
   return words[num] || num.toString();
+}
+
+// ========================================
+// === TIME-BASED SCORING FUNCTIONS ===
+// ========================================
+
+// Update game time by adding/subtracting minutes
+function updateGameTime(minutesToAdd) {
+  gameTime.totalMinutes += minutesToAdd;
+  gameTime.hours = Math.floor(gameTime.totalMinutes / 60);
+  gameTime.minutes = gameTime.totalMinutes % 60;
+  updateClockDisplay();
+}
+
+// Format time as 12-hour clock (e.g., "7:57 PM")
+function formatTime12Hour() {
+  const hours12 =
+    gameTime.hours > 12
+      ? gameTime.hours - 12
+      : gameTime.hours === 0
+      ? 12
+      : gameTime.hours;
+  const ampm = gameTime.hours >= 12 ? "PM" : "AM";
+  const mins = String(gameTime.minutes).padStart(2, "0");
+  return `${hours12}:${mins} ${ampm}`;
+}
+
+// Update the digital clock display in the status panel
+function updateClockDisplay() {
+  const clockElement = document.querySelector(".digital-clock");
+  if (clockElement) {
+    clockElement.textContent = formatTime12Hour();
+  }
 }
 
 // Helper function to format scavenger items in two columns
@@ -1132,6 +1208,9 @@ function handleTakeCommand(command) {
         }, 3000);
       }
     }
+
+    // Mark command as successful
+    lastCommandSucceeded = true;
   }
 }
 
@@ -1187,6 +1266,9 @@ function handleDropCommand(command) {
 
   // Update the status panel to show new inventory
   updateGameStatus();
+
+  // Mark command as successful
+  lastCommandSucceeded = true;
 }
 
 // Handle throw command (Easter egg - doesn't actually do anything)
@@ -1234,10 +1316,20 @@ function handleThrowCommand(command) {
     throwMessages[Math.floor(Math.random() * throwMessages.length)];
 
   addToBuffer([{ text: randomMessage, type: "flavor" }]);
+
+  // Mark command as successful
+  lastCommandSucceeded = true;
 }
 
 // Handle DEBUG command - adds all scavenger items except pumpkin to inventory
 function handleDebugCommand() {
+  // First, enable all scavenger items in the game
+  Object.values(items).forEach(item => {
+    if (item.type === "scavenger") {
+      item.includeInGame = true;
+    }
+  });
+
   // Find all scavenger items except pumpkin
   const scavengerItems = Object.entries(items).filter(
     ([key, item]) =>
@@ -1420,8 +1512,61 @@ function handleHintCommand() {
   ]);
 }
 
+// Handle SCORE command - explains time-based scoring system
+function handleScoreCommand() {
+  const currentTime = formatTime12Hour();
+  const deadlineHours =
+    GAME_DEADLINE.hours > 12 ? GAME_DEADLINE.hours - 12 : GAME_DEADLINE.hours;
+  const deadlineTime = `${deadlineHours}:${String(
+    GAME_DEADLINE.minutes
+  ).padStart(2, "0")} PM`;
+  const deadlineTotalMins = GAME_DEADLINE.hours * 60 + GAME_DEADLINE.minutes;
+  const timeRemaining = deadlineTotalMins - gameTime.totalMinutes;
+
+  const scavengerCount = Object.values(items).filter(
+    (item) => item.type === "scavenger" && item.location === "INVENTORY"
+  ).length;
+
+  const treatsCount = Object.values(items).filter(
+    (item) => item.type === "candy" && item.location === "INVENTORY"
+  ).length;
+
+  addToBuffer([
+    { text: "=== TIME-BASED SCORING ===", type: "command" },
+    { text: "", type: "flavor" },
+    { text: `Current Time: ${currentTime}`, type: "flavor" },
+    { text: `Deadline: ${deadlineTime}`, type: "flavor" },
+    { text: `Time Remaining: ${timeRemaining} minutes`, type: "flavor" },
+    { text: "", type: "flavor" },
+    { text: "How Timing Works:", type: "flavor" },
+    { text: "• Most commands use 1 minute of time", type: "flavor" },
+    { text: "• HELP, LOOK, INVENTORY are free (0 min)", type: "flavor" },
+    { text: "• EATING treats gives you back 2 minutes!", type: "flavor" },
+    { text: "• You can only eat 5 treats before moving", type: "flavor" },
+    { text: "", type: "flavor" },
+    { text: "Your Progress:", type: "flavor" },
+    { text: `• Scavenger items: ${scavengerCount} / 9`, type: "flavor" },
+    { text: `• Treats collected: ${treatsCount}`, type: "flavor" },
+  ]);
+
+  // Show current room after score info
+  addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+  lookAtRoom();
+}
+
 // Handle eat command
 function handleEatCommand(command) {
+  // Check consecutive eat limit FIRST (before any other validation)
+  if (consecutiveEatsCounter >= MAX_CONSECUTIVE_EATS) {
+    addToBuffer([
+      {
+        text: "You cannot just gorge yourself on candy! Five is the limit here! Get moving!",
+        type: "error",
+      },
+    ]);
+    return; // Exit WITHOUT taking time penalty
+  }
+
   // Extract the item name - get everything after the command, lowercase, strip spaces
   const input = command.toLowerCase().trim();
   const firstSpace = input.indexOf(" ");
@@ -1475,8 +1620,19 @@ function handleEatCommand(command) {
     delete items[itemKey];
   }
 
+  // Increment consecutive eat counter
+  consecutiveEatsCounter++;
+
+  // Update game time (use item's custom timer if specified, otherwise -2)
+  const timeChange =
+    item.actions.eat.timer !== undefined ? item.actions.eat.timer : -2;
+  updateGameTime(timeChange);
+
   // Update the status panel to show new inventory
   updateGameStatus();
+
+  // Mark command as successful
+  lastCommandSucceeded = true;
 }
 
 // Handle SAY command - for combinations and passwords
@@ -1505,18 +1661,21 @@ function handleSayCommand(command) {
         addToBuffer([
           {
             text: "You don't know the combination. You'll need to find a clue somewhere.",
-            type: "error"
+            type: "error",
           },
         ]);
         return;
       }
 
       if (!bookmark.hasBeenExamined) {
-        console.log("DEBUG: Bookmark hasBeenExamined =", bookmark.hasBeenExamined);
+        console.log(
+          "DEBUG: Bookmark hasBeenExamined =",
+          bookmark.hasBeenExamined
+        );
         addToBuffer([
           {
             text: "The safe will not open until you find the clue about the combination.",
-            type: "error"
+            type: "error",
           },
         ]);
         return;
@@ -1555,6 +1714,7 @@ function handleSayCommand(command) {
       // Show room state
       addToBuffer([{ text: "", type: "flavor" }]);
       lookAtRoom();
+      lastCommandSucceeded = true;
       return;
     }
   }
@@ -1562,6 +1722,28 @@ function handleSayCommand(command) {
   // Check if at MUSIC-ROOM - music system and secret door
   if (currentRoom === "MUSIC-ROOM") {
     const secretDoor = doors["music-room2game-room"];
+    const musicSystem = items["musicsystem"];
+
+    // Check if trying to press buttons before examining the stereo
+    if (
+      (normalizedPhrase.includes("music") ||
+        normalizedPhrase.includes("movie") ||
+        normalizedPhrase.includes("theater") ||
+        normalizedPhrase.includes("theatre") ||
+        normalizedPhrase.includes("game") ||
+        normalizedPhrase.includes("gaming")) &&
+      musicSystem &&
+      !musicSystem.hasBeenExamined
+    ) {
+      addToBuffer([
+        {
+          text: `I don't see any '${phrase}' button. Maybe you should <b>examine</b> something?`,
+          type: "error",
+        },
+      ]);
+      // Return without setting lastCommandSucceeded = true (no time penalty)
+      return;
+    }
 
     // Check for music system sound options
     if (normalizedPhrase.includes("music")) {
@@ -1572,6 +1754,7 @@ function handleSayCommand(command) {
           type: "flavor",
         },
       ]);
+      lastCommandSucceeded = true;
       return;
     }
 
@@ -1587,6 +1770,7 @@ function handleSayCommand(command) {
           type: "flavor",
         },
       ]);
+      lastCommandSucceeded = true;
       return;
     }
 
@@ -1613,6 +1797,7 @@ function handleSayCommand(command) {
         // Show room state with new exit
         addToBuffer([{ text: "", type: "flavor" }]);
         lookAtRoom();
+        lastCommandSucceeded = true;
         return;
       } else if (secretDoor && secretDoor.visible) {
         addToBuffer([
@@ -1622,12 +1807,39 @@ function handleSayCommand(command) {
             type: "flavor",
           },
         ]);
+        lastCommandSucceeded = true;
         return;
       }
     }
 
     // Check for secret door password
     if (normalizedPhrase.includes("friend")) {
+      const passwordPaper = items["passwordpaper"];
+
+      // Check if player has the parchment paper with the password
+      if (!passwordPaper || passwordPaper.location !== "INVENTORY") {
+        addToBuffer([
+          {
+            text: "You don't know about any secret door password. Maybe you need to find a clue first?",
+            type: "error",
+          },
+        ]);
+        // Return without setting lastCommandSucceeded = true (no time penalty)
+        return;
+      }
+
+      // Check if player has examined the parchment paper
+      if (!passwordPaper.hasBeenExamined) {
+        addToBuffer([
+          {
+            text: "You have the parchment, but you haven't read it yet. Maybe you should <b>examine</b> it?",
+            type: "error",
+          },
+        ]);
+        // Return without setting lastCommandSucceeded = true (no time penalty)
+        return;
+      }
+
       if (secretDoor && secretDoor.visible && secretDoor.locked) {
         // Door is visible but locked - unlock it
         addToBuffer([
@@ -1645,6 +1857,7 @@ function handleSayCommand(command) {
         // Show room state
         addToBuffer([{ text: "", type: "flavor" }]);
         lookAtRoom();
+        lastCommandSucceeded = true;
         return;
       } else if (secretDoor && !secretDoor.visible) {
         // Door not visible yet
@@ -1655,22 +1868,24 @@ function handleSayCommand(command) {
             type: "flavor",
           },
         ]);
+        lastCommandSucceeded = true;
         return;
       } else if (secretDoor && secretDoor.visible && !secretDoor.locked) {
         // Door already unlocked
         addToBuffer([
           { text: "The secret door is already open.", type: "flavor" },
         ]);
+        lastCommandSucceeded = true;
         return;
       }
     }
   }
 
-  // Default response - phrase didn't do anything
+  // Default response - invalid SAY command (no time penalty)
   addToBuffer([
-    { text: `You say: "${phrase}"`, type: "flavor" },
-    { text: "Nothing happens.", type: "flavor" },
+    { text: `"${phrase}" doesn't really do anything.`, type: "error" }
   ]);
+  // Don't set lastCommandSucceeded = true (no time consumed for invalid SAY commands)
 }
 
 // Handle OPEN command - for opening containers and cabinets
@@ -1717,6 +1932,15 @@ function handleOpenCommand(command) {
 
   // Special handling for DVD cabinet
   if (itemKey === "dvdcabinet") {
+    // Check if examined first
+    if (!item.hasBeenExamined) {
+      addToBuffer([
+        { text: "You should <b>examine</b> the cabinet first before trying to open it.", type: "error" }
+      ]);
+      // No time penalty - return without setting lastCommandSucceeded
+      return;
+    }
+
     if (!item.hasBeenOpened) {
       // First time opening
       addToBuffer([{ text: item.actions.open, type: "flavor" }]);
@@ -1741,6 +1965,7 @@ function handleOpenCommand(command) {
       // Already opened
       addToBuffer([{ text: "The cabinet is already open.", type: "flavor" }]);
     }
+    lastCommandSucceeded = true;
     return;
   }
 
@@ -1763,11 +1988,13 @@ function handleOpenCommand(command) {
         },
       ]);
     }
+    lastCommandSucceeded = true;
     return;
   }
 
   // Generic open handler for other items
   addToBuffer([{ text: item.actions.open, type: "flavor" }]);
+  lastCommandSucceeded = true;
 }
 
 // Handle QUIT/HOME command - moves player to HOME room
@@ -1790,6 +2017,9 @@ function handleQuitCommand() {
 
   // Move to HOME room
   currentRoom = "HOME";
+
+  // Reset consecutive eat counter when going home
+  consecutiveEatsCounter = 0;
 
   // Update background image for scavenger box
   updateScavengerBackground("HOME");
@@ -1821,45 +2051,127 @@ function handleQuitCommand() {
   );
   const candyItems = inventoryItems.filter((item) => item.type === "candy");
 
-  // Add inventory section if player has items
-  if (scavengerItems.length > 0 || candyItems.length > 0) {
+  // Count total scavenger items in game (all 9, regardless of includeInGame status)
+  const totalScavenger = Object.values(items).filter(
+    (item) => item.type === "scavenger"
+  ).length;
+
+  // Always show inventory sections (even if empty)
+  addToBuffer([
+    { text: "", type: "flavor" }, // Blank line
+  ]);
+
+  // Display scavenger items section
+  addToBuffer([
+    {
+      text: `SCAVENGER ITEMS (${scavengerItems.length}/${totalScavenger})`,
+      type: "underlined",
+    },
+  ]);
+
+  if (scavengerItems.length > 0) {
+    // Format items in two columns
+    const formattedLines = formatScavengerTwoColumns(scavengerItems);
+    formattedLines.forEach((line) => {
+      addToBuffer([{ text: line, type: "flavor" }]);
+    });
+  } else {
+    // Show message when no scavenger items collected
     addToBuffer([
-      { text: "", type: "flavor" }, // Blank line
+      { text: "  You did not collect any scavenger items.", type: "flavor" },
+    ]);
+  }
+
+  // Blank line between sections
+  addToBuffer([{ text: "", type: "flavor" }]);
+
+  // Display treats section
+  addToBuffer([
+    { text: `TREATS (${candyItems.length}/20)`, type: "underlined" },
+  ]);
+
+  if (candyItems.length > 0) {
+    const candyList = candyItems.map((item) => item.display).join(", ");
+    addToBuffer([{ text: `  ${candyList}`, type: "flavor" }]);
+  } else {
+    // Show message when no treats collected
+    addToBuffer([
+      { text: "  You did not collect any treats.", type: "flavor" },
+    ]);
+  }
+
+  // Time-based message based on whether player made the deadline
+  const deadlineTotalMins = GAME_DEADLINE.hours * 60 + GAME_DEADLINE.minutes;
+  const currentTime = formatTime12Hour();
+  const madeDeadline = gameTime.totalMinutes <= deadlineTotalMins;
+
+  if (madeDeadline) {
+    const minutesEarly = deadlineTotalMins - gameTime.totalMinutes;
+    addToBuffer([
+      { text: "", type: "flavor" },
+      { text: `You made it home at ${currentTime}!`, type: "flavor" },
     ]);
 
-    // Count total available scavenger items
-    const totalScavenger = Object.values(items).filter(
-      (item) => item.includeInGame && item.type === "scavenger"
-    ).length;
-
-    // Display scavenger items in two columns
-    if (scavengerItems.length > 0) {
+    // Context-aware message based on scavenger items collected
+    if (scavengerItems.length === totalScavenger && scavengerItems.length > 0) {
+      // All 9 items + on time
       addToBuffer([
         {
-          text: `SCAVENGER ITEMS (${scavengerItems.length}/${totalScavenger})`,
-          type: "underlined",
+          text: `Atticus beams with pride that you found all nine scavenger hunt items, but is even prouder that you respected his 'home time' curfew.`,
+          type: "flavor",
         },
       ]);
-
-      // Format items in two columns
-      const formattedLines = formatScavengerTwoColumns(scavengerItems);
-      formattedLines.forEach((line) => {
-        addToBuffer([{ text: line, type: "flavor" }]);
-      });
-    }
-
-    // Blank line between sections if both exist
-    if (scavengerItems.length > 0 && candyItems.length > 0) {
-      addToBuffer([{ text: "", type: "flavor" }]);
-    }
-
-    // Display treats
-    if (candyItems.length > 0) {
+    } else if (scavengerItems.length > 0) {
+      // Some items + on time
       addToBuffer([
-        { text: `TREATS (${candyItems.length}/20)`, type: "underlined" },
+        {
+          text: `Atticus looks you over and says: I'm glad you are back on time. I was getting worried. And it looks like you found some of those scavenger hunt items that Arthur put out!.`,
+          type: "flavor",
+        },
       ]);
-      const candyList = candyItems.map((item) => item.display).join(", ");
-      addToBuffer([{ text: `  ${candyList}`, type: "flavor" }]);
+    } else {
+      // 0 items + on time
+      addToBuffer([
+        {
+          text: `Atticus smiles: "Right on time! You made it with ${minutesEarly} minute${
+            minutesEarly !== 1 ? "s" : ""
+          } to spare!"`,
+          type: "flavor",
+        },
+      ]);
+    }
+  } else {
+    const minutesLate = gameTime.totalMinutes - deadlineTotalMins;
+    addToBuffer([
+      { text: "", type: "flavor" },
+      { text: `You made it home at ${currentTime}...`, type: "flavor" },
+    ]);
+
+    // Context-aware message based on scavenger items collected
+    if (scavengerItems.length === totalScavenger && scavengerItems.length > 0) {
+      // All 9 items + late
+      addToBuffer([
+        {
+          text: `I was getting worried about the time! I'm glad you are home and safe though. Arthur will be impressed you found all nine scavenger hunt items. We'll discuss your missing the curfew later tonite.`,
+          type: "flavor",
+        },
+      ]);
+    } else if (scavengerItems.length > 0) {
+      // Some items + late
+      addToBuffer([
+        {
+          text: `Atticus looks concerned: 'Where have you been? Mr. Radley's scavenger hunt shouldn't have taken that long. We'll talk later.'`,
+          type: "flavor",
+        },
+      ]);
+    } else {
+      // 0 items + late
+      addToBuffer([
+        {
+          text: `Atticus frowns: 'I was getting worried. You're late and it looks like you didn't participate in the scavenger hunt at all. What were you doing all that time?'`,
+          type: "flavor",
+        },
+      ]);
     }
   }
 
@@ -1868,6 +2180,9 @@ function handleQuitCommand() {
     { text: "", type: "flavor" }, // Blank line
     { text: homeRoom.enterText.second, type: "flavor" },
   ]);
+
+  // Mark command as successful
+  lastCommandSucceeded = true;
 }
 
 // Handle examine command
@@ -1898,6 +2213,16 @@ function handleExamineCommand(command) {
   }
 
   const [itemKey, item] = allItems[0];
+
+  // Special case: examining Mrs. McGillicutty's list enables all scavenger items
+  if (itemKey === "mrsmcgillicuttyslist") {
+    item.hasBeenExamined = true;
+    Object.values(items).forEach(scavItem => {
+      if (scavItem.type === "scavenger") {
+        scavItem.includeInGame = true;
+      }
+    });
+  }
 
   // Check if item has examine action
   if (!item.actions || !item.actions.examine) {
@@ -1943,6 +2268,11 @@ function handleExamineCommand(command) {
       if (itemKey === "oldnote") {
         item.hasBeenExamined = true;
         console.log("DEBUG: Bookmark examined, hasBeenExamined set to true");
+      }
+
+      // Mark password paper as examined (needed for "say friend" command)
+      if (itemKey === "passwordpaper") {
+        item.hasBeenExamined = true;
       }
 
       // Check if examining this item reveals a hidden item (first time only)
@@ -2009,7 +2339,24 @@ function handleExamineCommand(command) {
         // Mark bookmark as examined (needed for safe combination)
         if (itemKey === "oldnote") {
           item.hasBeenExamined = true;
-          console.log("DEBUG: Bookmark examined (fixed item path), hasBeenExamined set to true");
+          console.log(
+            "DEBUG: Bookmark examined (fixed item path), hasBeenExamined set to true"
+          );
+        }
+
+        // Mark musicsystem as examined (needed for press commands)
+        if (itemKey === "musicsystem") {
+          item.hasBeenExamined = true;
+        }
+
+        // Mark password paper as examined (needed for "say friend" command)
+        if (itemKey === "passwordpaper") {
+          item.hasBeenExamined = true;
+        }
+
+        // Mark DVD cabinet as examined (needed for open command)
+        if (itemKey === "dvdcabinet") {
+          item.hasBeenExamined = true;
         }
 
         // Check if examining this fixed item reveals a hidden item (first time only)
@@ -2033,8 +2380,12 @@ function handleExamineCommand(command) {
       addToBuffer([
         { text: `You don't see any "${targetTypedName}" here.`, type: "error" },
       ]);
+      return;
     }
   }
+
+  // Mark command as successful (only reached if no early return from errors)
+  lastCommandSucceeded = true;
 }
 
 // Handle use command
@@ -2114,6 +2465,7 @@ function handleUseCommand(command) {
       // Redisplay current room to show exits and updated items
       lookAtRoom();
     }
+    lastCommandSucceeded = true;
   } else if (itemKey === "door_knocker") {
     // Special handling for DOOR GONG
     if (item.hasBeenUsed) {
@@ -2135,6 +2487,7 @@ function handleUseCommand(command) {
       // Redisplay current room to show the north exit is now available
       lookAtRoom();
     }
+    lastCommandSucceeded = true;
   } else if (itemKey === "brass_key") {
     // Special handling for brass key
     if (item.hasBeenUsed) {
@@ -2142,6 +2495,7 @@ function handleUseCommand(command) {
       addToBuffer([
         { text: "The bedroom door is already unlocked.", type: "flavor" },
       ]);
+      lastCommandSucceeded = true;
     } else {
       // Check if player is at TV-ROOM (where bedroom door is)
       if (currentRoom !== "TV-ROOM") {
@@ -2161,6 +2515,7 @@ function handleUseCommand(command) {
 
       item.hasBeenUsed = true;
       lookAtRoom();
+      lastCommandSucceeded = true;
     }
   } else if (itemKey === "safe") {
     // Special handling for safe
@@ -2181,11 +2536,13 @@ function handleUseCommand(command) {
         },
       ]);
     }
+    lastCommandSucceeded = true;
   } else {
     // Generic use action for other items
     const response =
       item.actions.use.response || `You use the ${item.display}.`;
     addToBuffer([{ text: response, type: "flavor" }]);
+    lastCommandSucceeded = true;
   }
 }
 
@@ -2544,12 +2901,10 @@ function updateGameStatus() {
   const treatsCount = inventory.filter((item) => item.type === "candy").length;
   const displayTreatsCount = Math.min(treatsCount, 20);
 
-  // Generate status section with aligned columns
-  const statusTitle = uiConfig?.statusPanel?.status?.title || "SCORE";
-
-  let statsHTML = `<div class="score-items">`;
-  statsHTML += `<div>Scavenger Items: ${scavengerCount} / 9</div>`;
-  statsHTML += `<div>Treats:          ${displayTreatsCount} / 20</div>`;
+  // Generate digital clock and item counts
+  let statsHTML = `<div class="digital-clock">${formatTime12Hour()}</div>`;
+  statsHTML += `<div class="time-items">`;
+  statsHTML += `<div>Scavenger: ${scavengerCount}/9  Treats: ${displayTreatsCount}/20</div>`;
   statsHTML += `</div>`;
 
   // Commands section with 3-column alignment
@@ -2571,14 +2926,11 @@ function updateGameStatus() {
                 |
       (w)est ------ (e)ast
                 |
-             (s)outh         HOME</div>`;
+SCORE        (s)outh        HOME</div>`;
 
   statusDiv.innerHTML = `
     <div>&nbsp;</div>
-    <div class="status-section">
-      <div class="status-title">${statusTitle}</div>
-      ${statsHTML}
-    </div>
+    ${statsHTML}
 
     <div class="status-section">
       <div class="status-title">${commandsTitle}</div>
@@ -2726,6 +3078,9 @@ function processCommand(command) {
     case "prefix":
       const cmd = commands[result.command];
 
+      // Reset command success flag (will be set to true if command succeeds)
+      lastCommandSucceeded = false;
+
       // Handle different command actions
       switch (cmd.action) {
         case "move_north":
@@ -2742,12 +3097,15 @@ function processCommand(command) {
           break;
         case "examine_room":
           lookAtRoom();
+          lastCommandSucceeded = true;
           break;
         case "show_inventory":
           showInventory();
+          lastCommandSucceeded = true;
           break;
         case "show_help":
           showHelp();
+          lastCommandSucceeded = true;
           break;
         case "take_item":
           handleTakeCommand(command);
@@ -2778,24 +3136,45 @@ function processCommand(command) {
           break;
         case "debug_scavenger":
           handleDebugCommand();
+          lastCommandSucceeded = true;
           break;
         case "celebrate_again":
           handleCelebrateCommand();
+          lastCommandSucceeded = true;
           break;
         case "show_secrets":
           handleHintCommand();
+          lastCommandSucceeded = true;
           break;
         case "restart_game":
           location.reload();
+          lastCommandSucceeded = true;
           break;
         case "show_about":
           handleAboutCommand();
+          lastCommandSucceeded = true;
+          break;
+        case "show_score":
+          handleScoreCommand();
+          lastCommandSucceeded = true;
           break;
         default:
           addToBuffer([
             { text: `Unknown action: ${cmd.action}`, type: "error" },
           ]);
       }
+
+      // Update game time based on command's timer property
+      // (Note: EAT command handles timer specially due to consecutive eat limit)
+      // Only apply time if command succeeded
+      if (
+        cmd.timer !== undefined &&
+        cmd.action !== "eat_item" &&
+        lastCommandSucceeded
+      ) {
+        updateGameTime(cmd.timer);
+      }
+
       isValid = true;
       break;
 
@@ -3068,6 +3447,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     console.log("Initializing game systems...");
+
+    // Initialize game time to start time
+    gameTime.hours = GAME_START_TIME.hours;
+    gameTime.minutes = GAME_START_TIME.minutes;
+    gameTime.totalMinutes =
+      GAME_START_TIME.hours * 60 + GAME_START_TIME.minutes;
+
     await initializeBuffer(processedGameData);
     initializeStatusInfo();
     initScavengerGrid();

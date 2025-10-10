@@ -14,10 +14,10 @@
     "START": {
       "name": "Halloween Night",
       "enterText": {
-        "first": "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-size: 1.2em;'><b>Welcome to The Radley House!</b></span><br><br>This is a text based game where you wander around and try to discover things.<br><br>----------------------------------------------------------<br><br>It is late on Halloween night and twilight is creeping in. All along the street the porchlights are off, as if the dark houses are saying 'enough is enough'.<br><br>It looks like Halloween is officially over.....<br><br>... wait? is that a light on over there? Just down the street, to the <b>east</b>?<br><br><span style='color: #ffcc00;'>[hint: type <b>go east</b> to walk down the street.]</span>",
+        "first": "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-size: 1.2em;'><b>Welcome to The Radley House!</b></span><br><br>This is a Halloween-themed text based game where you wander around and try to discover things. However, you only have so much time!<br><br>----------------------------------------------------------<br><br><b>Wow! 7:57 PM already. I told Atticus that I would be home by 8:30</b>. He'll be disappointed if I'm late. Pobably give me a 'you need to be responsible' lecture or something. I should probably start walking home.<br><br>... wait? is that a light on over there? Just down the street, to the <b>east</b>? Maybe Halloween isn't over yet!<br><br><span style='color: #ffcc00;'>[hint: type <b>go east</b> to walk down the street.]<br>[hint: type <b>score</b> to learn how the time system works.]</span>",
         "repeat": "You are at the start of your Halloween adventure. The street continues to the <b>east</b> towards Mrs. McGillicutty's house."
       },
-      "lookText": "It is Halloween night and getting dark. You can see some houses down the street to the <b>east</b>.",
+      "lookText": "It is Halloween night and getting late, and dark. You can see a porch light on just down the street to the <b>east</b>.",
       "exits": {
         "east": { "to": "STREET-01", "door": "start2street-01" }
       },
@@ -47,7 +47,7 @@
     "STREET-02": {
       "name": "Street",
       "enterText": {
-        "first": "You walk down the street to <span style='font-family: Cinzel, serif; color: #ff9500; font-size: 1.3em; font-weight: 700; letter-spacing: 2px; text-shadow: 0 0 5px #6a0dad, 1px 1px 2px #000;'>THE RADLEY HOUSE</span>.<br><br>Such an imposing decrepit old house! Sort of a cross between the Addams Family mansion and Notre Dame Cathedral. Gothic!<br><br>To the <b>north</b> is the Radley's front porch. or... maybe it would be safer to just walk <b>west</b>, back to Mrs. McGillicutty's house?",
+        "first": "You walk down the street to <span style='font-family: Cinzel, serif; color: #ff9500; font-size: 1.3em; font-weight: 700; letter-spacing: 2px; text-shadow: 0 0 5px #6a0dad, 1px 1px 2px #000;'>THE RADLEY HOUSE</span>.<br><br>Such an imposing decrepit old house! Sort of a cross between the Addams Family mansion and an insurance agent's nightmare!  Well.. at least the porch light is on.<br><br>To the <b>north</b> is the Radley's front porch. or... maybe it would be safer to just walk <b>west</b>, back to Mrs. McGillicutty's house?",
         "repeat": "You are in front of the Radley House again. Its not so bad once you get used to it.... if you're a ghost!"
       },
       "lookText": "You are in front of the Radley House again. Its not so bad once you get used to it I guess.",
@@ -113,7 +113,7 @@
     "FOYER": {
       "name": "FOYER",
       "enterText": {
-        "first": "You c<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y enter the Radley House FOYER. It reminds you of a scene from that Downton Abbey show...  there are doors everywhere!<br><br><span style='color: #ffcc00;'>[hint: type <b>take &lt;item&gt;</b> or <b>get &lt;item&gt;</b> to pick up items you find.]</span>",
+        "first": "You c<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y enter the Radley House FOYER. It reminds you of a scene from that Downton Abbey show...  there are doors everywhere!",
         "repeat": "You are in the FOYER."
       },
       "lookText": "You are in the FOYER.  So many doors!",
@@ -249,7 +249,7 @@
     "TV-ROOM": {
       "name": "TV ROOM",
       "enterText": {
-        "first": "You enter the TV ROOM. A large flat-screen TV mounted on the wall is playing a show - the 2016 Netflix series 'Stranger Things.' On the screen, kids on bikes are racing through a dark forest, flashlights cutting through the fog.<br><br>Against the opposite wall stands an elegant wooden <b>cabinet</b> with glass doors. Through the glass, you can see shelves lined with DVD cases. Your eyes are drawn to a DVD of 'Stranger Things' on the second shelf. Wait... how is the show playing if the DVD is right there in the cabinet? <span style='color: #ffcc00;'>[hint: you could try to <b>open cabinet</b>.]</span>",
+        "first": "You enter the TV ROOM. A large flat-screen TV mounted on the wall is playing a show - the 2016 Netflix series 'Stranger Things.' On the screen, kids on bikes are racing through a dark forest, flashlights cutting through the fog.<br><br>Against the opposite wall stands an elegant wooden <b>cabinet</b> with glass doors. Through the glass, you can see shelves lined with DVD cases. Your eyes are drawn to a DVD of 'Stranger Things' on the second shelf. Wait... how is the show playing if the DVD is right there in the cabinet?",
         "repeat": "You are in the TV ROOM. The show is still playing on the TV, and the DVD cabinet stands against the wall."
       },
       "lookText": "You are in the TV ROOM. A large TV is mounted on one wall, currently playing 'Stranger Things.' An elegant DVD cabinet with glass doors stands against the opposite wall.",
@@ -267,8 +267,8 @@
     "HOME": {
       "name": "Home",
       "enterText": {
-        "first": "=========================================================<br><b>You walk home</b>. It's great to be able to rest after all that trick-or-treating.  You can't wait to gorge on all those sweet treats! This was your final haul:",
-        "second": ".........  That's about it for this game.  Nothing more to do here.  You might as well choose another mini-game and go have some fun!",
+        "first": "=========================================================<br><b>You walk home</b>. You can't wait to gorge on all those sweet treats! This was your final haul:",
+        "second": "<b>restart</b> or play a different game.",
         "repeat": "You are home.  The game is over.  Choose another mini-game."
       },
       "lookText": "You are home.  The game is over.  Choose another mini-game.",

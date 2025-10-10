@@ -1,7 +1,7 @@
 {
   "scavengerItems": {
     "nvidia": {
-      "includeInGame": true,
+      "includeInGame": false,
       "type": "scavenger",
       "typedNames": ["nvidia5090videocard", "nvidiartx5090videocard", "rtx5090videocard", "rtx5090", "nvidia5090", "nvidia", "5090", "videocard", "nvidiavideocard", "graphicscard", "nvidia5090card", "5090card", "nvidia5090video"],
       "display": "NVidia <b>RTX 5090</b> Video Card",
@@ -27,7 +27,7 @@
       }
     },
     "monstermash": {
-      "includeInGame": true,
+      "includeInGame": false,
       "type": "scavenger",
       "typedNames": ["monstermash", "monster", "mash", "bobby", "pickett", "bobbypickett", "cd", "music", "graveyard"],
       "display": "<b>Monster Mash</b> <b>CD</b>",
@@ -52,7 +52,7 @@
       }
     },
     "catmug": {
-      "includeInGame": true,
+      "includeInGame": false,
       "type": "scavenger",
       "typedNames": ["catmug", "cat", "mug", "cup", "kittymug"],
       "display": "<b>Cat</b> <b>Mug</b>",
@@ -77,7 +77,7 @@
       }
     },
     "doublemintgum": {
-      "includeInGame": true,
+      "includeInGame": false,
       "type": "scavenger",
       "typedNames": ["doublemintgum", "doublemint", "gum", "wrigleys", "wrigleysgum", "chewinggum", "wrigleysdoublemint", "wrigley", "wrigleysdoublemintgum"],
       "display": "Wrigley's <b>Doublemint Gum</b>",
@@ -126,7 +126,7 @@
       }
     },
     "strangerthings": {
-      "includeInGame": true,
+      "includeInGame": false,
       "type": "scavenger",
       "typedNames": ["strangerthings", "stranger", "things", "dvd", "milliebobbybrown", "millie", "strangerthingsdvd"],
       "display": "Stranger Things <b>DVD</b>",
@@ -152,7 +152,7 @@
       }
     },
     "dog": {
-      "includeInGame": true,
+      "includeInGame": false,
       "type": "scavenger",
       "typedNames": ["odddog", "dog", "odd", "weird", "weirddog", "weirddoggy", "cavalier", "cavalierkingcharles", "ceramicdog"],
       "display": "<b>Odd</b> <b>Dog</b>",
@@ -177,7 +177,7 @@
       }
     },
     "indianheadpennies": {
-      "includeInGame": true,
+      "includeInGame": false,
       "type": "scavenger",
       "typedNames": ["indianheadpennies", "pennies", "penny", "indianhead", "coins", "coin", "cents", "cent", "copper"],
       "display": "Indian Head <b>pennies</b>",
@@ -203,7 +203,7 @@
       }
     },
     "pumpkin": {
-      "includeInGame": true,
+      "includeInGame": false,
       "type": "scavenger",
       "typedNames": ["decorativepumpkin", "pumpkin", "ceramicpumpkin", "glasspumpkin", "knickknack"],
       "display": "Decorative <b>Pumpkin</b>",
@@ -252,7 +252,7 @@
       }
     },
     "frankenstein": {
-      "includeInGame": true,
+      "includeInGame": false,
       "type": "scavenger",
       "typedNames": ["frankensteinbook", "frankenstein", "book", "novel", "maryshelley", "frankensteinnovel"],
       "display": "Frankenstein <b>book</b>",
@@ -270,7 +270,7 @@
       "icon90x90": "assets/scavenger/frankenstein90x90.png",
       "icon250x250": "assets/scavenger/frankenstein250x250.png",
       "actions": {
-        "examine": "The <b>book</b> is a First Edition of the classic 'Frankenstein' <b>novel</b> by Mary Shelley. It looks like it might fall apart if not handled gently. You notice an old bookmark in the pages. Nice bookmark! You take it and put it in your pocket.",
+        "examine": "The <b>book</b> is a First Edition of the classic 'Frankenstein' novel by Mary Shelley. It looks like it might fall apart if not handled gently. You notice an old <b>bookmark</b> in the pages. Nice <b>bookmark</b>! You take it and put it in your pocket.",
         "take": {
           "response": "You put the <b>book</b> in your bag to read later.",
           "addToInventory": true,

@@ -420,6 +420,29 @@ body {
   text-align: center;
 }
 
+/* Digital clock for time-based scoring */
+.digital-clock {
+  font-family: "Courier New", monospace;
+  font-size: 22px;
+  font-weight: bold;
+  color: #00ff00; /* Green to match game theme */
+  text-align: center;
+  background: #0a2a0a; /* Dark green tint */
+  padding: 5px 20px; /* Extra horizontal padding for breathing room */
+  margin: 0 auto 5px auto; /* Center horizontally and add bottom margin */
+  width: fit-content; /* Only as wide as content needs */
+  border: 2px solid #00ff00;
+  border-radius: 3px;
+  letter-spacing: 2px;
+  text-shadow: 0 0 5px #00ff00, 0 0 8px #00ff00;
+}
+
+.time-items {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
 .command-grid {
   display: grid;
   grid-template-columns: auto auto auto;
