@@ -1535,7 +1535,7 @@ function handleScoreCommand() {
     { text: "=== TIME-BASED SCORING ===", type: "command" },
     { text: "", type: "flavor" },
     { text: `Current Time: ${currentTime}`, type: "flavor" },
-    { text: `Deadline: ${deadlineTime}`, type: "flavor" },
+    { text: `Curfew: You promised Atticus you'd be back by ${deadlineTime}`, type: "flavor" },
     { text: `Time Remaining: ${timeRemaining} minutes`, type: "flavor" },
     { text: "", type: "flavor" },
     { text: "How Timing Works:", type: "flavor" },
@@ -2926,7 +2926,7 @@ function updateGameStatus() {
                 |
       (w)est ------ (e)ast
                 |
-SCORE        (s)outh        HOME</div>`;
+score        (s)outh        HOME</div>`;
 
   statusDiv.innerHTML = `
     <div>&nbsp;</div>
