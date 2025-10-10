@@ -1,11 +1,11 @@
 # The Radley House - Game Specifications
-# v0.35 - Scavenger Display Redesign & Content Updates
+# v0.36 - Safe Puzzle & Item Updates
 
 ## Project Overview
 
 **Game Title:** The Radley House
 **Subtitle:** A well-articulated treasure hunt
-**Version:** 0.35 (Scavenger Display Redesign)
+**Version:** 0.37 (Wrigley's Doublemint Gum Replacement)
 **Total Project Size:** ~350KB (with all assets, images, and fonts)
 **Source Files:** 8 core files + 7 data JSON files + 38 items + documentation + images
 **Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking, victory celebration animations, handwritten notes, locked doors, hidden items, interactive puzzles, two-column inventory, and comprehensive command system
@@ -43,14 +43,16 @@ SCAVENGER
 - Manual `&nbsp;` spacing for staggered indent effect
 - Flashing animation on all badge text
 
-**Display Sequence:**
+**Display Sequence:** (Updated in v0.36)
 1. Take response text
 2. Blank line
 3. **Image + Badge (side-by-side)**
 4. Blank line
-5. Examine text
+5. **Item description** (not full examine text)
 6. Blank line
 7. Auto-LOOK (room description, items, exits)
+
+**Note:** Full examine text (including legal disclaimers) only shows when player explicitly examines the item.
 
 **Space Requirements:**
 - Text area width: 607px (577px usable)
@@ -226,10 +228,10 @@ Consistent display throughout game text.
 ```
 SCAVENGER ITEMS (9/9)
   NVidia 5090 Video Card    Monster Mash CD
-  Cup O' Noodles            Cat Mug
+  Wrigley's Doublemint Gum  Cat Mug
   Odd Dog                   Stranger Things DVD
   Frankenstein book         Decorative Pumpkin
-  Krugerrand coin
+  Indian Head pennies
 ```
 
 ### Hidden Commands System
@@ -314,14 +316,16 @@ SCAVENGER ITEMS (9/9)
    - Hidden, revealed by examining powerful PC
    - Points: 10
 
-2. **Cup O'Noodles** (KITCHEN)
-   - Clue: "Food from the sea"
+2. **Wrigley's Doublemint Gum** (KITCHEN)
+   - Clue: "Double your fun"
    - Visible from start
    - Points: 10
 
-3. **Krugerrand Gold Coin** (STUDY)
-   - Clue: "Atomic 79" (gold's atomic number)
-   - Hidden in safe, requires combination 13-97-55
+3. **Indian Head Pennies** (STUDY) 🆕 v0.36
+   - Clue: "Old sense" (sounds like "old cents")
+   - Two Indian Head pennies, c1909
+   - Hidden in safe, requires combination 6-6-6
+   - Must find and examine bookmark (from Frankenstein book) to learn combination
    - Points: 10
 
 4. **Monster Mash CD** (MUSIC-ROOM) 🆕
@@ -475,7 +479,24 @@ textAdventure/
 
 ## Version History
 
-**v0.35** (Current) - Scavenger Display Redesign & Content Updates
+**v0.37** (Current) - Wrigley's Doublemint Gum Replacement
+- Replaced Cup O' Noodles with Wrigley's Doublemint Gum (KITCHEN)
+- Updated Mrs. McGillicutty's list clue #2: "Food from the sea" → "Double your fun"
+- New images: wrigleysOldDoublemintGumPack90x90.png, wrigleysOldDoublemintGumPack250x250.png
+- Description: "An unopened pack of Wrigley's Doublemint Gum."
+- Examine: "Old pack of Wrigley's Doublemint Gum. Very old. 'Double your pleasure, double your fun, with Doublemint, Doublemint chewing gum!'"
+
+**v0.36** - Safe Puzzle Enhancement & Indian Head Pennies
+- NICE-PORCH light behavior fix (based on doorbell use, not visit count)
+- Scavenger pickup shows description instead of full examine text
+- Safe combination changed to 6-6-6 ("number of the beast")
+- Bookmark clue changed from showing numbers to "number of the beast"
+- Krugerrand replaced with Indian Head pennies (c1909)
+- Mrs. McGillicutty's list clue #3: "Atomic 79" → "Old sense"
+- Safe requires bookmark in inventory AND examined
+- NICE-PORCH enterText less presumptive about player actions
+
+**v0.35** - Scavenger Display Redesign & Content Updates
 - Side-by-side scavenger item display (image + badge)
 - Empty Enter key handler with helpful hint
 - Beatles → Monster Mash replacement
@@ -501,5 +522,35 @@ textAdventure/
 
 ---
 
-*Last updated: October 9, 2025*
+---
+
+## Safe Puzzle System 🆕 v0.36
+
+### Requirements to Open Safe
+1. Player must be in STUDY room
+2. Player must have **bookmark** in inventory (revealed by examining Frankenstein book)
+3. Player must have **examined the bookmark** (shows "number of the beast")
+4. Player must enter correct combination: **SAY 6-6-6**
+
+### Puzzle Flow
+1. Find **Frankenstein book** in LIBRARY
+2. **EXAMINE BOOK** → reveals bookmark (auto-added to inventory)
+3. **EXAMINE BOOKMARK** → see "number of the beast"
+4. Recognize that "number of the beast" = 666
+5. Go to STUDY
+6. **SAY 6-6-6** (or SAY 666)
+7. Safe opens, reveals Indian Head pennies + parchment
+
+### Error Messages
+- Without bookmark: "You don't know the combination. You'll need to find a clue somewhere."
+- With bookmark but not examined: "The safe will not open until you find the clue about the combination."
+
+### Technical Implementation
+- `bookmark.hasBeenExamined` flag tracks examination
+- Flag set in both examine code paths (items with/without take actions)
+- Safe opening validates: bookmark location, hasBeenExamined flag, combination match
+
+---
+
+*Last updated: October 10, 2025*
 *Game ready for Halloween 2025*

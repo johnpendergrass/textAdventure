@@ -627,7 +627,22 @@ function displayRoom(roomId = currentRoom) {
 
   // Select appropriate enterText based on visit count
   let enterText;
-  if (visitCount === 0) {
+
+  // Special handling for NICE-PORCH - text depends on porch light state, not visit count
+  if (roomId === "NICE-PORCH") {
+    const porchLight = items.porch_light_nice;
+    if (porchLight && porchLight.visible === true) {
+      // Light is still on (doorbell hasn't been used) - always show "first" text
+      enterText = room.enterText?.first || room.lookText || `You are in ${room.name}`;
+    } else {
+      // Light is off (doorbell has been used) - show "second" or "repeat"
+      enterText =
+        room.enterText?.second ||
+        room.enterText?.repeat ||
+        room.lookText ||
+        `You are in ${room.name}`;
+    }
+  } else if (visitCount === 0) {
     // First visit
     enterText =
       room.enterText?.first || room.lookText || `You are in ${room.name}`;
@@ -1044,7 +1059,7 @@ function handleTakeCommand(command) {
         type: "flavor",
       },
       {
-        text: item.actions?.examine || "",
+        text: item.description || "",
         type: "flavor",
       },
     ]);
@@ -1482,16 +1497,40 @@ function handleSayCommand(command) {
   // Check if at STUDY with safe combination
   if (currentRoom === "STUDY") {
     const safe = items["safe"];
-    if (safe && !safe.hasBeenOpened && normalizedPhrase === "139755") {
+    const bookmark = items["oldnote"];
+
+    if (safe && !safe.hasBeenOpened && normalizedPhrase === "666") {
+      // Check if player has the bookmark and has examined it
+      if (!bookmark || bookmark.location !== "INVENTORY") {
+        addToBuffer([
+          {
+            text: "You don't know the combination. You'll need to find a clue somewhere.",
+            type: "error"
+          },
+        ]);
+        return;
+      }
+
+      if (!bookmark.hasBeenExamined) {
+        console.log("DEBUG: Bookmark hasBeenExamined =", bookmark.hasBeenExamined);
+        addToBuffer([
+          {
+            text: "The safe will not open until you find the clue about the combination.",
+            type: "error"
+          },
+        ]);
+        return;
+      }
+
       // Correct combination! Open the safe
       addToBuffer([
-        { text: "You dial the combination: <b>13-97-55</b>", type: "flavor" },
+        { text: "You dial the combination: <b>6-6-6</b>", type: "flavor" },
         {
           text: "CLICK! The safe door swings open with a satisfying thunk.",
           type: "flavor",
         },
         {
-          text: "Inside you see a <b>Krugerrand</b>! A shiny 1 oz. coin of solid gold! Oh, and you notice an tiny old piece of <b>parchment</b>.",
+          text: "Inside you see two <b>Indian Head pennies</b>! c1909. Nice! Oh, and you notice an tiny old piece of <b>parchment</b>.",
           type: "flavor",
         },
       ]);
@@ -1499,11 +1538,11 @@ function handleSayCommand(command) {
       // Mark safe as opened
       safe.hasBeenOpened = true;
 
-      // Reveal krugerrand in STUDY
-      const krugerrand = items["krugerrand"];
-      if (krugerrand) {
-        krugerrand.location = "STUDY";
-        krugerrand.visible = true;
+      // Reveal Indian Head pennies in STUDY
+      const indianheadpennies = items["indianheadpennies"];
+      if (indianheadpennies) {
+        indianheadpennies.location = "STUDY";
+        indianheadpennies.visible = true;
       }
 
       // Reveal password paper in STUDY
@@ -1900,6 +1939,12 @@ function handleExamineCommand(command) {
         addToBuffer([{ text: item.actions.examine, type: textType }]);
       }
 
+      // Mark bookmark as examined (needed for safe combination)
+      if (itemKey === "oldnote") {
+        item.hasBeenExamined = true;
+        console.log("DEBUG: Bookmark examined, hasBeenExamined set to true");
+      }
+
       // Check if examining this item reveals a hidden item (first time only)
       if (item.revealsItem && !item.hasBeenSearched) {
         const revealedItem = items[item.revealsItem];
@@ -1959,6 +2004,12 @@ function handleExamineCommand(command) {
           ]);
         } else {
           addToBuffer([{ text: item.actions.examine, type: textType }]);
+        }
+
+        // Mark bookmark as examined (needed for safe combination)
+        if (itemKey === "oldnote") {
+          item.hasBeenExamined = true;
+          console.log("DEBUG: Bookmark examined (fixed item path), hasBeenExamined set to true");
         }
 
         // Check if examining this fixed item reveals a hidden item (first time only)

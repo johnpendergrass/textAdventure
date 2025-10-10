@@ -30,10 +30,10 @@
     "STREET-01": {
       "name": "Street",
       "enterText": {
-        "first": "You walk east to investigate the light. Why, it's Mrs. McGillicutty's house! Cheery house. Nice of her to leave the porch light on. Probably has some candy left!<br><br>Wow, she really went all out on the decorations this year! Fancy Halloween lighting! Those ghosts are old school! Her well-lit front porch is to the <b>north</b>. The sidewalk continues to the <b>east</b> or <b>west</b>.<br><br><span style=\"color: #ffcc00;\">[hint: in this game you will type commands (like <b>north</b>) and sometimes two word commands (like <b>get key</b>) to control your player. Words in <b>bold</b> will often be commands or words you can type.]</span>",
-        "repeat": "You are on the street. The path to Mrs. McGillicutty's house is to the <b>north</b>.  The sidewalk continues to the <b>east</b> and <b>west</b>."
+        "first": "You walk east to investigate the light. Why, it's Mrs. McGillicutty's house! Cheery house. Nice of her to leave the porch light on. Probably has some candy left!<br><br>Wow, she really went all out on the decorations this year! Fancy Halloween lighting! Those ghosts are old school! Her well-lit front porch is to the <b>north</b>. The sidewalk continues to the <b>east</b> or back to the <b>west</b>.<br><br><span style=\"color: #ffcc00;\">[hint: in this game you will type commands (like <b>north</b>) and sometimes two word commands (like <b>get key</b>) to control your player. Words in <b>bold</b> will often be commands or words you can type.]</span>",
+        "repeat": "You are on the street. The path to Mrs. McGillicutty's house is to the <b>north</b>.  The sidewalk continues to the <b>east</b> or back to the <b>west</b>."
       },
-      "lookText": "You are on the street. Mrs. McGillicutty's front porch is to the <b>north</b>.  The sidewalk continues to the <b>east</b>. It is getting darker, but this house is cheerful and welcoming. <span style='color: #ffcc00;'>[Hint: type <b>'go north'</b> to revisit Mrs. McGillicutty's house, or <b>'go east'</b> to head on down the road.]</span>",
+      "lookText": "You are on the street. Mrs. McGillicutty's front porch is to the <b>north</b>.  The sidewalk continues to the <b>east</b>, or back to the <b>west</b>. It is getting darker.<br><br><span style='color: #ffcc00;'>[Hint: type <b>'go north'</b> to Mrs. McGillicutty's porch, or <b>'go east'</b> to head on down the road.]</span>",
       "exits": {
         "west":  { "to": "START",      "door": "start2street-01" },
         "north": { "to": "NICE-PORCH", "door": "street-012nice-porch" },
@@ -64,8 +64,8 @@
       "name": "Nice Porch",
       "enterText": {
         "first": "You are standing on Mrs. McGillicutty's porch. The porch light is on, casting a warm welcoming glow.<br><br><span style=\"color: #ffcc00;\">[hint: type <b>ring doorbell</b> or <b>use doorbell</b> to ring the doorbell, or type <b>examine doorbell</b> to get more information about it.]<br><br>[hint: Use <b>look</b> to remind you of where you are.]</span>",
-        "second": "The porch light is off, but you try the bell anyway. No one answers.",
-        "repeat": "The porch light is off. No one answers the door."
+        "second": "The porch light is off. The porch is dark, but you can still make out the doorbell.",
+        "repeat": "The porch light is off. The porch is dark, but you can still make out the doorbell."
       },
       "lookText": "You are on Mrs. McGillicutty's porch. The front door is <b>north</b> and the pathway to the street is <b>south</b>.",
       "exits": {
@@ -100,7 +100,7 @@
         "first": "You go up the walkway to the front porch of the Radley House. The porchlight is dirty yellow, flickering. Not a soul in sight. There is a brass <b>gong handle</b> to the right of the door.<br><br><span style='color: #ffcc00;'>[hint: type <b>use gong</b> or <b>use handle</b> to sound the <b>gong</b>.]</span>",
         "repeat": "You are on the Radley's front porch. Porchlight still flickering and buzzing. The <b>gong</b> handle is very ornate. What!! Is that a rat?"
       },
-      "lookText": "You are on the Radley's front porch.  The door <b>gong</b> handle is right in front of you. Dark. Dank. And spooky. Entry into the house is to the <b>north</b>.  The sidewalk is behind you to the <b>south</b>.",
+      "lookText": "You are on the Radley's front porch.  The door's <b>gong handle</b> is right in front of you. The porch is barely lit, dank, and spooky. Entry into the house is to the <b>north</b>.  The sidewalk is behind you to the <b>south</b>.",
       "exits": {
         "south": { "to": "STREET-02", "door": "street022front-porch" },
         "north": { "to": "FOYER",     "door": "front-porch2foyer" }
@@ -116,7 +116,7 @@
         "first": "You c<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y enter the Radley House FOYER. It reminds you of a scene from that Downton Abbey show...  there are doors everywhere!<br><br><span style='color: #ffcc00;'>[hint: type <b>take &lt;item&gt;</b> or <b>get &lt;item&gt;</b> to pick up items you find.]</span>",
         "repeat": "You are in the FOYER."
       },
-      "lookText": "You are in the FOYER.  Doors lead all directions!",
+      "lookText": "You are in the FOYER.  So many doors!",
       "exits": {
         "south": { "to": "FRONT-PORCH",  "door": "front-porch2foyer" },
         "north": { "to": "DINING-ROOM",  "door": "foyer2dining-room" },
