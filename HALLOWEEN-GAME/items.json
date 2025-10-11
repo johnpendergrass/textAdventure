@@ -176,7 +176,7 @@
       "hasBeenOpened": false,
       "hasBeenExamined": false,
       "actions": {
-        "examine": "An old cast iron <b>safe</b>, used for valuables. It has an old fashioned rotary combination lock next to the handle. The dial shows numbers from 0 to 99.",
+        "examine": "An old cast iron <b>safe</b>, used for valuables. It has an old fashioned rotary combination lock next to the handle. Dial requires three numbers: #-#-#",
         "take": {
           "response": "It's too heavy to move. But you could <b>examine</b> it.",
           "addToInventory": false
