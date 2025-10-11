@@ -1656,6 +1656,18 @@ function handleSayCommand(command) {
     const bookmark = items["oldnote"];
 
     if (safe && !safe.hasBeenOpened && normalizedPhrase === "666") {
+      // Check if player has examined the safe first
+      if (!safe.hasBeenExamined) {
+        addToBuffer([
+          {
+            text: "You should examine the safe first to see how it works.",
+            type: "error",
+          },
+        ]);
+        // Return without setting lastCommandSucceeded = true (no time penalty)
+        return;
+      }
+
       // Check if player has the bookmark and has examined it
       if (!bookmark || bookmark.location !== "INVENTORY") {
         addToBuffer([
@@ -2356,6 +2368,11 @@ function handleExamineCommand(command) {
 
         // Mark DVD cabinet as examined (needed for open command)
         if (itemKey === "dvdcabinet") {
+          item.hasBeenExamined = true;
+        }
+
+        // Mark safe as examined (needed for SAY 666 command)
+        if (itemKey === "safe") {
           item.hasBeenExamined = true;
         }
 
