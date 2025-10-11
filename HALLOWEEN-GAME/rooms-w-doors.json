@@ -63,7 +63,7 @@
     "NICE-PORCH": {
       "name": "Nice Porch",
       "enterText": {
-        "first": "You are standing on Mrs. McGillicutty's porch. The porch light is on, casting a warm welcoming glow.<br><br><span style=\"color: #ffcc00;\">[hint: type <b>ring doorbell</b> or <b>use doorbell</b> to ring the doorbell, or type <b>examine doorbell</b> to get more information about it.]<br><br>[hint: Use <b>look</b> to remind you of where you are.]</span>",
+        "first": "You are standing on Mrs. McGillicutty's porch. The light is on. A welcome mat greets all visitors with a cheery 'Happy Halloween!'. Next to the door a brass <b>doorbell</b> begs to be pushed.<br><br><span style=\"color: #ffcc00;\">[hint: type <b>ring doorbell</b> or <b>use doorbell</b> to ring the doorbell, or type <b>examine doorbell</b> to get more information about it.]<br><br>[hint: Use <b>look</b> to remind you of where you are.]</span>",
         "second": "The porch light is off. The porch is dark, but you can still make out the doorbell.",
         "repeat": "The porch light is off. The porch is dark, but you can still make out the doorbell."
       },
@@ -184,10 +184,10 @@
     "MUSIC-ROOM": {
       "name": "MUSIC ROOM",
       "enterText": {
-        "first": "You enter the MUSIC ROOM. <span style='color: #ffcc00;'>[hint: don't forget to <b>look</b> around to see what's in each room.]</span>",
+        "first": "You enter the MUSIC ROOM. You get the feeling that there might be a hidden door here somewhere... how to reveal it?<span style='color: #ffcc00;'>[hint: don't forget to <b>look</b> around to see what's in each room.]</span>",
         "repeat": "You are in the MUSIC ROOM."
       },
-      "lookText": "You are in the MUSIC ROOM.",
+      "lookText": "You are in the MUSIC ROOM. There is a stereo music system here. <b>Examining</b> it might reveal something.",
       "exits": {
         "south": { "to": "LIBRARY",   "door": "library2music-room" },
         "north": { "to": "GAME-ROOM", "door": "music-room2game-room" }
@@ -201,10 +201,10 @@
     "GAME-ROOM": {
       "name": "GAME ROOM",
       "enterText": {
-        "first": "You enter the GAME ROOM.",
+        "first": "You enter the GAME ROOM. Wow! Look at that Ikea KALLAX shelving system! There must be a dozen cubes there, filled with board games!  Gloomhaven! Spirit Island! Project L! WHAT! No way! Hackmaster!! ... and ... what's that? .... do my eyes deceive me? ... A high-end gaming PC? I wonder what hardware is in that monster! I should definitely <b>examine</b> it!",
         "repeat": "You are in the GAME ROOM."
       },
-      "lookText": "You are in the GAME ROOM.",
+      "lookText": "You are in the GAME ROOM. Too many board games here! There is also a high-end gaming PC in the corner. I should definitely <b>examine</b> it!",
       "exits": {
         "south": { "to": "MUSIC-ROOM", "door": "music-room2game-room" }
       },

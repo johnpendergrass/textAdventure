@@ -29,7 +29,7 @@
     "monstermash": {
       "includeInGame": false,
       "type": "scavenger",
-      "typedNames": ["monstermash", "monster", "mash", "bobby", "pickett", "bobbypickett", "cd", "music", "graveyard"],
+      "typedNames": ["monstermash", "monstermashcd", "monster", "mash", "bobby", "pickett", "bobbypickett", "cd", "music", "graveyard"],
       "display": "<b>Monster Mash</b> <b>CD</b>",
       "description": "The 1962 <b>Monster Mash</b> song by Bobby Pickett - a twisted horror song.",
       "location": "MUSIC-ROOM",
@@ -79,7 +79,7 @@
     "doublemintgum": {
       "includeInGame": false,
       "type": "scavenger",
-      "typedNames": ["doublemintgum", "doublemint", "gum", "wrigleys", "wrigleysgum", "chewinggum", "wrigleysdoublemint", "wrigley", "wrigleysdoublemintgum"],
+      "typedNames": ["doublemintgum", "doublemint", "gum", "wrigleys", "wrigleysgum", "chewinggum", "wrigleysdoublemint", "wrigley", "wrigleysdoublemintgum", "wrigley'sdoublemintgum", "wrigley's", "wrigley'sdoublemint", "wrigley'sdoublemint"],
       "display": "Wrigley's <b>Doublemint Gum</b>",
       "description": "An unopened pack of Wrigley's Doublemint Gum.",
       "location": "KITCHEN",
@@ -256,7 +256,7 @@
       "type": "scavenger",
       "typedNames": ["frankensteinbook", "frankenstein", "book", "novel", "maryshelley", "frankensteinnovel"],
       "display": "Frankenstein <b>book</b>",
-      "description": "Hardback copy of Mary Shelley's 1818 Frankenstein <b>novel</b>.",
+      "description": "Hardback copy of Mary Shelley's 1818 Frankenstein <b>novel</b> You will need to <b>read</b> or <b>examine</b> it to learn more about it.",
       "location": "LIBRARY",
       "points": 10,
       "health": 0,
@@ -270,7 +270,7 @@
       "icon90x90": "assets/scavenger/frankenstein90x90.png",
       "icon250x250": "assets/scavenger/frankenstein250x250.png",
       "actions": {
-        "examine": "The <b>book</b> is a First Edition of the classic 'Frankenstein' novel by Mary Shelley. It looks like it might fall apart if not handled gently. You notice an old <b>bookmark</b> in the pages. Nice <b>bookmark</b>! You take it and put it in your pocket.",
+        "examine": "The <b>book</b> is a First Edition of the classic 'Frankenstein' novel by Mary Shelley. It looks like it might fall apart if not handled gently. You notice an old <b>bookmark</b> in the pages. Nice <b>bookmark</b>! You take it and put it in your pocket. You might want to <b>examine</b> it later.",
         "take": {
           "response": "You put the <b>book</b> in your bag to read later.",
           "addToInventory": true,

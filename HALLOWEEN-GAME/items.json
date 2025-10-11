@@ -176,7 +176,7 @@
       "hasBeenOpened": false,
       "hasBeenExamined": false,
       "actions": {
-        "examine": "An old cast iron <b>safe</b>, used for valuables. It has an old fashioned rotary combination lock next to the handle. Dial requires three numbers: #-#-#",
+        "examine": "An old cast iron <b>safe</b>, used for valuables. It has an old fashioned rotary combination lock next to the handle. The combination requires three numbers: ###.  You might look for the combination somewhere in the house?<span style='color: #ffcc00;'> [Hint: type <b>say ###</b> to open the safe.]</span>",
         "take": {
           "response": "It's too heavy to move. But you could <b>examine</b> it.",
           "addToInventory": false
@@ -245,7 +245,7 @@
       "revealsItem": "nvidia",
       "hasBeenSearched": false,
       "actions": {
-        "examine": "A beast of a gaming machine! The specs are impressive: Intel Core 9 Ultra 19900000K CPU, 2.3TB DDR7 RAM, 32GB Seagate Barracuda hard drive, and an <b>NVidia 5090</b> Video Card. Wait... you notice the video card isn't fully seated in its slot. It looks like you could remove it if you wanted. 'Shame to butcher such a nice PC for parts,' you think.",
+        "examine": "A beast of a gaming machine! The specs are impressive: ASUS ProArt MB, Intel Core Ultra 9 285K CPU, Water cooling! 96GB DDR5 RAM, Several 8TB Gen 5 m.2 drives. And a MSI <b>Nvidia 5090</b> Liquid Suprim Video Card!! Wait... you notice the video card isn't fully seated in its slot. It looks like you could <span style='text-decoration: line-through;'>steal</span> <b>take</b> it if you wanted. 'Shame to butcher such a nice PC for parts,' you think. Oh well, it IS a scavenger item after all!",
         "take": {
           "response": "It's too heavy and bulky to carry. But you could <b>examine</b> it.",
           "addToInventory": false
@@ -379,12 +379,13 @@
       "type": "notes",
       "typedNames": [
         "parchment",
-        "password",
+        "parchmentpaper",
+        "passwordpaper",
         "mellon"
       ],
       "display": "<b>parchment</b> paper",
       "inventoryDisplay": "<b>parchment</b> paper",
-      "description": "A small piece of <b>parchment</b> with hastily scrawled text - it appears to be of drarven origin.",
+      "description": "A small piece of <b>parchment</b> with hastily scrawled text - it appears to be of drarven origin. You might <b>examine</b> for some important clue?.",
       "location": "HIDDEN",
       "points": 0,
       "health": 0,
@@ -394,7 +395,7 @@
       "locked": false,
       "hasBeenExamined": false,
       "actions": {
-        "examine": "Speak, friend, and enter.",
+        "examine": "Speak, 'friend', and enter.",
         "take": {
           "response": "You carefully take the <b>parchment</b> paper.",
           "addToInventory": true
@@ -502,6 +503,7 @@
       "type": "candy",
       "typedNames": [
         "3musketeers",
+        "3musketeersbar",
         "threemusketeers",
         "musketeers",
         "threemusketeers",
@@ -632,6 +634,7 @@
       "type": "candy",
       "typedNames": [
         "mrgoodbar",
+        "mr.goodbar",
         "mistergoodbar",
         "goodbar",
         "peanutchocolatebar"
@@ -975,7 +978,9 @@
       "type": "candy",
       "typedNames": [
         "reesespieces",
+        "reese'spieces",
         "reeses",
+        "reese's",
         "peanutbutter",
         "pieces"
       ],
