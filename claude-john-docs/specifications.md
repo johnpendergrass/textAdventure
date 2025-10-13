@@ -329,7 +329,7 @@ SCAVENGER ITEMS (9/9)
 ```
 (Displayed in **bold** for emphasis)
 
-- Implementation: `textAdventure.js` lines 679-698
+- Implementation: theRadleyHouse.js lines 679-698
 - Added `hasBeenExamined` flag to mrsmcgillicuttyslist
 - Conditional logic checks both possession AND examination
 
@@ -344,7 +344,7 @@ SCAVENGER ITEMS (9/9)
 
 **Invalid SAY commands (no time penalty):**
 - Shows error: `"blahblah" doesn't really do anything.`
-- Location: `textAdventure.js` lines 1884-1889
+- Location: theRadleyHouse.js lines 1884-1889
 
 ### HOME/QUIT Zero Time Penalty 🆕
 **Problem:** HOME/QUIT had 2-minute timer, typed twice = 4 minutes penalty!
@@ -357,10 +357,10 @@ SCAVENGER ITEMS (9/9)
 **Solution:** Gate opening behind examination (matching other puzzle patterns).
 
 **Implementation:**
-- Added `hasBeenExamined: false` to dvdcabinet (`items.json` line 278)
+- Added `hasBeenExamined: false` to dvdcabinet (items.json line 278)
 - Hint moved from TV-ROOM enterText to cabinet examine text
-- Gate logic in handleOpenCommand (`textAdventure.js` lines 1935-1942)
-- Flag set when examined (`textAdventure.js` lines 2357-2360)
+- Gate logic in handleOpenCommand (theRadleyHouse.js lines 1935-1942)
+- Flag set when examined (theRadleyHouse.js lines 2357-2360)
 - **Failed open attempts have NO time penalty**
 
 **Flow:**
@@ -507,9 +507,9 @@ SCAVENGER ITEMS (9/9)
 ### File Structure
 
 ```
-textAdventure/
-├── textAdventure.js         # Main game logic (~2900 lines)
-├── textAdventure.css        # Styling + animations
+theRadleyHouse/
+├── theRadleyHouse.js        # Main game logic (~3150 lines)
+├── theRadleyHouse.css       # Styling + animations
 ├── index.html              # Game container
 ├── HALLOWEEN-GAME/         # Game data (JSON)
 │   ├── gameData.json
@@ -650,10 +650,10 @@ Treats:          5 / 20 (5 pts)
 
 ### Code Locations for Implementation
 
-1. **Score Update:** textAdventure.js:1076-1083 (handleTakeCommand)
+1. **Score Update:** theRadleyHouse.js:1076-1083 (handleTakeCommand)
    - Add: `player.score += (item.points || 0);`
 
-2. **Display Update:** textAdventure.js:2548-2553 (updateGameStatus)
+2. **Display Update:** theRadleyHouse.js:2548-2553 (updateGameStatus)
    - Show actual score instead of just counts
 
 3. **Final Score:** HOME/QUIT screen

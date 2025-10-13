@@ -15,10 +15,10 @@ Last Updated: October 6, 2025
 
 ### File Organization
 ```
-textAdventure/
-├── textAdventure.html          # Main game shell
-├── textAdventure.css           # All styles and animations
-├── textAdventure.js            # Core game engine (~2600 lines)
+theRadleyHouse/
+├── index.html                  # Main game shell
+├── theRadleyHouse.css          # All styles and animations
+├── theRadleyHouse.js           # Core game engine (~3150 lines)
 ├── HALLOWEEN-GAME/
 │   ├── gameData.json           # Meta, about, startup text
 │   ├── commands.json           # 17 command definitions
