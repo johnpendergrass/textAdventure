@@ -44,7 +44,7 @@ body {
 
 .header {
   grid-area: header;
-  border: 2px solid white;
+  border: 2px solid #ff9500;
   padding: 10px;
   box-sizing: border-box;
   text-align: center;
@@ -99,7 +99,7 @@ body {
 
 .text {
   grid-area: text;
-  border: 2px solid white;
+  border: 2px solid #ff9500;
   padding: 15px;
   box-sizing: border-box;
   color: #00ff00;
@@ -139,7 +139,7 @@ body {
 
 /* Text color classes */
 .prompt-echo {
-  color: #ffcc00;
+  color: white;
 }
 
 .command-output {
@@ -231,7 +231,7 @@ body {
   grid-template-rows: repeat(3, 165px);
   gap: 5px;
   padding: 10px;
-  border: 2px solid white;
+  border: 2px solid #ff9500;
   background: rgba(0, 0, 0, 0.5);
 }
 
@@ -312,17 +312,17 @@ body {
 
 .prompt {
   grid-area: prompt;
-  border: 2px solid white;
+  border: 2px solid #ff9500;
   padding: 10px;
   box-sizing: border-box;
-  color: #ffcc00;
+  color: white;
   font-family: "Courier New", Courier, monospace;
   display: flex;
   align-items: center;
 }
 
 .prompt-symbol {
-  color: #ffcc00;
+  color: white;
   font-family: "Courier New", Courier, monospace;
   font-size: 16px;
   margin-right: 8px;
@@ -333,7 +333,7 @@ body {
   background: transparent;
   border: none;
   outline: none;
-  color: #ffcc00;
+  color: white;
   font-family: "Courier New", Courier, monospace;
   font-size: 16px;
 }
@@ -344,7 +344,7 @@ body {
 
 .scavenger {
   grid-area: scavenger;
-  border: 2px solid white;
+  border: 2px solid #ff9500;
   padding: 2px;
   box-sizing: border-box;
   font-family: "Courier New", Courier, monospace;
@@ -403,7 +403,7 @@ body {
 
 .status {
   grid-area: status;
-  border: 2px solid white;
+  border: 2px solid #ff9500;
   padding: 10px;
   box-sizing: border-box;
   color: white;
@@ -464,10 +464,10 @@ body {
   text-shadow: 0 0 5px #00ff00, 0 0 8px #00ff00;
 }
 
-/* Curfew box - default white (same as status box text) */
+/* Curfew box - default orange (Halloween themed) */
 .time-box.curfew {
   background: #0a2a0a; /* Dark green tint (same as Time box) */
-  border-color: white; /* White border */
+  border-color: #ff9500; /* Halloween orange border */
 }
 
 .time-box.curfew .time-label,
