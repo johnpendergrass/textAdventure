@@ -1547,6 +1547,8 @@ function handleHintCommand() {
       text: "  THROW <item> - Try to throw items.",
       type: "flavor",
     },
+    { text: "  ORANGE - Orange borders, white prompt (current default)", type: "flavor" },
+    { text: "  WHITE - White borders, yellow prompt (classic look)", type: "flavor" },
     { text: "  HINT - Shows this list", type: "flavor" },
     { text: "", type: "flavor" },
     { text: "<b>Command Aliases:</b>", type: "command" },
@@ -1647,6 +1649,119 @@ function handleScoreCommand() {
   ]);
 
   // Show current room after score info
+  addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+  lookAtRoom();
+}
+
+// Handle ORANGE theme command - switches to orange borders and white prompt
+function handleOrangeCommand() {
+  // Get all elements that need border color changes
+  const header = document.querySelector(".header");
+  const text = document.querySelector(".text");
+  const prompt = document.querySelector(".prompt");
+  const scavenger = document.querySelector(".scavenger");
+  const status = document.querySelector(".status");
+
+  // Get celebration grid if it exists
+  const celebrationGrid = document.querySelector(".celebration-grid");
+
+  // Change borders to orange
+  const orangeBorder = "2px solid #ff9500";
+  if (header) header.style.border = orangeBorder;
+  if (text) text.style.border = orangeBorder;
+  if (prompt) prompt.style.border = orangeBorder;
+  if (scavenger) scavenger.style.border = orangeBorder;
+  if (status) status.style.border = orangeBorder;
+  if (celebrationGrid) celebrationGrid.style.border = orangeBorder;
+
+  // Change curfew box border to orange
+  const curfewBoxes = document.querySelectorAll(".time-box.curfew");
+  curfewBoxes.forEach((box) => {
+    if (!box.classList.contains("curfew-late")) {
+      box.style.borderColor = "#ff9500";
+    }
+  });
+
+  // Change prompt text to white
+  if (prompt) prompt.style.color = "white";
+  const promptSymbol = document.querySelector(".prompt-symbol");
+  if (promptSymbol) promptSymbol.style.color = "white";
+  const commandInput = document.querySelector(".command-input");
+  if (commandInput) commandInput.style.color = "white";
+
+  // Update CSS for prompt-echo text (for future text display)
+  const style = document.createElement("style");
+  style.id = "theme-orange-style";
+  style.textContent = ".prompt-echo { color: white !important; }";
+  // Remove old theme style if exists
+  const oldStyle = document.getElementById("theme-orange-style");
+  if (oldStyle) oldStyle.remove();
+  const oldWhiteStyle = document.getElementById("theme-white-style");
+  if (oldWhiteStyle) oldWhiteStyle.remove();
+  document.head.appendChild(style);
+
+  addToBuffer([
+    { text: "Theme changed to ORANGE (orange borders, white prompt).", type: "flavor" },
+  ]);
+
+  // Show room description
+  addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+  lookAtRoom();
+}
+
+// Handle WHITE theme command - switches to white borders and yellow prompt
+function handleWhiteCommand() {
+  // Get all elements that need border color changes
+  const header = document.querySelector(".header");
+  const text = document.querySelector(".text");
+  const prompt = document.querySelector(".prompt");
+  const scavenger = document.querySelector(".scavenger");
+  const status = document.querySelector(".status");
+
+  // Get celebration grid if it exists
+  const celebrationGrid = document.querySelector(".celebration-grid");
+
+  // Change borders to white
+  const whiteBorder = "2px solid white";
+  if (header) header.style.border = whiteBorder;
+  if (text) text.style.border = whiteBorder;
+  if (prompt) prompt.style.border = whiteBorder;
+  if (scavenger) scavenger.style.border = whiteBorder;
+  if (status) status.style.border = whiteBorder;
+  if (celebrationGrid) celebrationGrid.style.border = whiteBorder;
+
+  // Change curfew box border to white
+  const curfewBoxes = document.querySelectorAll(".time-box.curfew");
+  curfewBoxes.forEach((box) => {
+    if (!box.classList.contains("curfew-late")) {
+      box.style.borderColor = "white";
+    }
+  });
+
+  // Change prompt text to yellow-gold
+  const yellowGold = "#ffcc00";
+  if (prompt) prompt.style.color = yellowGold;
+  const promptSymbol = document.querySelector(".prompt-symbol");
+  if (promptSymbol) promptSymbol.style.color = yellowGold;
+  const commandInput = document.querySelector(".command-input");
+  if (commandInput) commandInput.style.color = yellowGold;
+
+  // Update CSS for prompt-echo text (for future text display)
+  const style = document.createElement("style");
+  style.id = "theme-white-style";
+  style.textContent = ".prompt-echo { color: #ffcc00 !important; }";
+  // Remove old theme style if exists
+  const oldStyle = document.getElementById("theme-white-style");
+  if (oldStyle) oldStyle.remove();
+  const oldOrangeStyle = document.getElementById("theme-orange-style");
+  if (oldOrangeStyle) oldOrangeStyle.remove();
+  document.head.appendChild(style);
+
+  addToBuffer([
+    { text: "Theme changed to WHITE (white borders, yellow prompt).", type: "flavor" },
+  ]);
+
+  // Show room description
   addToBuffer([{ text: "", type: "flavor" }]); // Blank line
   lookAtRoom();
 }
@@ -3336,6 +3451,14 @@ function processCommand(command) {
           break;
         case "show_score":
           handleScoreCommand();
+          lastCommandSucceeded = true;
+          break;
+        case "theme_orange":
+          handleOrangeCommand();
+          lastCommandSucceeded = true;
+          break;
+        case "theme_white":
+          handleWhiteCommand();
           lastCommandSucceeded = true;
           break;
         default:

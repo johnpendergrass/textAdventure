@@ -153,6 +153,20 @@
       "shortcuts": ["scoring", "time", "timer", "clock", "deadline"],
       "timer": 0,
       "action": "show_score"
+    },
+    "orange": {
+      "includeInGame": true,
+      "type": "system",
+      "shortcuts": ["orangeborders"],
+      "timer": 0,
+      "action": "theme_orange"
+    },
+    "white": {
+      "includeInGame": true,
+      "type": "system",
+      "shortcuts": ["whiteborders"],
+      "timer": 0,
+      "action": "theme_white"
     }
   }
 }
