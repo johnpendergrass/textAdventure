@@ -1,12 +1,12 @@
 # The Radley House - Game Specifications
-# v0.19.1 - Release Candidate
+# v0.19.1d - FINAL RELEASE
 
 ## Project Overview
 
 **Game Title:** The Radley House
 **Subtitle:** A well-articulated treasure hunt
-**Version:** 0.19.1 (Release Candidate)
-**Status:** ✅ READY FOR RELEASE! (pending final testing)
+**Version:** 0.19.1d (FINAL)
+**Status:** ✅ RELEASED - Feature Complete!
 **Total Project Size:** ~350KB (with all assets, images, and fonts)
 **Source Files:** 8 core files + 7 data JSON files + 38 items + documentation + images
 **Architecture:** Clean vanilla HTML/CSS/JavaScript with visual scavenger tracking, victory celebration animations, handwritten notes, locked doors, hidden items, interactive puzzles, two-column inventory, and comprehensive command system
@@ -306,6 +306,69 @@ SCAVENGER ITEMS (9/9)
 
 ---
 
+## v0.19.1d Final Polish 🆕
+
+### Dynamic Curfew Urgency System
+**Problem:** Static curfew display didn't convey urgency when player was late.
+**Solution:** Three-tier visual feedback system.
+
+**Stages:**
+1. **On Time (before 8:30 PM):**
+   - White text and border
+   - Matches status box styling
+
+2. **Late (8:31 PM+):**
+   - Medium bright red (#ff5555)
+   - Static (no animation)
+
+3. **Very Late (8:41 PM+):**
+   - Medium bright red
+   - Slow flash (1.5s cycle)
+   - Time value fades 100% → 40% → 100%
+
+4. **Super Late (8:46 PM+):**
+   - Medium bright red
+   - Fast urgent flash (0.6s cycle)
+   - Rapid pulsing effect
+
+**Implementation:**
+- CSS: `curfewFlash` keyframe animation
+- JavaScript: Classes `curfew-late`, `curfew-very-late`, `curfew-super-late`
+- Only time value flashes (box and label remain solid)
+
+**Bug Fix:** Changed `updateGameTime()` to call `updateGameStatus()` instead of `updateClockDisplay()` so curfew styling updates when time advances.
+
+### Universal Auto-LOOK System 🆕
+**Problem:** Players felt "left hanging" after commands - no orientation or guidance.
+**Solution:** Automatically display room description after EVERY typed command.
+
+**Commands Enhanced (9 total):**
+- EAT - Shows room after eating candy
+- INVENTORY - Shows room after viewing inventory
+- DROP - Shows room after dropping item
+- HELP - Shows room after help text
+- SAY - Shows room after saying phrases (5 branches)
+- USE - Shows room after using items (5 branches)
+
+**Pattern:**
+```
+[Command output]
+[Blank line]
+[Room name]
+[Items present]
+[Available exits]
+```
+
+**Result:** Players always know where they are and what to do next.
+
+### Bookmark Drop Bug Fix 🆕
+**Problem:** Bookmark showed in inventory but couldn't be dropped (error message).
+**Root Cause:** Missing `take` action in items.json prevented DROP command from finding it.
+**Solution:** Added `take` action to oldnote (bookmark) item definition.
+**Result:** Now shows proper message: "You worked hard to find this treasure! You cannot drop it."
+
+---
+
 ## v0.19.1 New Features
 
 ### Cheerful Doorbell Color 🆕
@@ -544,13 +607,19 @@ theRadleyHouse/
 
 ## Version History
 
-**v0.19.1** (Current) - RELEASE CANDIDATE! 🎉
+**v0.19.1d** (Current) - FINAL RELEASE! 🎉
+- Dynamic curfew urgency system (white → red → slow flash → fast flash)
+- Universal auto-LOOK after all commands (9 commands enhanced)
+- Bookmark drop bug fix (added take action)
+- Bug fix: curfew color now updates when time advances
+- **STATUS:** Feature complete, RELEASED! ✅
+
+**v0.19.1** - RELEASE CANDIDATE
 - Doorbell color changed to cheerful golden yellow (#FFD700)
 - FOYER hints now context-aware (list status dependent)
 - SAY command fixed (no time penalty for invalid phrases)
 - HOME/QUIT zero time penalty (was 4 minutes total!)
 - DVD cabinet examination requirement added
-- **STATUS:** Feature complete, ready for release after final testing
 
 **v0.39** - Puzzle Gating, Context-Aware HOME Messages, UI Improvements
 - Scavenger items gated by list examination
@@ -706,5 +775,5 @@ Treats:          5 / 20 (5 pts)
 
 ---
 
-*Last updated: October 10, 2025 - v0.19.1 Release Candidate*
-*The Radley House is READY for Halloween 2025!* 🎃👻🏚️
+*Last updated: October 14, 2025 - v0.19.1d FINAL RELEASE*
+*The Radley House is READY for Halloween 2025!* 🎃👻🏚️✅

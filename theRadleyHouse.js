@@ -686,13 +686,19 @@ function displayRoom(roomId = currentRoom) {
       // Show original hint about picking up items
       addToBuffer([
         { text: "", type: "flavor" }, // Blank line
-        { text: "<span style='color: #ffcc00;'>[hint: type <b>take &lt;item&gt;</b> or <b>get &lt;item&gt;</b> to pick up items you find.]</span>", type: "flavor" }
+        {
+          text: "<span style='color: #ffcc00;'>[hint: type <b>take &lt;item&gt;</b> or <b>get &lt;item&gt;</b> to pick up items you find.]</span>",
+          type: "flavor",
+        },
       ]);
     } else {
       // Show scavenger hunt hint
       addToBuffer([
         { text: "", type: "flavor" }, // Blank line
-        { text: "<span style='color: #ffcc00;'><b>[Hint: You will need to obtain and examine the scavenger hunt list from Mrs. McGillicutty to find the items!]</b></span>", type: "flavor" }
+        {
+          text: "<span style='color: #ffcc00;'>[Hint: You will need to <b>GET</b> and actually <b>EXAMINE</b> the scavenger hunt list from Mrs. McGillicutty to find the items!<br><br>[2nd Hint: Mrs. McGillicutty has to open her door!]</span>",
+          type: "flavor",
+        },
       ]);
     }
   }
@@ -850,6 +856,9 @@ function showHelp() {
     },
     { text: "", type: "flavor" },
   ]);
+
+  // Show room description after help
+  lookAtRoom();
 }
 
 // Helper function to convert numbers to words for scavenger hunt
@@ -878,7 +887,7 @@ function updateGameTime(minutesToAdd) {
   gameTime.totalMinutes += minutesToAdd;
   gameTime.hours = Math.floor(gameTime.totalMinutes / 60);
   gameTime.minutes = gameTime.totalMinutes % 60;
-  updateClockDisplay();
+  updateGameStatus(); // Regenerate entire status panel to update curfew styling
 }
 
 // Format time as 12-hour clock (e.g., "7:57 PM")
@@ -894,11 +903,25 @@ function formatTime12Hour() {
   return `${hours12}:${mins} ${ampm}`;
 }
 
+// Format curfew time as 12-hour clock (e.g., "8:30 PM")
+function formatCurfewTime() {
+  const hours12 =
+    GAME_DEADLINE.hours > 12
+      ? GAME_DEADLINE.hours - 12
+      : GAME_DEADLINE.hours === 0
+      ? 12
+      : GAME_DEADLINE.hours;
+  const ampm = GAME_DEADLINE.hours >= 12 ? "PM" : "AM";
+  const mins = String(GAME_DEADLINE.minutes).padStart(2, "0");
+  return `${hours12}:${mins} ${ampm}`;
+}
+
 // Update the digital clock display in the status panel
 function updateClockDisplay() {
-  const clockElement = document.querySelector(".digital-clock");
-  if (clockElement) {
-    clockElement.textContent = formatTime12Hour();
+  // Update only the first time-value (current time), not the curfew
+  const timeElements = document.querySelectorAll(".time-value");
+  if (timeElements.length > 0) {
+    timeElements[0].textContent = formatTime12Hour();
   }
 }
 
@@ -943,6 +966,9 @@ function showInventory() {
 
   if (inventoryItems.length === 0) {
     addToBuffer([{ text: "Your inventory is empty.", type: "flavor" }]);
+    // Show room description after inventory
+    addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+    lookAtRoom();
     return;
   }
 
@@ -1028,6 +1054,10 @@ function showInventory() {
     const candyList = candyItems.map((item) => item.display).join(", ");
     addToBuffer([{ text: `  ${candyList}`, type: "flavor" }]);
   }
+
+  // Show room description after inventory
+  addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+  lookAtRoom();
 }
 
 // Handle take/get command
@@ -1056,6 +1086,30 @@ function handleTakeCommand(command) {
   );
 
   if (roomItems.length === 0) {
+    // Check if item is already in inventory (was auto-added or already taken)
+    const inventoryItems = Object.entries(items).filter(
+      ([key, item]) =>
+        item.includeInGame &&
+        item.location === "INVENTORY" &&
+        item.typedNames?.includes(targetTypedName)
+    );
+
+    if (inventoryItems.length > 0) {
+      // Item already in inventory - show friendly message
+      const [itemKey, item] = inventoryItems[0];
+      addToBuffer([
+        {
+          text: `The ${item.display} is already in your inventory.<br><br><span style=\"color: #ffcc00;\">[hint: You might type <b>inventory</b> to see what you are carrying, or <b>examine ?</b> to get more information about any item.]</span>`,
+          type: "flavor",
+        },
+      ]);
+      addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+      lookAtRoom();
+      lastCommandSucceeded = true;
+      return;
+    }
+
+    // Not in room or inventory - show error
     addToBuffer([
       {
         text: `You don't see any "${targetTypedName}" here that you can take.`,
@@ -1164,11 +1218,9 @@ function handleTakeCommand(command) {
     // Update scavenger grid if item was marked as found
     updateScavengerGrid();
 
-    // For scavenger items, show room description after taking
-    if (item.type === "scavenger") {
-      addToBuffer([{ text: "", type: "flavor" }]); // Blank line
-      lookAtRoom();
-    }
+    // Show room description after taking any item
+    addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+    lookAtRoom();
 
     // Check for celebration if this was a scavenger item
     if (item.type === "scavenger") {
@@ -1201,11 +1253,13 @@ function handleTakeCommand(command) {
 
       // Special celebration for collecting all items
       if (scavengerCount === totalScavenger) {
-        console.log(`DEBUG CELEBRATION: Triggering celebration in 3 seconds!`);
+        console.log(
+          `DEBUG CELEBRATION: Triggering celebration in 1.5 seconds!`
+        );
         setTimeout(() => {
           console.log(`DEBUG CELEBRATION: showCelebrationGrid() called`);
           showCelebrationGrid();
-        }, 3000);
+        }, 1500);
       }
     }
 
@@ -1267,6 +1321,10 @@ function handleDropCommand(command) {
   // Update the status panel to show new inventory
   updateGameStatus();
 
+  // Show room description after dropping
+  addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+  lookAtRoom();
+
   // Mark command as successful
   lastCommandSucceeded = true;
 }
@@ -1317,6 +1375,10 @@ function handleThrowCommand(command) {
 
   addToBuffer([{ text: randomMessage, type: "flavor" }]);
 
+  // Show room description after throw command
+  addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+  lookAtRoom();
+
   // Mark command as successful
   lastCommandSucceeded = true;
 }
@@ -1324,7 +1386,7 @@ function handleThrowCommand(command) {
 // Handle DEBUG command - adds all scavenger items except pumpkin to inventory
 function handleDebugCommand() {
   // First, enable all scavenger items in the game
-  Object.values(items).forEach(item => {
+  Object.values(items).forEach((item) => {
     if (item.type === "scavenger") {
       item.includeInGame = true;
     }
@@ -1398,10 +1460,14 @@ function handleDebugCommand() {
       },
     ]);
 
+    // Show room description after debug command
+    addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+    lookAtRoom();
+
     // Trigger celebration
     setTimeout(() => {
       showCelebrationGrid();
-    }, 3000);
+    }, 1500);
   } else {
     addToBuffer([
       {
@@ -1413,6 +1479,10 @@ function handleDebugCommand() {
         type: "flavor",
       },
     ]);
+
+    // Show room description after debug command
+    addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+    lookAtRoom();
   }
 }
 
@@ -1442,6 +1512,10 @@ function handleCelebrateCommand() {
       },
       { text: `Found: ${scavengerCount} / ${totalScavenger}`, type: "flavor" },
     ]);
+
+    // Show room description after celebrate command
+    addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+    lookAtRoom();
   }
 }
 
@@ -1460,7 +1534,7 @@ function handleAboutCommand() {
 // Handle HINT command - shows all hidden/secret commands
 function handleHintCommand() {
   addToBuffer([
-    { text: "Hidden/Secret Commands:", type: "command" },
+    { text: "<b>Hidden/Secret Commands:</b>", type: "command" },
     { text: "", type: "flavor" },
     { text: "  ABOUT - Game information", type: "flavor" },
     { text: "  DEBUG - Adds items to inventory for testing", type: "flavor" },
@@ -1470,12 +1544,12 @@ function handleHintCommand() {
     },
     { text: "  RESTART - Reloads the game from the beginning", type: "flavor" },
     {
-      text: "  THROW <item> - Try to throw items (doesn't work!)",
+      text: "  THROW <item> - Try to throw items.",
       type: "flavor",
     },
-    { text: "  HINT [secrets] - Shows this list", type: "flavor" },
+    { text: "  HINT - Shows this list", type: "flavor" },
     { text: "", type: "flavor" },
-    { text: "Command Aliases:", type: "command" },
+    { text: "<b>Command Aliases:</b>", type: "command" },
     { text: "", type: "flavor" },
     {
       text: "  north      [n]" + "&nbsp;".repeat(23 - 16) + "look       [l]",
@@ -1508,8 +1582,28 @@ function handleHintCommand() {
     { text: "  eat", type: "flavor" },
     { text: "  open       [unlock]", type: "flavor" },
     { text: "  say        [speak, push, press, dial]", type: "flavor" },
-    { text: "  quit       [home]", type: "flavor" },
+    {
+      text: "  quit       [home] - Requires typing twice!",
+      type: "flavor",
+    },
+    { text: "", type: "flavor" },
+    {
+      text: "<b>Advice:</b>",
+      type: "command",
+    },
+    {
+      text: "<br>!!!!!! A common pattern is LOOK around, then TAKE or EXAMINE things, and finally USE, EAT or EXAMINE them.<br><br>For example: <b>TAKE key</b>, <b>EXAMINE key</b>, then, when later in the game you need a key, <b>USE key</b>.<br><br>Another example: <b>TAKE snickers</b>, <b>EAT snickers</b>. (oh, and yeah! You saved some time by eating the Snickers!)<br><br>By the way, you can go home at any time by typing <b>QUIT</b> or <b>HOME</b>. It does not have to wait until you have found all the scavenger items!",
+      type: "flavor",
+    },
+    {
+      text: "<br><b>!!!!!! BY THE WAY, much of this <b>hint</b> command text has scrolled up and off the page!</b> You might want to scroll up to see what you have missed!",
+      type: "command",
+    },
   ]);
+
+  // Show room description after hint command
+  addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+  lookAtRoom();
 }
 
 // Handle SCORE command - explains time-based scoring system
@@ -1535,7 +1629,10 @@ function handleScoreCommand() {
     { text: "=== TIME-BASED SCORING ===", type: "command" },
     { text: "", type: "flavor" },
     { text: `Current Time: ${currentTime}`, type: "flavor" },
-    { text: `Curfew: You promised Atticus you'd be back by ${deadlineTime}`, type: "flavor" },
+    {
+      text: `Curfew: You promised Atticus you'd be back by ${deadlineTime}`,
+      type: "flavor",
+    },
     { text: `Time Remaining: ${timeRemaining} minutes`, type: "flavor" },
     { text: "", type: "flavor" },
     { text: "How Timing Works:", type: "flavor" },
@@ -1630,6 +1727,10 @@ function handleEatCommand(command) {
 
   // Update the status panel to show new inventory
   updateGameStatus();
+
+  // Show room description after eating
+  addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+  lookAtRoom();
 
   // Mark command as successful
   lastCommandSucceeded = true;
@@ -1766,6 +1867,9 @@ function handleSayCommand(command) {
           type: "flavor",
         },
       ]);
+      // Show room description after SAY
+      addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+      lookAtRoom();
       lastCommandSucceeded = true;
       return;
     }
@@ -1782,6 +1886,9 @@ function handleSayCommand(command) {
           type: "flavor",
         },
       ]);
+      // Show room description after SAY
+      addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+      lookAtRoom();
       lastCommandSucceeded = true;
       return;
     }
@@ -1819,6 +1926,9 @@ function handleSayCommand(command) {
             type: "flavor",
           },
         ]);
+        // Show room description after SAY
+        addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+        lookAtRoom();
         lastCommandSucceeded = true;
         return;
       }
@@ -1880,6 +1990,9 @@ function handleSayCommand(command) {
             type: "flavor",
           },
         ]);
+        // Show room description after SAY
+        addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+        lookAtRoom();
         lastCommandSucceeded = true;
         return;
       } else if (secretDoor && secretDoor.visible && !secretDoor.locked) {
@@ -1887,6 +2000,9 @@ function handleSayCommand(command) {
         addToBuffer([
           { text: "The secret door is already open.", type: "flavor" },
         ]);
+        // Show room description after SAY
+        addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+        lookAtRoom();
         lastCommandSucceeded = true;
         return;
       }
@@ -1895,7 +2011,7 @@ function handleSayCommand(command) {
 
   // Default response - invalid SAY command (no time penalty)
   addToBuffer([
-    { text: `"${phrase}" doesn't really do anything.`, type: "error" }
+    { text: `"${phrase}" doesn't really do anything.`, type: "error" },
   ]);
   // Don't set lastCommandSucceeded = true (no time consumed for invalid SAY commands)
 }
@@ -1947,7 +2063,10 @@ function handleOpenCommand(command) {
     // Check if examined first
     if (!item.hasBeenExamined) {
       addToBuffer([
-        { text: "You should <b>examine</b> the cabinet first before trying to open it.", type: "error" }
+        {
+          text: "You should <b>examine</b> the cabinet first before trying to open it.",
+          type: "error",
+        },
       ]);
       // No time penalty - return without setting lastCommandSucceeded
       return;
@@ -2121,7 +2240,10 @@ function handleQuitCommand() {
     const minutesEarly = deadlineTotalMins - gameTime.totalMinutes;
     addToBuffer([
       { text: "", type: "flavor" },
-      { text: `You made it home at ${currentTime}!`, type: "flavor" },
+      {
+        text: `<span style='color: #ffcc00;'><b>  ***** You made it home at ${currentTime}! *****</b></span><br>`,
+        type: "flavor",
+      },
     ]);
 
     // Context-aware message based on scavenger items collected
@@ -2129,7 +2251,7 @@ function handleQuitCommand() {
       // All 9 items + on time
       addToBuffer([
         {
-          text: `Atticus beams with pride that you found all nine scavenger hunt items, but is even prouder that you respected his 'home time' curfew.`,
+          text: `<span style='color: #ffcc00;'><b>Atticus beams with pride: 'Very well done! You found all nine scavenger hunt items, but I'm even happier that you respected my curfew.  Authur will be impressed that you found all of his treasures! Well done!'</b></span>`,
           type: "flavor",
         },
       ]);
@@ -2137,7 +2259,7 @@ function handleQuitCommand() {
       // Some items + on time
       addToBuffer([
         {
-          text: `Atticus looks you over and says: I'm glad you are back on time. I was getting worried. And it looks like you found some of those scavenger hunt items that Arthur put out!.`,
+          text: `<span style='color: #ffcc00;'><b>Atticus looks you over and says: I'm glad you are back on time. Thank you for respecting the curfew. And it looks like you found some of those scavenger hunt items that Arthur put out! Some of those are real treasures!</b></span>`,
           type: "flavor",
         },
       ]);
@@ -2145,9 +2267,9 @@ function handleQuitCommand() {
       // 0 items + on time
       addToBuffer([
         {
-          text: `Atticus smiles: "Right on time! You made it with ${minutesEarly} minute${
+          text: `<span style='color: #ffcc00;'><b>Atticus smiles: "Right on time! You made it with ${minutesEarly} minute${
             minutesEarly !== 1 ? "s" : ""
-          } to spare!"`,
+          } to spare! It's a shame you didn't find any of those scavenger hunt items that Arthur put out! He will be disappointed."</b></span>`,
           type: "flavor",
         },
       ]);
@@ -2156,7 +2278,10 @@ function handleQuitCommand() {
     const minutesLate = gameTime.totalMinutes - deadlineTotalMins;
     addToBuffer([
       { text: "", type: "flavor" },
-      { text: `You made it home at ${currentTime}...`, type: "flavor" },
+      {
+        text: `<span style='color: #ffcc00;'><b>You made it home at ${currentTime}...<br></b></span>`,
+        type: "flavor",
+      },
     ]);
 
     // Context-aware message based on scavenger items collected
@@ -2164,7 +2289,7 @@ function handleQuitCommand() {
       // All 9 items + late
       addToBuffer([
         {
-          text: `I was getting worried about the time! I'm glad you are home and safe though. Arthur will be impressed you found all nine scavenger hunt items. We'll discuss your missing the curfew later tonite.`,
+          text: `<span style='color: #ffcc00;'><b>'Atticus looks a bit disappointed: "Arthur will be impressed you found all nine scavenger hunt items. But I was getting worried about the time. We'll discuss your missing the curfew later. I'm glad you are home and safe though.'</b></span>`,
           type: "flavor",
         },
       ]);
@@ -2172,7 +2297,7 @@ function handleQuitCommand() {
       // Some items + late
       addToBuffer([
         {
-          text: `Atticus looks concerned: 'Where have you been? Mr. Radley's scavenger hunt shouldn't have taken that long. We'll talk later.'`,
+          text: `<span style='color: #ffcc00;'><b>Atticus looks concerned: 'I was getting worried about you. I didn't think the scavenger hunt would take that long! We'll talk later. But I am glad you found some of Arthur's treasures.'</b></span>`,
           type: "flavor",
         },
       ]);
@@ -2180,7 +2305,7 @@ function handleQuitCommand() {
       // 0 items + late
       addToBuffer([
         {
-          text: `Atticus frowns: 'I was getting worried. You're late and it looks like you didn't participate in the scavenger hunt at all. What were you doing all that time?'`,
+          text: `<span style='color: #ffcc00;'><b>Atticus frowns: 'I'm disappointed you missed the curfew. You're late and it looks like you didn't participate in the scavenger hunt at all. What were you doing all that time?'</b></span>`,
           type: "flavor",
         },
       ]);
@@ -2229,7 +2354,7 @@ function handleExamineCommand(command) {
   // Special case: examining Mrs. McGillicutty's list enables all scavenger items
   if (itemKey === "mrsmcgillicuttyslist") {
     item.hasBeenExamined = true;
-    Object.values(items).forEach(scavItem => {
+    Object.values(items).forEach((scavItem) => {
       if (scavItem.type === "scavenger") {
         scavItem.includeInGame = true;
       }
@@ -2295,10 +2420,6 @@ function handleExamineCommand(command) {
           revealedItem.visible = true;
           item.hasBeenSearched = true;
           updateGameStatus();
-
-          // Show current room state after revealing item
-          addToBuffer([{ text: "", type: "flavor" }]);
-          lookAtRoom();
         }
       }
     } else {
@@ -2386,10 +2507,6 @@ function handleExamineCommand(command) {
             revealedItem.visible = true;
             item.hasBeenSearched = true;
             updateGameStatus();
-
-            // Show current room state after revealing item
-            addToBuffer([{ text: "", type: "flavor" }]);
-            lookAtRoom();
           }
         }
       }
@@ -2400,6 +2517,10 @@ function handleExamineCommand(command) {
       return;
     }
   }
+
+  // Show room description after examining any item
+  addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+  lookAtRoom();
 
   // Mark command as successful (only reached if no early return from errors)
   lastCommandSucceeded = true;
@@ -2457,6 +2578,9 @@ function handleUseCommand(command) {
       addToBuffer([
         { text: "You ring and ring, but no one answers.", type: "flavor" },
       ]);
+      // Show room description after USE
+      addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+      lookAtRoom();
     } else {
       // First use - Mrs. McGillicutty interaction
       addToBuffer([
@@ -2488,6 +2612,9 @@ function handleUseCommand(command) {
     if (item.hasBeenUsed) {
       // Door is already unlocked
       addToBuffer([{ text: "The door is already unlocked.", type: "flavor" }]);
+      // Show room description after USE
+      addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+      lookAtRoom();
     } else {
       // First use - unlock the door
       addToBuffer([{ text: item.actions.use.response, type: "flavor" }]);
@@ -2512,6 +2639,9 @@ function handleUseCommand(command) {
       addToBuffer([
         { text: "The bedroom door is already unlocked.", type: "flavor" },
       ]);
+      // Show room description after USE
+      addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+      lookAtRoom();
       lastCommandSucceeded = true;
     } else {
       // Check if player is at TV-ROOM (where bedroom door is)
@@ -2553,12 +2683,18 @@ function handleUseCommand(command) {
         },
       ]);
     }
+    // Show room description after USE
+    addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+    lookAtRoom();
     lastCommandSucceeded = true;
   } else {
     // Generic use action for other items
     const response =
       item.actions.use.response || `You use the ${item.display}.`;
     addToBuffer([{ text: response, type: "flavor" }]);
+    // Show room description after USE
+    addToBuffer([{ text: "", type: "flavor" }]); // Blank line
+    lookAtRoom();
     lastCommandSucceeded = true;
   }
 }
@@ -2743,11 +2879,10 @@ function showCelebrationGrid() {
     const textOverlay = document.createElement("div");
     textOverlay.className = "celebration-text";
     textOverlay.innerHTML = `
-      <div style="font-size: 48px; margin-bottom: 10px;">YOU WON!</div>
-      <div>You found all NINE</div>
-      <div style="margin-bottom: 20px;">SCAVENGER ITEMS!</div>
-      <div style="font-size: 28px;">Arthur and Mr. Radley</div>
-      <div style="font-size: 28px;">CONGRATULATE YOU!!</div>
+      <div style="font-size: 24px; margin-bottom: 10px;">You found<br>ALL NINE <br>SCAVENGER ITEMS!<br><br></div>
+      <div style="font-size: 24px;">Arthur and Mr. Radley</div>
+      <div style="font-size: 24px;">CONGRATULATE YOU!!</div>
+      <div style="font-size: 16px;"><br><br>just hit 'enter' or 'return' to remove this message and continue playing. You can also type <u>HOME</u> if you want to go home! (which quits the game)</div>
     `;
     overlay.appendChild(textOverlay);
     console.log("Celebration text overlay added");
@@ -2918,8 +3053,37 @@ function updateGameStatus() {
   const treatsCount = inventory.filter((item) => item.type === "candy").length;
   const displayTreatsCount = Math.min(treatsCount, 20);
 
-  // Generate digital clock and item counts
-  let statsHTML = `<div class="digital-clock">${formatTime12Hour()}</div>`;
+  // Check if player is past curfew
+  const deadlineTotalMinutes = GAME_DEADLINE.hours * 60 + GAME_DEADLINE.minutes;
+  const isPastCurfew = gameTime.totalMinutes > deadlineTotalMinutes;
+  const minutesLate = gameTime.totalMinutes - deadlineTotalMinutes;
+  const isVeryLate = minutesLate > 10; // More than 10 minutes late
+  const isSuperLate = minutesLate > 15; // More than 15 minutes late (urgent)
+
+  let curfewClass = "curfew";
+  if (isPastCurfew) {
+    curfewClass += " curfew-late";
+    if (isVeryLate) {
+      curfewClass += " curfew-very-late";
+    }
+    if (isSuperLate) {
+      curfewClass += " curfew-super-late";
+    }
+  }
+
+  // Generate side-by-side time boxes and item counts
+  let statsHTML = `
+    <div class="time-display-container">
+      <div class="time-box">
+        <div class="time-label">Time</div>
+        <div class="time-value">${formatTime12Hour()}</div>
+      </div>
+      <div class="time-box ${curfewClass}">
+        <div class="time-label">Curfew</div>
+        <div class="time-value">${formatCurfewTime()}</div>
+      </div>
+    </div>
+  `;
   statsHTML += `<div class="time-items">`;
   statsHTML += `<div>Scavenger: ${scavengerCount}/9  Treats: ${displayTreatsCount}/20</div>`;
   statsHTML += `</div>`;
@@ -2946,7 +3110,6 @@ function updateGameStatus() {
 score        (s)outh        HOME</div>`;
 
   statusDiv.innerHTML = `
-    <div>&nbsp;</div>
     ${statsHTML}
 
     <div class="status-section">

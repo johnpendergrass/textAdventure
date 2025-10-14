@@ -63,7 +63,7 @@
     "NICE-PORCH": {
       "name": "Nice Porch",
       "enterText": {
-        "first": "You are standing on Mrs. McGillicutty's porch. The light is on. A welcome mat greets all visitors with a cheery 'Happy Halloween!'. Next to the door a brass <b>doorbell</b> begs to be pushed.<br><br><span style=\"color: #ffcc00;\">[hint: type <b>ring doorbell</b> or <b>use doorbell</b> to ring the doorbell, or type <b>examine doorbell</b> to get more information about it.]<br><br>[hint: Use <b>look</b> to remind you of where you are.]</span>",
+        "first": "You are standing on Mrs. McGillicutty's porch. The light is on. A welcome mat greets all visitors with a cheery 'Happy Halloween!'. Next to the door a brass <b>doorbell</b> begs to be pushed.<br><br><span style=\"color: #ffcc00;\">[hint: type <b>use doorbell</b> or <b>ring doorbell</b> to ring the doorbell, or type <b>examine doorbell</b> to get more information about it.]<br><br>[hint: Use <b>look</b> to remind you of where you are.]</span>",
         "second": "The porch light is off. The porch is dark, but you can still make out the doorbell.",
         "repeat": "The porch light is off. The porch is dark, but you can still make out the doorbell."
       },

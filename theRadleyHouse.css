@@ -56,7 +56,7 @@ body {
   bottom: 5px;
   right: 10px;
   font-size: 10px;
-  color: #888;
+  color: #ccc;
   opacity: 1;
   font-family: "Courier New", Courier, monospace;
 }
@@ -66,7 +66,7 @@ body {
   bottom: 5px;
   left: 10px;
   font-size: 10px;
-  color: #bbb;
+  color: #ccc;
   opacity: 1;
   font-family: "Courier New", Courier, monospace;
 }
@@ -83,10 +83,8 @@ body {
   font-size: 40px;
   font-weight: 700;
   letter-spacing: 4px; /* Spread out horizontally */
-  text-shadow:
-    0 0 10px #6a0dad,      /* Purple glow */
-    0 0 20px #6a0dad,      /* Stronger purple */
-    2px 2px 4px #000;      /* Black depth */
+  text-shadow: 0 0 10px #6a0dad, /* Purple glow */ 0 0 20px #6a0dad,
+    /* Stronger purple */ 2px 2px 4px #000; /* Black depth */
   margin: 10px 0 12px 0;
 }
 
@@ -170,7 +168,7 @@ body {
   display: inline-block;
   border: 1px solid #bbb;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-  line-height: 1.6;
+  line-height: 1.2;
   white-space: pre-line; /* Preserves line breaks */
   max-width: 90%;
 }
@@ -193,6 +191,16 @@ body {
   }
   50% {
     opacity: 0.5;
+  }
+}
+
+@keyframes curfewFlash {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
   }
 }
 
@@ -420,26 +428,79 @@ body {
   text-align: center;
 }
 
-/* Digital clock for time-based scoring */
-.digital-clock {
+/* Time display container - holds both time boxes side-by-side */
+.time-display-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px auto 3px auto;
+}
+
+/* Individual time box */
+.time-box {
   font-family: "Courier New", monospace;
-  font-size: 22px;
-  font-weight: bold;
-  color: #00ff00; /* Green to match game theme */
-  text-align: center;
   background: #0a2a0a; /* Dark green tint */
-  padding: 5px 20px; /* Extra horizontal padding for breathing room */
-  margin: 0 auto 5px auto; /* Center horizontally and add bottom margin */
-  width: fit-content; /* Only as wide as content needs */
   border: 2px solid #00ff00;
   border-radius: 3px;
+  padding: 3px 8px;
+  text-align: center;
+}
+
+/* Label above time (Time/Curfew) */
+.time-label {
+  font-size: 11px;
+  color: #00ff00;
+  font-weight: normal;
+  margin-bottom: 2px;
+  letter-spacing: 1px;
+}
+
+/* Time value display */
+.time-value {
+  font-size: 18px;
+  color: #00ff00;
+  font-weight: bold;
   letter-spacing: 2px;
   text-shadow: 0 0 5px #00ff00, 0 0 8px #00ff00;
 }
 
+/* Curfew box - default white (same as status box text) */
+.time-box.curfew {
+  background: #0a2a0a; /* Dark green tint (same as Time box) */
+  border-color: white; /* White border */
+}
+
+.time-box.curfew .time-label,
+.time-box.curfew .time-value {
+  color: white; /* White text */
+  text-shadow: 0 0 5px white, 0 0 8px white;
+}
+
+/* Curfew box - medium bright red when late */
+.time-box.curfew.curfew-late {
+  background: #2a0a0a; /* Dark red tint */
+  border-color: #ff5555; /* Medium bright red border */
+}
+
+.time-box.curfew.curfew-late .time-label,
+.time-box.curfew.curfew-late .time-value {
+  color: #ff5555; /* Medium bright red text */
+  text-shadow: 0 0 5px #ff5555, 0 0 8px #ff5555;
+}
+
+/* Flash only the time value when very late (>10 min) */
+.time-box.curfew-very-late .time-value {
+  animation: curfewFlash 1.5s ease-in-out infinite;
+}
+
+/* Faster urgent flash when super late (>15 min) */
+.time-box.curfew-super-late .time-value {
+  animation: curfewFlash 0.6s ease-in-out infinite;
+}
+
 .time-items {
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   font-size: 13px;
 }
 
