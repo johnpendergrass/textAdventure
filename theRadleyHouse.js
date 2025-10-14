@@ -1547,8 +1547,14 @@ function handleHintCommand() {
       text: "  THROW <item> - Try to throw items.",
       type: "flavor",
     },
-    { text: "  ORANGE - Orange borders, white prompt (current default)", type: "flavor" },
-    { text: "  WHITE - White borders, yellow prompt (classic look)", type: "flavor" },
+    {
+      text: "  ORANGE - Orange borders, white prompt (current default)",
+      type: "flavor",
+    },
+    {
+      text: "  WHITE - White borders, yellow prompt (classic look)",
+      type: "flavor",
+    },
     { text: "  HINT - Shows this list", type: "flavor" },
     { text: "", type: "flavor" },
     { text: "<b>Command Aliases:</b>", type: "command" },
@@ -1594,11 +1600,11 @@ function handleHintCommand() {
       type: "command",
     },
     {
-      text: "<br>!!!!!! A common pattern is LOOK around, then TAKE or EXAMINE things, and finally USE, EAT or EXAMINE them.<br><br>For example: <b>TAKE key</b>, <b>EXAMINE key</b>, then, when later in the game you need a key, <b>USE key</b>.<br><br>Another example: <b>TAKE snickers</b>, <b>EAT snickers</b>. (oh, and yeah! You saved some time by eating the Snickers!)<br><br>By the way, you can go home at any time by typing <b>QUIT</b> or <b>HOME</b>. It does not have to wait until you have found all the scavenger items!",
+      text: "<br>!!!!!! A common pattern is LOOK around, then TAKE or EXAMINE things, and finally USE, EAT or EXAMINE them.<br><br>For example: <b>TAKE key</b>, <b>EXAMINE key</b>, then, when later in the game you need a key, <b>USE key</b>.<br><br>Another example: <b>TAKE snickers</b>, <b>EAT snickers</b>. (oh, and yeah! You saved some time by eating the Snickers!)<br><br>By the way, you can go home at any time by typing <b>QUIT</b> or <b>HOME</b>. You do not need to find all the items.",
       type: "flavor",
     },
     {
-      text: "<br><b>!!!!!! BY THE WAY, much of this <b>hint</b> command text has scrolled up and off the page!</b> You might want to scroll up to see what you have missed!",
+      text: "<br><b>BY THE WAY, much of this <b>hint</b> command text has scrolled up and off the page! Scroll up to see the entire page.</b>",
       type: "command",
     },
   ]);
@@ -1701,7 +1707,10 @@ function handleOrangeCommand() {
   document.head.appendChild(style);
 
   addToBuffer([
-    { text: "Theme changed to ORANGE (orange borders, white prompt).", type: "flavor" },
+    {
+      text: "Theme changed to ORANGE (orange borders, white prompt).",
+      type: "flavor",
+    },
   ]);
 
   // Show room description
@@ -1758,7 +1767,10 @@ function handleWhiteCommand() {
   document.head.appendChild(style);
 
   addToBuffer([
-    { text: "Theme changed to WHITE (white borders, yellow prompt).", type: "flavor" },
+    {
+      text: "Theme changed to WHITE (white borders, yellow prompt).",
+      type: "flavor",
+    },
   ]);
 
   // Show room description
