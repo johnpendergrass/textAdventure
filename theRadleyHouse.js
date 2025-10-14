@@ -1501,13 +1501,13 @@ function handleCelebrateCommand() {
     (item) => item.includeInGame && item.type === "scavenger"
   ).length;
 
-  if (scavengerCount === totalScavenger) {
+  if (scavengerCount === totalScavenger && scavengerCount === 9) {
     // Show celebration immediately
     showCelebrationGrid();
   } else {
     addToBuffer([
       {
-        text: `You have not won yet!  You must collect all nine scavenger items to win.`,
+        text: `You need to have collected all NINE scavenger items before you can rewatch the 'celebrate' again.`,
         type: "error",
       },
       { text: `Found: ${scavengerCount} / ${totalScavenger}`, type: "flavor" },
